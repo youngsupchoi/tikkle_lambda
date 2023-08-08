@@ -4,34 +4,10 @@ exports.put_friend_block = async (req, res) => {
   //재설정하고자 하는 친구의 user_id
   const target_friend_id = req.body.friend_id;
 
-  const headers = req.headers;
   const body = req.body;
-  const authorization = headers.authorization;
-  const [accessToken, refreshToken] = authorization.split(",");
+  const id = req.id;
+  const returnToken = req.returnToken;
 
-  //-------- check token & get user id --------------------------------------------------------------------------------------//
-
-  let tokenCheck;
-  let returnBody;
-  let id;
-
-  try {
-    tokenCheck = await checkToken(accessToken, refreshToken);
-    returnBody = JSON.parse(tokenCheck.body);
-    id = returnBody.tokenData.id;
-  } catch (error) {
-    //return invalid when token is invalid
-    console.log("ERROR : the token value is null or invalid");
-    return res.status(410).send({ success: false, message: "login again" });
-  }
-
-  //return invalid when token is invalid
-  if (tokenCheck.statusCode !== 200) {
-    console.log("ERROR : the token value is null or invalid");
-    return res.status(410).send({ success: false, message: "login again" });
-  }
-
-  const returnToken = returnBody.accessToken;
   //main logic------------------------------------------------------------------------------------------------------------------//
 
   try {
