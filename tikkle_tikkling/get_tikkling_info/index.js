@@ -1,9 +1,9 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.get_tikkling_info = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.get_tikkling_info = async (req, res) => {
+	const headers = req.headers;
+	const body = req.body;
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");
 
@@ -41,8 +41,8 @@ exports.get_tikkling_info = async (event) => {
 
 	try {
 		// 쿼리 스트링 파라미터에서 tikkling_id를 추출, 숫자인지 확인
-		const tikkling_id = event.queryStringParameters
-			? event.queryStringParameters.tikkling_id
+		const tikkling_id = req.queryStringParameters
+			? req.queryStringParameters.tikkling_id
 			: null;
 
 		if (!tikkling_id) {

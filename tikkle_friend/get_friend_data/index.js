@@ -1,8 +1,8 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
-exports.get_friend_data = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.get_friend_data = async (req, res) => {
+	const headers = req.headers;
+	const body = req.body;
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");
 
@@ -39,13 +39,13 @@ exports.get_friend_data = async (event) => {
 	try {
 		//차단된 친구 목록
 		let rows;
-		if (event.queryStrignParameters.mode === "block") {
+		if (req.queryStrignParameters.mode === "block") {
 			rows = await queryDatabase(
 				"SELECT u.name, u.image, u.nick FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.relation_state_id = 3 AND fr.central_user_id = ?",
 				[id]
 			);
 			//차단되지 않은 친구 목록
-		} else if (event.queryStrignParameters.mode === "unblock") {
+		} else if (req.queryStrignParameters.mode === "unblock") {
 			rows = await queryDatabase(
 				"SELECT u.name, u.image, u.nick FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.relation_state_id != 3 AND fr.central_user_id = ?",
 				[id]

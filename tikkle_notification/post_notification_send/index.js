@@ -1,12 +1,10 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.post_notification_send = async (event) => {
-	const body = event.body;
-	const headers = event.headers;
-
-	const authorization = headers.authorization;
-	const [accessToken, refreshToken] = authorization.split(",");
+exports.post_notification_send = async (req, res) => {
+	const body = req.body;
+	const id = req.id;
+	const returnToken = req.returnToken;
 
 	const receive_user_id = body.receive_user_id;
 	const notification_type_id = body.notification_type_id;
@@ -20,44 +18,14 @@ exports.post_notification_send = async (event) => {
 		)
 	) {
 		//return invalid
-		console.log("ERROR : inputId userId is null or invalid");
-		return {
-			statusCode: 401,
-			body: "input data again",
+		console.log(" post_notification_send 에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "inputId userId is null or invalid",
 		};
+		return res.status(401).send(return_body);
 	}
-
-	//-------- check token & get user id --------------------------------------------------------------------------------------//
-
-	let tokenCheck;
-	let returnBody;
-	let id;
-
-	try {
-		tokenCheck = await checkToken(accessToken, refreshToken);
-		returnBody = JSON.parse(tokenCheck.body);
-		id = returnBody.tokenData.id;
-	} catch (error) {
-		//return invalid when token is invalid
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	//return invalid when token is invalid
-	if (tokenCheck.statusCode !== 200) {
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	const returnToken = returnBody.accessToken;
-
-	//console.log("id : ", id);
 
 	//-------- get user data from DB --------------------------------------------------------------------------------------//
 
@@ -70,24 +38,28 @@ exports.post_notification_send = async (event) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log("SQL error: ", err);
-		return {
-			statusCode: 501,
-			body: "SQL error: ",
+		console.log(" post_notification_send 에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "SQL error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	// check data is one
 	if (sqlResult.length !== 1) {
-		console.log("SQL error: ");
-		return {
-			statusCode: 501,
-			body: "SQL error: ",
+		console.log(" post_notification_send 에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "SQL error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	const name = sqlResult[0].name;
-	console.log("name : ", name);
+	//console.log("name : ", name);
 
 	//-------- check notification_type_id and make message --------------------------------------------------------------------------------------//
 
@@ -148,22 +120,24 @@ exports.post_notification_send = async (event) => {
 		sqlResult = rows;
 		console.log("SQL result : ", sqlResult.insertId);
 	} catch (err) {
-		console.log("Database post error: ", err);
-		return {
-			statusCode: 502,
-			body: err,
+		console.log(" post_notification_send 에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "Database post error",
 		};
+		return res.status(502).send(return_body);
 	}
 
 	//-------- send notification by SNS --------------------------------------------------------------------------------------//
 
 	//-------- return result --------------------------------------------------------------------------------------//
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify({
-			returnToken: returnToken,
-			message: "notification success!",
-		}),
+	const return_body = {
+		success: true,
+		data: null,
+		message: "notification success!",
+		returnToken,
 	};
+	return res.status(200).send(return_body);
 };

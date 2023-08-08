@@ -1,7 +1,7 @@
 const { checkToken } = require("token.js");
 
-exports.get_auth_checkToken = async (event) => {
-	const headers = event.headers;
+exports.get_auth_checkToken = async (req, res) => {
+	const headers = req.headers;
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");
 
@@ -23,11 +23,13 @@ exports.get_auth_checkToken = async (event) => {
 		refreshToken.length > maxLength
 	) {
 		//return invalid
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 401,
-			body: "Log in again",
+
+		console.log(" get_auth_checkToken 에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			message: "the token value is null or invalid : Log in again",
 		};
+		return res.status(401).send(return_body);
 	}
 
 	//---- check token is valid & refresh Access token ----//
@@ -36,11 +38,12 @@ exports.get_auth_checkToken = async (event) => {
 
 	//return invalid when token is invalid
 	if (tokenCheck.statusCode !== 200) {
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 401,
-			body: "Log in again",
+		console.log(" get_auth_checkToken 에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			message: "the token value is null or invalid : Log in again",
 		};
+		return res.status(401).send(return_body);
 	}
 
 	const returnBody = JSON.parse(tokenCheck.body);
@@ -51,16 +54,19 @@ exports.get_auth_checkToken = async (event) => {
 	const returnToken = returnBody.accessToken;
 	//console.log(returnToken);
 	if (!refreshToken) {
-		return {
-			statusCode: 200,
-			body: null,
+		const return_body = {
+			success: true,
+			data: null,
+			message: "success",
 		};
+		return res.status(200).send(return_body);
 	}
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify({
-			accessToken: returnToken,
-		}),
+	const return_body = {
+		success: true,
+		data: null,
+		message: "success",
+		returnToken,
 	};
+	return res.status(200).send(return_body);
 };

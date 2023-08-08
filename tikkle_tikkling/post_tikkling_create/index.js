@@ -1,8 +1,8 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
-exports.post_tikkling_create = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.post_tikkling_create = async (req, res) => {
+	const headers = req.headers;
+	const body = req.body;
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");
 
@@ -41,7 +41,7 @@ exports.post_tikkling_create = async (event) => {
 		const [is_tikkling, product_stock] = await Promise.all([
 			queryDatabase("select is_tikkling from users where id = ?", [id]),
 			queryDatabase("select quantity from products where id = ?", [
-				event.body.product_id,
+				req.body.product_id,
 			]),
 		]);
 
@@ -76,9 +76,9 @@ exports.post_tikkling_create = async (event) => {
 			"INSERT INTO `tikkling` (`user_id`, `funding_limit`, `tikkle_quantity`, `product_id`) VALUES (?, ?, ?, ?);",
 			[
 				id,
-				event.body.funding_limit,
-				event.body.tikkle_quantity,
-				event.body.product_id,
+				req.body.funding_limit,
+				req.body.tikkle_quantity,
+				req.body.product_id,
 			]
 		);
 
