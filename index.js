@@ -170,7 +170,11 @@ api.put("/put_product_viewIncrease", authtoken, put_product_viewIncrease);
 //------- tikkling
 api.get("/get_tikkling_friendinfo", get_tikkling_friendinfo);
 
+<<<<<<< HEAD
 api.get("/get_tikkling_info", get_tikkling_info);
+=======
+api.get("/get_tikkling_info/:tikkling_id", get_tikkling_info);
+>>>>>>> ae260e9 (Fix: get_tikkling_info)
 
 api.get("/get_tikkling_recivedTikkle", get_tikkling_recivedTikkle);
 
