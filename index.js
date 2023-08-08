@@ -1,5 +1,6 @@
 "use strict";
 const api = require("lambda-api")();
+const { authtoken } = require("authtoken.js");
 
 //-------- require modules ------------------------------------------------//
 
@@ -139,31 +140,31 @@ api.put("/put_friend_block", put_friend_block);
 //
 
 //------- image
-api.get("/get_image_deleteProfile", get_image_deleteProfile);
+api.get("/get_image_deleteProfile", authtoken, get_image_deleteProfile);
 
-api.get("/get_image_profileSaveUrl", get_image_profileSaveUrl);
+api.get("/get_image_profileSaveUrl", authtoken, get_image_profileSaveUrl);
 
-api.post("/post_image_profileUrl", post_image_profileUrl);
+api.post("/post_image_profileUrl", authtoken, post_image_profileUrl);
 
 //
 
 //------- notification
-api.get("/get_notification_list", get_notification_list);
+api.get("/get_notification_list", authtoken, get_notification_list);
 
-api.post("/post_notification_send", post_notification_send);
+api.post("/post_notification_send", authtoken, post_notification_send);
 
-api.put("/put_notification_delete", put_notification_delete);
+api.put("/put_notification_delete", authtoken, put_notification_delete);
 
 //
 
 //------- product
-api.post("/post_product_images", post_product_images);
+api.post("/post_product_images", authtoken, post_product_images);
 
-api.post("/post_product_info", post_product_info);
+api.post("/post_product_info", authtoken, post_product_info);
 
-api.post("/post_product_list", post_product_list);
+api.post("/post_product_list", authtoken, post_product_list);
 
-api.put("/put_product_viewIncrease", put_product_viewIncrease);
+api.put("/put_product_viewIncrease", authtoken, put_product_viewIncrease);
 
 //
 
@@ -181,21 +182,21 @@ api.put("/put_tikkling_end", put_tikkling_end);
 //
 
 //------- user
-api.delete("/delete_user_wishlist", delete_user_wishlist);
+api.delete("/delete_user_wishlist", authtoken, delete_user_wishlist);
 
-api.get("/get_user_checkTikkling", get_user_checkTikkling);
+api.get("/get_user_checkTikkling", authtoken, get_user_checkTikkling);
 
-api.get("/get_user_endTikklings", get_user_endTikklings);
+api.get("/get_user_endTikklings", authtoken, get_user_endTikklings);
 
-api.get("/get_user_info", get_user_info);
+api.get("/get_user_info", authtoken, get_user_info);
 
-api.get("/get_user_myWishlist", get_user_myWishlist);
+api.get("/get_user_myWishlist", authtoken, get_user_myWishlist);
 
-api.get("/get_user_paymentHistory", get_user_paymentHistory);
+api.get("/get_user_paymentHistory", authtoken, get_user_paymentHistory);
 
-api.post("/post_user_friend", post_user_friend);
+api.post("/post_user_friend", authtoken, post_user_friend);
 
-api.post("/post_user_wishlist", post_user_wishlist);
+api.post("/post_user_wishlist", authtoken, post_user_wishlist);
 
 //
 
