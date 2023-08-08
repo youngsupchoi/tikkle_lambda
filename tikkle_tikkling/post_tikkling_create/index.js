@@ -38,6 +38,7 @@ exports.post_tikkling_create = async (req, res) => {
         req.body.product_id,
       ]),
     ]);
+
     //티클링중이면 에러
     if (is_tikkling[0].is_tikkling === 1) {
       const return_body = {
