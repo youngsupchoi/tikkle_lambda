@@ -80,8 +80,8 @@ const {
   get_tikkling_info,
 } = require("./tikkle_tikkling/get_tikkling_info/index.js");
 const {
-  get_tikkling_recivedTikkle,
-} = require("./tikkle_tikkling/get_tikkling_recivedTikkle/index.js");
+  post_tikkling_receivedTikkle,
+} = require("./tikkle_tikkling/post_tikkling_receivedTikkle/index.js");
 const {
   post_tikkling_create,
 } = require("./tikkle_tikkling/post_tikkling_create/index.js");
@@ -170,13 +170,9 @@ api.put("/put_product_viewIncrease", authtoken, put_product_viewIncrease);
 //------- tikkling
 api.get("/get_tikkling_friendinfo", get_tikkling_friendinfo);
 
-<<<<<<< HEAD
-api.get("/get_tikkling_info", get_tikkling_info);
-=======
 api.get("/get_tikkling_info/:tikkling_id", get_tikkling_info);
->>>>>>> ae260e9 (Fix: get_tikkling_info)
 
-api.get("/get_tikkling_recivedTikkle", get_tikkling_recivedTikkle);
+api.post("/post_tikkling_receivedTikkle", post_tikkling_receivedTikkle);
 
 api.post("/post_tikkling_create", post_tikkling_create);
 
