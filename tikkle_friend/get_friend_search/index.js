@@ -53,8 +53,8 @@ exports.get_friend_search = async (event) => {
     }
 
     // nick이 일치하는 사용자를 DB에서 조회
-    const query = `SELECT * FROM users WHERE nick = ?`;
-    const rows = await queryDatabase(query, [nick]);
+    const query = `SELECT users.id, users.name, users.nick, users.image, friends_relation.relation_state_id FROM users LEFT JOIN friends_relation on central_user_id = ? AND users.id = friends_relation.friend_user_id WHERE nick = ?`;
+    const rows = await queryDatabase(query, [id, nick]);
 
     const return_body = {
       success: true,
