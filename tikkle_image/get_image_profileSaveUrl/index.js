@@ -3,42 +3,9 @@ const { checkToken } = require("token.js");
 const { getSSMParameter } = require("ssm.js");
 
 exports.get_image_profileSaveUrl = async (req, res) => {
-	const headers = req.headers;
 	const body = req.body;
-	const authorization = headers.authorization;
-	const [accessToken, refreshToken] = authorization.split(",");
-
-	//-------- check token & get user id --------------------------------------------------------------------------------------//
-
-	let tokenCheck;
-	let returnBody;
-	let id;
-
-	try {
-		tokenCheck = await checkToken(accessToken, refreshToken);
-		returnBody = JSON.parse(tokenCheck.body);
-		id = returnBody.tokenData.id;
-	} catch (error) {
-		//return invalid when token is invalid
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	//return invalid when token is invalid
-	if (tokenCheck.statusCode !== 200) {
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	const returnToken = returnBody.accessToken;
-
-	//console.log("id : ", id);
+	const id = req.id;
+	const returnToken = req.returnToken;
 
 	//-------- get url --------------------------------------------------------------------------------------//
 
@@ -61,20 +28,25 @@ exports.get_image_profileSaveUrl = async (req, res) => {
 	try {
 		url = await s3.getSignedUrl("putObject", params);
 	} catch (error) {
-		console.log(error);
-		return {
-			statusCode: 500,
-			body: "url making fail : ",
+		console.log(
+			" get_image_profileSaveUrl 에서 에러가 발생했습니다.",
+			error
+		);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "url making fail",
 		};
+		return res.status(500).send(return_body);
 	}
 
 	//-------- return data --------------------------------------------------------------------------------------//
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify({
-			accessToken: returnToken,
-			url: url,
-		}),
+	const return_body = {
+		success: true,
+		data: url,
+		message: "success",
+		returnToken,
 	};
+	return res.status(200).send(return_body);
 };

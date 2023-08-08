@@ -74,7 +74,7 @@ exports.post_auth_registerUser = async (req, res) => {
 	if (
 		!gender ||
 		typeof gender !== "string" ||
-		!(gender === "male" || gender === "female" || gender === "other")
+		!(gender === "male" || gender === "female" || gender === "others")
 	) {
 		//return invalid
 		console.log(" post_auth_registerUser 에서 에러가 발생했습니다.");

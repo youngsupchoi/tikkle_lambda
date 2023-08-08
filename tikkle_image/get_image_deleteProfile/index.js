@@ -5,43 +5,9 @@ const AWS = require("aws-sdk");
 const s3 = new AWS.S3();
 
 exports.get_image_deleteProfile = async (req, res) => {
-	const headers = req.headers;
 	const body = req.body;
-
-	const authorization = headers.authorization;
-	const [accessToken, refreshToken] = authorization.split(",");
-
-	//-------- check token & get user id --------------------------------------------------------------------------------------//
-
-	let tokenCheck;
-	let returnBody;
-	let id;
-
-	try {
-		tokenCheck = await checkToken(accessToken, refreshToken);
-		returnBody = JSON.parse(tokenCheck.body);
-		id = returnBody.tokenData.id;
-	} catch (error) {
-		//return invalid when token is invalid
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	//return invalid when token is invalid
-	if (tokenCheck.statusCode !== 200) {
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	const returnToken = returnBody.accessToken;
-
-	//console.log("id : ", id);
+	const id = req.id;
+	const returnToken = req.returnToken;
 
 	//-------- delete user image data  --------------------------------------------------------------------------------------//
 	let sqlResult;
@@ -55,11 +21,13 @@ exports.get_image_deleteProfile = async (req, res) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log("SQL error: ", err);
-		return {
-			statusCode: 501,
-			body: "SQL error: ",
+		console.log(" get_image_deleteProfile 에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "SQL error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	//-------- delete user image s3 file  --------------------------------------------------------------------------------------//
@@ -78,11 +46,16 @@ exports.get_image_deleteProfile = async (req, res) => {
 
 		console.log("Src Object deleted successfully");
 	} catch (error) {
-		console.error("Error deleting src object in s3:", error);
-		return {
-			statusCode: 502,
-			body: JSON.stringify("Error deletingsrc  object in s3"),
+		console.log(
+			" get_image_deleteProfile 에서 에러가 발생했습니다.",
+			error
+		);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "Error deletingsrc  object in s3",
 		};
+		return res.status(502).send(return_body);
 	}
 
 	const bucket_online = await getSSMParameter("s3_image_buket");
@@ -104,25 +77,25 @@ exports.get_image_deleteProfile = async (req, res) => {
 
 			console.log("Object deleted successfully", imageSize[i]);
 		} catch (error) {
-			console.error(
-				"Error deleting object in s3 : ",
-				imageSize[i],
-				"\n",
+			console.log(
+				" get_image_deleteProfile 에서 에러가 발생했습니다.",
 				error
 			);
-			return {
-				statusCode: 502,
-				body: "Error deleting object in s3 : " + imageSize[i] + "\n",
+			const return_body = {
+				success: false,
+				data: null,
+				message: "Error deleting object in s3 : " + imageSize[i],
 			};
+			return res.status(502).send(return_body);
 		}
 	}
 	//-------- return result --------------------------------------------------------------------------------------//
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify({
-			accessToken: returnToken,
-			data: sqlResult,
-		}),
+	const return_body = {
+		success: true,
+		data: sqlResult,
+		message: "success",
+		returnToken,
 	};
+	return res.status(200).send(return_body);
 };
