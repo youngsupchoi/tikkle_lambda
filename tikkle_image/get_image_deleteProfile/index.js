@@ -112,11 +112,7 @@ exports.get_image_deleteProfile = async (event) => {
 			);
 			return {
 				statusCode: 502,
-				body: JSON.stringify(
-					"Error deleting object in s3 : ",
-					imageSize[i],
-					"\n"
-				),
+				body: "Error deleting object in s3 : " + imageSize[i] + "\n",
 			};
 		}
 	}
