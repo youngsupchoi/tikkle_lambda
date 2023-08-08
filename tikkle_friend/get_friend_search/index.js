@@ -1,9 +1,9 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.get_friend_search = async (event) => {
-  const headers = event.headers;
-  const body = event.body;
+exports.get_friend_search = async (req, res) => {
+  const headers = req.headers;
+  const body = req.body;
   const authorization = headers.authorization;
   const [accessToken, refreshToken] = authorization.split(",");
 
@@ -20,19 +20,13 @@ exports.get_friend_search = async (event) => {
   } catch (error) {
     //return invalid when token is invalid
     console.log("ERROR : the token value is null or invalid");
-    return {
-      statusCode: 410,
-      body: "login again",
-    };
+    return res.status(410).send({ success: false, message: "login again" });
   }
 
   //return invalid when token is invalid
   if (tokenCheck.statusCode !== 200) {
     console.log("ERROR : the token value is null or invalid");
-    return {
-      statusCode: 410,
-      body: "login again",
-    };
+    return res.status(410).send({ success: false, message: "login again" });
   }
 
   const returnToken = returnBody.accessToken;
@@ -41,7 +35,7 @@ exports.get_friend_search = async (event) => {
 
   try {
     // body에서 nick을 추출하고 문자열인지 확인
-    const nick = event.queryStrignParameters.nick;
+    const nick = req.params.nick;
 
     if (typeof nick !== "string") {
       throw new Error("입력 오류: nick은 문자열이어야 합니다.");
@@ -59,13 +53,10 @@ exports.get_friend_search = async (event) => {
     const return_body = {
       success: true,
       data: rows,
+      message: "친구 검색 성공",
       returnToken,
     };
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify(return_body),
-    };
-    return response;
+    return res.status(200).send(return_body);
   } catch (error) {
     console.log("에러 : ", error);
     if (
@@ -77,20 +68,15 @@ exports.get_friend_search = async (event) => {
         message: "잘못된 요청: " + error.message,
         returnToken,
       };
-      return {
-        statusCode: 400,
-        body: return_body,
-      };
+      return res.status(400).send(return_body);
     } else {
+      console.log("get_friend_search에서 에러가 발생했습니다.");
       const return_body = {
         success: false,
         message: "내부 서버 오류",
         returnToken,
       };
-      return {
-        statusCode: 500,
-        body: return_body,
-      };
+      return res.status(500).send(return_body);
     }
   }
 };
