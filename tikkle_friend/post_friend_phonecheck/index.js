@@ -31,7 +31,6 @@ exports.post_friend_phonecheck = async (event) => {
 
   const returnToken = returnBody.accessToken;
   //main logic------------------------------------------------------------------------------------------------------------------//
-
   try {
     // phone_list가 문자열 배열인지 확인
     const phone_list = body.phone_list;
