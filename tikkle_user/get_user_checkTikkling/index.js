@@ -1,44 +1,11 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.get_user_checkTikkling = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.get_user_checkTikkling = async (req, res) => {
+	const body = req.body;
 
-	const authorization = headers.authorization;
-	const [accessToken, refreshToken] = authorization.split(",");
-
-	//-------- check token & get user id --------------------------------------------------------------------------------------//
-
-	let tokenCheck;
-	let returnBody;
-	let id;
-
-	try {
-		tokenCheck = await checkToken(accessToken, refreshToken);
-		returnBody = JSON.parse(tokenCheck.body);
-		id = returnBody.tokenData.id;
-	} catch (error) {
-		//return invalid when token is invalid
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	//return invalid when token is invalid
-	if (tokenCheck.statusCode !== 200) {
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	const returnToken = returnBody.accessToken;
-
-	//console.log("id : ", id);
+	const id = req.id;
+	const returnToken = req.returnToken;
 
 	//-------- check DB --------------------------------------------------------------------------------------//
 
@@ -49,22 +16,26 @@ exports.get_user_checkTikkling = async (event) => {
 			id,
 		]);
 		sqlResult = rows;
-		console.log("SQL result : ", sqlResult);
+		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log("SQL error: ", err);
-		return {
-			statusCode: 501,
-			body: "SQL error: ",
+		console.log("get_user_checkTikkling에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "SQL error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	// check data is one
 	if (sqlResult.length !== 1) {
-		console.log("SQL error: ", err);
-		return {
-			statusCode: 501,
-			body: "SQL error: ",
+		console.log("get_user_checkTikkling에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "SQL error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	const is_tikkling = sqlResult[0].is_tikkling;
@@ -72,20 +43,20 @@ exports.get_user_checkTikkling = async (event) => {
 
 	//-------- return result --------------------------------------------------------------------------------------//
 	if (is_tikkling === 1) {
-		return {
-			statusCode: 201,
-			body: JSON.stringify({
-				accessToken: returnToken,
-				is_tikkling: is_tikkling,
-			}),
+		const return_body = {
+			success: true,
+			data: is_tikkling,
+			message: "success",
+			returnToken,
 		};
+		return res.status(201).send(return_body);
 	}
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify({
-			accessToken: returnToken,
-			is_tikkling: is_tikkling,
-		}),
+	const return_body = {
+		success: true,
+		data: is_tikkling,
+		message: "success",
+		returnToken,
 	};
+	return res.status(200).send(return_body);
 };

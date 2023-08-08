@@ -2,27 +2,31 @@ const jwt = require("jsonwebtoken");
 const { queryDatabase } = require("db.js");
 const { getSSMParameter } = require("ssm.js");
 
-exports.post_auth_tokenGenerate = async (event) => {
-	const body = event.body;
+exports.post_auth_tokenGenerate = async (req, res) => {
+	const body = req.body;
 	const userId = body.id;
 
 	//---- check user id ----//
 
 	//check input value
 	if (typeof userId !== "number" || isNaN(userId)) {
-		console.log("ERROR : id value is null or invalid");
-		return {
-			statusCode: 401,
-			body: "invalid id",
+		console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "id value is null or invalid",
 		};
+		return res.status(401).send(return_body);
 	} else {
 		const idString = userId.toString();
 		if (idString.length > 11) {
-			console.log("ERROR : id value is null or invalid");
-			return {
-				statusCode: 401,
-				body: "invalid id",
+			console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다.");
+			const return_body = {
+				success: false,
+				data: null,
+				message: "id value is null or invalid",
 			};
+			return res.status(401).send(return_body);
 		}
 	}
 
@@ -38,20 +42,27 @@ exports.post_auth_tokenGenerate = async (event) => {
 
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log("Database connection error: ", err);
-		return {
-			statusCode: 501,
-			body: err,
+		console.log(
+			" post_auth_tokenGenerate 에서 에러가 발생했습니다 : ",
+			err
+		);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "Database connection error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	// no data
 	if (sqlResult.length !== 1) {
-		console.log("There is no user of input id");
-		return {
-			statusCode: 402,
-			body: "no user of input id",
+		console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "There is no user of input id",
 		};
+		return res.status(402).send(return_body);
 	}
 
 	// deleted user
@@ -59,11 +70,13 @@ exports.post_auth_tokenGenerate = async (event) => {
 	// console.log("data: ", sqlResult[0].is_deleted);
 
 	if (sqlResult[0].is_deleted === 1) {
-		console.log("Deleted user");
-		return {
-			statusCode: 403,
-			body: "Deleted user",
+		console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "Deleted user",
 		};
+		return res.status(403).send(return_body);
 	}
 
 	//---- generate tokken ----//
@@ -76,22 +89,26 @@ exports.post_auth_tokenGenerate = async (event) => {
 		accessToken = await generateAccessToken(userId);
 		refreshToken = await generateRefreshToken(userId);
 	} catch (error) {
-		console.log("ERROR : cannot make token");
-		return {
-			statusCode: 500,
-			body: error,
+		console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "cannot make token",
 		};
+		return res.status(500).send(return_body);
 	}
 
 	//---- return success ----//
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify({
+	const return_body = {
+		success: true,
+		data: JSON.stringify({
 			accessToken: accessToken,
 			refreshToken: refreshToken,
 		}),
+		message: "success",
 	};
+	return res.status(200).send(return_body);
 };
 
 const generateAccessToken = async (id) => {

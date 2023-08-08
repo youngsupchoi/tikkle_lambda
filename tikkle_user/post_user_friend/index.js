@@ -1,45 +1,12 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.post_user_friend = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.post_user_friend = async (req, res) => {
+	const body = req.body;
+	const id = req.id;
+	const returnToken = req.returnToken;
 
 	const friendId = body.friendId;
-	const authorization = headers.authorization;
-	const [accessToken, refreshToken] = authorization.split(",");
-
-	//-------- check token & get user id --------------------------------------------------------------------------------------//
-
-	let tokenCheck;
-	let returnBody;
-	let id;
-
-	try {
-		tokenCheck = await checkToken(accessToken, refreshToken);
-		returnBody = JSON.parse(tokenCheck.body);
-		id = returnBody.tokenData.id;
-	} catch (error) {
-		//return invalid when token is invalid
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	//return invalid when token is invalid
-	if (tokenCheck.statusCode !== 200) {
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	const returnToken = returnBody.accessToken;
-
-	//console.log("id : ", id);
 
 	//-------- get friend data & check,   post friend data to DB if there is no friend data --------------------------------------------------------------------------------------//
 
@@ -64,11 +31,13 @@ exports.post_user_friend = async (event) => {
 		//데이터 없으면 추가
 		ret2 = await queryDatabase(insertQuery, values2);
 	} catch (err) {
-		console.log("Database post error: ", err);
-		return {
-			statusCode: 501,
-			body: err,
+		console.log(" post_user_friend 에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "SQL error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	//-------- return result --------------------------------------------------------------------------------------//
@@ -81,11 +50,11 @@ exports.post_user_friend = async (event) => {
 		message = "already friend";
 	}
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify({
-			accessToken: returnToken,
-			message: message,
-		}),
+	const return_body = {
+		success: true,
+		data: null,
+		message: message,
+		returnToken,
 	};
+	return res.status(200).send(return_body);
 };
