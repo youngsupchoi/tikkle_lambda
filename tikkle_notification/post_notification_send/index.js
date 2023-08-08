@@ -1,7 +1,7 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.post_notification_send = async (req) => {
+exports.post_notification_send = async (req, res) => {
 	const body = req.body;
 	const headers = req.headers;
 

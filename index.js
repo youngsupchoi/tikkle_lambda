@@ -113,189 +113,89 @@ const {
 //-------- API's ------------------------------------------------//
 
 //------- auth
-api.get("/get_auth_checkToken", async (req, res) => {
-	// console.log("id : ", req.query);
-	const ret = await get_auth_checkToken(req);
-	return ret;
-});
+api.get("/get_auth_checkToken", get_auth_checkToken);
 
-api.post("/post_auth_IdDuplicationCheck", async (req, res) => {
-	const ret = await post_auth_IdDuplicationCheck(req);
-	return ret;
-});
+api.post("/post_auth_IdDuplicationCheck", post_auth_IdDuplicationCheck);
 
-api.post("/post_auth_phoneCheck", async (req, res) => {
-	const ret = await post_auth_phoneCheck(req);
-	return ret;
-});
+api.post("/post_auth_phoneCheck", post_auth_phoneCheck);
 
-api.post("/post_auth_registerUser", async (req, res) => {
-	const ret = await post_auth_registerUser(req);
-	return ret;
-});
+api.post("/post_auth_registerUser", post_auth_registerUser);
 
-api.post("/post_auth_tokenGenerate", async (req, res) => {
-	const ret = await post_auth_tokenGenerate(req);
-	return ret;
-});
+api.post("/post_auth_tokenGenerate", post_auth_tokenGenerate);
 
 //
 
 //------- friend
-api.get("/get_friend_data", async (req, res) => {
-	const ret = await get_friend_data(req);
-	return ret;
-});
+api.get("/get_friend_data", get_friend_data);
 
-api.get("/get_friend_event", async (req, res) => {
-	const ret = await get_friend_event(req);
-	return ret;
-});
+api.get("/get_friend_event", get_friend_event);
 
-api.get("/get_friend_search", async (req, res) => {
-	const ret = await get_friend_search(req);
-	return ret;
-});
+api.get("/get_friend_search", get_friend_search);
 
-api.post("/post_friend_phonecheck", async (req, res) => {
-	const ret = await post_friend_phonecheck(req);
-	return ret;
-});
+api.post("/post_friend_phonecheck", post_friend_phonecheck);
 
-api.put("/put_friend_block", async (req, res) => {
-	const ret = await put_friend_block(req);
-	return ret;
-});
+api.put("/put_friend_block", put_friend_block);
 
 //
 
 //------- image
-api.get("/get_image_deleteProfile", async (req, res) => {
-	const ret = await get_image_deleteProfile(req);
-	return ret;
-});
+api.get("/get_image_deleteProfile", get_image_deleteProfile);
 
-api.get("/get_image_profileSaveUrl", async (req, res) => {
-	const ret = await get_image_profileSaveUrl(req);
-	return ret;
-});
+api.get("/get_image_profileSaveUrl", get_image_profileSaveUrl);
 
-api.post("/post_image_profileUrl", async (req, res) => {
-	const ret = await post_image_profileUrl(req);
-	return ret;
-});
+api.post("/post_image_profileUrl", post_image_profileUrl);
 
 //
 
 //------- notification
-api.get("/get_notification_list", async (req, res) => {
-	const ret = await get_notification_list(req);
-	return ret;
-});
+api.get("/get_notification_list", get_notification_list);
 
-api.post("/post_notification_send", async (req, res) => {
-	const ret = await post_notification_send(req);
-	return ret;
-});
+api.post("/post_notification_send", post_notification_send);
 
-api.put("/put_notification_delete", async (req, res) => {
-	const ret = await put_notification_delete(req);
-	return ret;
-});
+api.put("/put_notification_delete", put_notification_delete);
 
 //
 
 //------- product
-api.post("/post_product_images", async (req, res) => {
-	const ret = await post_product_images(req);
-	return ret;
-});
+api.post("/post_product_images", post_product_images);
 
-api.post("/post_product_info", async (req, res) => {
-	const ret = await post_product_info(req);
-	return ret;
-});
+api.post("/post_product_info", post_product_info);
 
-api.post("/post_product_list", async (req, res) => {
-	const ret = await post_product_list(req);
-	return ret;
-});
+api.post("/post_product_list", post_product_list);
 
-api.put("/put_product_viewIncrease", async (req, res) => {
-	const ret = await put_product_viewIncrease(req);
-	return ret;
-});
+api.put("/put_product_viewIncrease", put_product_viewIncrease);
 
 //
 
 //------- tikkling
-api.get("/get_tikkling_friendinfo", async (req, res) => {
-	const ret = await get_tikkling_friendinfo(req);
-	return ret;
-});
+api.get("/get_tikkling_friendinfo", get_tikkling_friendinfo);
 
-api.get("/get_tikkling_info", async (req, res) => {
-	const ret = await get_tikkling_info(req);
-	return ret;
-});
+api.get("/get_tikkling_info", get_tikkling_info);
 
-api.get("/get_tikkling_recivedTikkle", async (req, res) => {
-	const ret = await get_tikkling_recivedTikkle(req);
-	return ret;
-});
+api.get("/get_tikkling_recivedTikkle", get_tikkling_recivedTikkle);
 
-api.post("/post_tikkling_create", async (req, res) => {
-	const ret = await post_tikkling_create(req);
-	return ret;
-});
+api.post("/post_tikkling_create", post_tikkling_create);
 
-api.put("/put_tikkling_end", async (req, res) => {
-	const ret = await put_tikkling_end(req);
-	return ret;
-});
+api.put("/put_tikkling_end", put_tikkling_end);
 
 //
 
 //------- user
-api.delete("/delete_user_wishlist", async (req, res) => {
-	const ret = await delete_user_wishlist(req);
-	return ret;
-});
+api.delete("/delete_user_wishlist", delete_user_wishlist);
 
-api.get("/get_user_checkTikkling", async (req, res) => {
-	const ret = await get_user_checkTikkling(req);
-	return ret;
-});
+api.get("/get_user_checkTikkling", get_user_checkTikkling);
 
-api.get("/get_user_endTikklings", async (req, res) => {
-	const ret = await get_user_endTikklings(req);
-	return ret;
-});
+api.get("/get_user_endTikklings", get_user_endTikklings);
 
-api.get("/get_user_info", async (req, res) => {
-	const ret = await get_user_info(req);
-	return ret;
-});
+api.get("/get_user_info", get_user_info);
 
-api.get("/get_user_myWishlist", async (req, res) => {
-	const ret = await get_user_myWishlist(req);
-	return ret;
-});
+api.get("/get_user_myWishlist", get_user_myWishlist);
 
-api.get("/get_user_paymentHistory", async (req, res) => {
-	const ret = await get_user_paymentHistory(req);
-	return ret;
-});
+api.get("/get_user_paymentHistory", get_user_paymentHistory);
 
-api.post("/post_user_friend", async (req, res) => {
-	const ret = await post_user_friend(req);
-	return ret;
-});
+api.post("/post_user_friend", post_user_friend);
 
-api.post("/post_user_wishlist", async (req, res) => {
-	const ret = await post_user_wishlist(req);
-	return ret;
-});
+api.post("/post_user_wishlist", post_user_wishlist);
 
 //
 

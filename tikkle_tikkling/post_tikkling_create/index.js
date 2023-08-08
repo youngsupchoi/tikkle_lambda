@@ -1,6 +1,6 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
-exports.post_tikkling_create = async (req) => {
+exports.post_tikkling_create = async (req, res) => {
 	const headers = req.headers;
 	const body = req.body;
 	const authorization = headers.authorization;

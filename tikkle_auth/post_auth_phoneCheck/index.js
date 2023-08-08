@@ -1,6 +1,6 @@
 const { queryDatabase } = require("db.js");
 
-exports.post_auth_phoneCheck = async (req) => {
+exports.post_auth_phoneCheck = async (req, res) => {
 	const body = req.body;
 	const phone = body.phone;
 

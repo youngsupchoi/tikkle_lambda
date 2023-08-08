@@ -1,7 +1,7 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.delete_user_wishlist = async (req) => {
+exports.delete_user_wishlist = async (req, res) => {
 	const headers = req.headers;
 	const body = req.body;
 

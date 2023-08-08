@@ -1,7 +1,7 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.post_user_friend = async (req) => {
+exports.post_user_friend = async (req, res) => {
 	const headers = req.headers;
 	const body = req.body;
 

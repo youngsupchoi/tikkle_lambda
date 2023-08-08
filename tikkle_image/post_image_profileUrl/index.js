@@ -1,7 +1,7 @@
 const { checkToken } = require("token.js");
 const { queryDatabase } = require("db.js");
 
-exports.post_image_profileUrl = async (req) => {
+exports.post_image_profileUrl = async (req, res) => {
 	const headers = req.headers;
 	const body = req.body;
 	const authorization = headers.authorization;

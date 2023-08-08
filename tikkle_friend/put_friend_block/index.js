@@ -1,6 +1,6 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
-exports.put_friend_block = async (req) => {
+exports.put_friend_block = async (req, res) => {
 	//재설정하고자 하는 친구의 user_id
 	const target_friend_id = req.body.friend_id;
 

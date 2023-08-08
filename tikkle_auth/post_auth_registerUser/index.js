@@ -1,6 +1,6 @@
 const { queryDatabase } = require("db.js");
 
-exports.post_auth_registerUser = async (req) => {
+exports.post_auth_registerUser = async (req, res) => {
 	const body = req.body;
 
 	const name = body.name;

@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 const { checkToken } = require("token.js");
 const { getSSMParameter } = require("ssm.js");
 
-exports.get_image_profileSaveUrl = async (req) => {
+exports.get_image_profileSaveUrl = async (req, res) => {
 	const headers = req.headers;
 	const body = req.body;
 	const authorization = headers.authorization;
