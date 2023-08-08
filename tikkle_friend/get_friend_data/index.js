@@ -11,9 +11,6 @@ exports.get_friend_data = async (req, res) => {
   let tokenCheck;
   let returnBody;
   let id;
-  console.log("-------------------------------------------------");
-  console.log("hihi:", event.params.mode);
-  console.log("-------------------------------------------------");
 
   try {
     tokenCheck = await checkToken(accessToken, refreshToken);
