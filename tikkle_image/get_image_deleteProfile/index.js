@@ -1,5 +1,8 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
+const { getSSMParameter } = require("ssm.js");
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3();
 
 exports.get_image_deleteProfile = async (event) => {
 	const headers = event.headers;
@@ -59,6 +62,64 @@ exports.get_image_deleteProfile = async (event) => {
 		};
 	}
 
+	//-------- delete user image s3 file  --------------------------------------------------------------------------------------//
+
+	const src_filename = "tikkle-profile-" + id.toString() + ".JPG";
+	const bucket_src = await getSSMParameter("tikkleprofileS3");
+
+	// Delete src image
+	try {
+		const deleteParams = {
+			Bucket: bucket_src,
+			Key: src_filename,
+		};
+
+		await s3.deleteObject(deleteParams).promise();
+
+		console.log("Src Object deleted successfully");
+	} catch (error) {
+		console.error("Error deleting src object in s3:", error);
+		return {
+			statusCode: 502,
+			body: JSON.stringify("Error deletingsrc  object in s3"),
+		};
+	}
+
+	const bucket_online = await getSSMParameter("s3_image_buket");
+	const online_filename = id.toString() + ".JPG";
+
+	const imageSize = [36, 48, 64, 128];
+
+	for (let i = 0; i < imageSize.length; i++) {
+		const bucket = bucket_online + "/profile/" + imageSize[i];
+
+		// Delete the object
+		try {
+			const deleteParams = {
+				Bucket: bucket,
+				Key: online_filename,
+			};
+
+			await s3.deleteObject(deleteParams).promise();
+
+			console.log("Object deleted successfully", imageSize[i]);
+		} catch (error) {
+			console.error(
+				"Error deleting object in s3 : ",
+				imageSize[i],
+				"\n",
+				error
+			);
+			return {
+				statusCode: 502,
+				body: JSON.stringify(
+					"Error deleting object in s3 : ",
+					imageSize[i],
+					"\n"
+				),
+			};
+		}
+	}
 	//-------- return result --------------------------------------------------------------------------------------//
 
 	return {
