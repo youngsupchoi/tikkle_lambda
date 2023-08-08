@@ -105,7 +105,6 @@ const {
 const {
 	get_user_paymentHistory,
 } = require("./tikkle_user/get_user_paymentHistory/index.js");
-const { post_user_email } = require("./tikkle_user/post_user_email/index.js");
 const { post_user_friend } = require("./tikkle_user/post_user_friend/index.js");
 const {
 	post_user_wishlist,
@@ -285,11 +284,6 @@ api.get("/get_user_myWishlist", async (req, res) => {
 
 api.get("/get_user_paymentHistory", async (req, res) => {
 	const ret = await get_user_paymentHistory(req);
-	return ret;
-});
-
-api.post("/post_user_email", async (req, res) => {
-	const ret = await post_user_email(req);
 	return ret;
 });
 
