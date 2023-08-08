@@ -18,20 +18,24 @@ exports.authtoken = async (req, res, next) => {
 		id = returnBody.tokenData.id;
 	} catch (error) {
 		//return invalid when token is invalid
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
+		console.log("authtoken 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "login again",
 		};
+		return res.status(410).send(return_body);
 	}
 
 	//return invalid when token is invalid
 	if (tokenCheck.statusCode !== 200) {
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
+		console.log("authtoken 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "login again",
 		};
+		return res.status(410).send(return_body);
 	}
 
 	const returnToken = returnBody.accessToken;

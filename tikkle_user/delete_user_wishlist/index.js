@@ -2,46 +2,14 @@ const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
 exports.delete_user_wishlist = async (req, res) => {
-	const headers = req.headers;
 	const body = req.body;
+	const productId = body.productid;
 
-	const productId = body.productId;
-	const accessToken = headers.Authorization.accessToken;
-	const refreshToken = headers.Authorization.refreshToken;
-
-	//-------- check token & get user id --------------------------------------------------------------------------------------//
-
-	let tokenCheck;
-	let returnBody;
-	let id;
-
-	try {
-		tokenCheck = await checkToken(accessToken, refreshToken);
-		returnBody = JSON.parse(tokenCheck.body);
-		id = returnBody.tokenData.id;
-	} catch (error) {
-		//return invalid when token is invalid
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	//return invalid when token is invalid
-	if (tokenCheck.statusCode !== 200) {
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	const returnToken = returnBody.accessToken;
-
-	//console.log("id : ", id);
+	const id = req.id;
+	const returnToken = req.returnToken;
 
 	//-------- delete data from DB --------------------------------------------------------------------------------------//
+	let sqlResult = null;
 
 	const deleteQuery = `
     	DELETE FROM user_wish_list 
@@ -54,11 +22,13 @@ exports.delete_user_wishlist = async (req, res) => {
 		const rows = await queryDatabase(deleteQuery, values);
 		sqlResult = rows;
 	} catch (err) {
-		console.log("Database post error: ", err);
-		return {
-			statusCode: 501,
-			body: err,
+		console.log("delete_user_whishlist에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "Database post error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	console.log("result : ", sqlResult);
@@ -67,11 +37,11 @@ exports.delete_user_wishlist = async (req, res) => {
 
 	//-------- return result --------------------------------------------------------------------------------------//
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify({
-			accessToken: returnToken,
-			data: retData,
-		}),
+	const return_body = {
+		success: true,
+		data: retData,
+		message: "success",
+		returnToken,
 	};
+	return res.status(200).send(return_body);
 };

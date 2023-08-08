@@ -2,44 +2,11 @@ const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
 exports.post_user_wishlist = async (req, res) => {
-	const headers = req.headers;
 	const body = req.body;
+	const id = req.id;
+	const returnToken = req.returnToken;
 
 	const productId = body.productId;
-	const authorization = headers.authorization;
-	const [accessToken, refreshToken] = authorization.split(",");
-
-	//-------- check token & get user id --------------------------------------------------------------------------------------//
-
-	let tokenCheck;
-	let returnBody;
-	let id;
-
-	try {
-		tokenCheck = await checkToken(accessToken, refreshToken);
-		returnBody = JSON.parse(tokenCheck.body);
-		id = returnBody.tokenData.id;
-	} catch (error) {
-		//return invalid when token is invalid
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	//return invalid when token is invalid
-	if (tokenCheck.statusCode !== 200) {
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	const returnToken = returnBody.accessToken;
-
-	//console.log("id : ", id);
 
 	//-------- get product data & check --------------------------------------------------------------------------------------//
 
@@ -58,22 +25,26 @@ exports.post_user_wishlist = async (req, res) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult.insertId);
 	} catch (err) {
-		console.log("Database post error: ", err);
-		return {
-			statusCode: 501,
-			body: err,
+		console.log(" post_user_wishlist 에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "SQL error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	console.log("result : ", sqlResult);
 	const retData = sqlResult;
 
 	if (sqlResult.affectedRows === 0) {
-		console.log("deleted product or already exist in wishlist");
-		return {
-			statusCode: 502,
-			body: "deleted product or already exist in wishlist",
+		console.log(" post_user_wishlist 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "deleted product or already exist in wishlist",
 		};
+		return res.status(502).send(return_body);
 	}
 
 	//-------- add wishlist_count  --------------------------------------------------------------------------------------//
@@ -88,20 +59,22 @@ exports.post_user_wishlist = async (req, res) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log("SQL error: ", err);
-		return {
-			statusCode: 501,
-			body: "SQL error: ",
+		console.log(" post_user_wishlist 에서 에러가 발생했습니다.", err);
+		const return_body = {
+			success: false,
+			data: null,
+			message: "SQL error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	//-------- return result --------------------------------------------------------------------------------------//
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify({
-			accessToken: returnToken,
-			data: retData,
-		}),
+	const return_body = {
+		success: true,
+		data: retData,
+		message: "success",
+		returnToken,
 	};
+	return res.status(200).send(return_body);
 };
