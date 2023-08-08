@@ -30,7 +30,6 @@ exports.get_friend_search = async (req, res) => {
   }
 
   const returnToken = returnBody.accessToken;
-
   //main logic------------------------------------------------------------------------------------------------------------------//
 
   try {
@@ -40,7 +39,7 @@ exports.get_friend_search = async (req, res) => {
     if (typeof nick !== "string") {
       throw new Error("입력 오류: nick은 문자열이어야 합니다.");
     }
-
+    console.log(nick);
     // nick이 빈 문자열인지 확인
     if (nick.trim().length === 0) {
       throw new Error("입력 오류: nick은 빈 문자열이면 안 됩니다.");
@@ -53,10 +52,9 @@ exports.get_friend_search = async (req, res) => {
     const return_body = {
       success: true,
       data: rows,
-      message: "친구 검색 성공",
       returnToken,
     };
-    return res.status(200).send(return_body);
+    res.status(200).send(return_body);
   } catch (error) {
     console.log("에러 : ", error);
     if (
@@ -66,15 +64,12 @@ exports.get_friend_search = async (req, res) => {
       const return_body = {
         success: false,
         message: "잘못된 요청: " + error.message,
-        returnToken,
       };
       return res.status(400).send(return_body);
     } else {
-      console.log("get_friend_search에서 에러가 발생했습니다.");
       const return_body = {
         success: false,
         message: "내부 서버 오류",
-        returnToken,
       };
       return res.status(500).send(return_body);
     }

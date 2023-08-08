@@ -132,7 +132,7 @@ api.get("/get_friend_data", get_friend_data);
 
 api.get("/get_friend_event", get_friend_event);
 
-api.get("/get_friend_search", get_friend_search);
+api.get("/get_friend_search/:nick", get_friend_search);
 
 api.post("/post_friend_phonecheck", post_friend_phonecheck);
 

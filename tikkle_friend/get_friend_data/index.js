@@ -19,19 +19,13 @@ exports.get_friend_data = async (req, res) => {
   } catch (error) {
     //return invalid when token is invalid
     console.log("ERROR : the token value is null or invalid");
-    return {
-      statusCode: 410,
-      body: "login again",
-    };
+    return res.status(410).send({ success: false, message: "login again" });
   }
 
   //return invalid when token is invalid
   if (tokenCheck.statusCode !== 200) {
     console.log("ERROR : the token value is null or invalid");
-    return {
-      statusCode: 410,
-      body: "login again",
-    };
+    return res.status(410).send({ success: false, message: "login again" });
   }
 
   const returnToken = returnBody.accessToken;
@@ -39,13 +33,13 @@ exports.get_friend_data = async (req, res) => {
   try {
     //차단된 친구 목록
     let rows;
-    if (req.queryStrignParameters.mode === "block") {
+    if (req.params.mode === "block") {
       rows = await queryDatabase(
         "SELECT u.name, u.image, u.nick FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.relation_state_id = 3 AND fr.central_user_id = ?",
         [id]
       );
       //차단되지 않은 친구 목록
-    } else if (req.queryStrignParameters.mode === "unblock") {
+    } else if (req.params.mode === "unblock") {
       rows = await queryDatabase(
         "SELECT u.name, u.image, u.nick FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.relation_state_id != 3 AND fr.central_user_id = ?",
         [id]
@@ -60,33 +54,25 @@ exports.get_friend_data = async (req, res) => {
       // parameter잘못된 mode를 전송
       const return_body = {
         success: false,
-        data: "잘못된 mode",
+        message: "잘못된 mode",
       };
       console.log("잘못된 mode");
-      return {
-        statusCode: 400,
-        body: JSON.stringify(return_body),
-      };
+      return res.status(400).send(return_body);
     }
 
     const return_body = {
       success: true,
+      message: "친구 목록 조회 성공",
       data: rows,
       returnToken,
     };
-    return {
-      statusCode: 200,
-      body: JSON.stringify(return_body),
-    };
+    return res.status(200).send(return_body);
   } catch (err) {
     console.error("Failed to connect or execute query:", err);
     const return_body = {
       success: false,
-      data: err,
+      message: "서버 에러",
     };
-    return {
-      statusCode: 500,
-      body: JSON.stringify(return_body),
-    };
+    return res.status(500).send(return_body);
   }
 };
