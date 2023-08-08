@@ -2,10 +2,9 @@ const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
 exports.post_product_list = async (req, res) => {
-	const headers = req.headers;
 	const body = req.body;
-	const authorization = headers.authorization;
-	const [accessToken, refreshToken] = authorization.split(",");
+	const id = req.id;
+	const returnToken = req.returnToken;
 
 	const category_id = body.category_id;
 	let priceMin = body.priceMin;
@@ -24,11 +23,13 @@ exports.post_product_list = async (req, res) => {
 		!Number.isInteger(category_id) ||
 		category_id > 20
 	) {
-		console.log("ERROR : category_id value is null or invalid");
-		return {
-			statusCode: 401,
-			body: "category_id data error",
+		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "category_id value is null or invalid",
 		};
+		return res.status(401).send(return_body);
 	}
 
 	//check priceMin, priceMax
@@ -49,11 +50,13 @@ exports.post_product_list = async (req, res) => {
 		priceMax > 9999999999 ||
 		priceMax < 0
 	) {
-		console.log("ERROR : priceMin or priceMax value is null or invalid");
-		return {
-			statusCode: 402,
-			body: "price data error",
+		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "priceMin or priceMax value is null or invalid",
 		};
+		return res.status(402).send(return_body);
 	}
 
 	//check sortAttribute
@@ -63,11 +66,13 @@ exports.post_product_list = async (req, res) => {
 		sortAttribute.length > 30
 	) {
 		//return invalid
-		console.log("ERROR : sortAttribute value is null or invalid");
-		return {
-			statusCode: 403,
-			body: "sortAttribute data error",
+		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "sortAttribute value is null or invalid",
 		};
+		return res.status(403).send(return_body);
 	}
 	if (
 		sortAttribute != "sales_volume" &&
@@ -76,11 +81,13 @@ exports.post_product_list = async (req, res) => {
 		sortAttribute != "wishlist_count"
 	) {
 		//return invalid
-		console.log("ERROR : sortAttribute value is null or invalid");
-		return {
-			statusCode: 403,
-			body: "sortAttribute data error",
+		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "sortAttribute value is null or invalid",
 		};
+		return res.status(403).send(return_body);
 	}
 
 	//check sortWay
@@ -90,21 +97,25 @@ exports.post_product_list = async (req, res) => {
 		(sortWay !== "ASC" && sortWay !== "DESC")
 	) {
 		//return invalid
-		console.log("ERROR : sortWay value is null or invalid");
-		return {
-			statusCode: 405,
-			body: "sortWay data error",
+		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "sortWay value is null or invalid",
 		};
+		return res.status(405).send(return_body);
 	}
 
 	//check search
 	if (search && (typeof search !== "string" || search.length > 100)) {
 		//return invalid
-		console.log("ERROR : search value is invalid");
-		return {
-			statusCode: 406,
-			body: "search data error",
+		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "search value is invalid",
 		};
+		return res.status(406).send(return_body);
 	}
 
 	//check getNum
@@ -115,44 +126,14 @@ exports.post_product_list = async (req, res) => {
 		getNum < 0 ||
 		getNum > 100
 	) {
-		console.log("ERROR : getNum value is null or invalid");
-		return {
-			statusCode: 407,
-			body: "getNum data error",
+		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "getNum value is null or invalid",
 		};
+		return res.status(407).send(return_body);
 	}
-
-	//-------- check token & get user id --------------------------------------------------------------------------------------//
-
-	let tokenCheck;
-	let returnBody;
-	let id;
-
-	try {
-		tokenCheck = await checkToken(accessToken, refreshToken);
-		returnBody = JSON.parse(tokenCheck.body);
-		id = returnBody.tokenData.id;
-	} catch (error) {
-		//return invalid when token is invalid
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	//return invalid when token is invalid
-	if (tokenCheck.statusCode !== 200) {
-		console.log("ERROR : the token value is null or invalid");
-		return {
-			statusCode: 410,
-			body: "login again",
-		};
-	}
-
-	const returnToken = returnBody.accessToken;
-
-	//console.log("id : ", id);
 
 	//-------- check DB --------------------------------------------------------------------------------------//
 
@@ -188,22 +169,24 @@ exports.post_product_list = async (req, res) => {
 		sqlResult = rows;
 		console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log("SQL error: ", err);
-		return {
-			statusCode: 501,
-			body: "SQL error: ",
+		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "SQL error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	const retData = sqlResult;
 
 	//-------- return result --------------------------------------------------------------------------------------//
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify({
-			accessToken: returnToken,
-			data: retData,
-		}),
+	const return_body = {
+		success: true,
+		data: retData,
+		message: "success",
+		returnToken,
 	};
+	return res.status(200).send(return_body);
 };
