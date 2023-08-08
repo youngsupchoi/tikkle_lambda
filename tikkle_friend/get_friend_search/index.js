@@ -67,6 +67,7 @@ exports.get_friend_search = async (req, res) => {
       };
       return res.status(400).send(return_body);
     } else {
+      console.log("get_friend_search에서 에러가 발생했습니다.");
       const return_body = {
         success: false,
         message: "내부 서버 오류",
