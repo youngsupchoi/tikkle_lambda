@@ -8,11 +8,12 @@ exports.post_auth_IdDuplicationCheck = async (req, res) => {
 
 	if (!inputId || typeof inputId !== "string" || inputId.length > 30) {
 		//return invalid
-		console.log("ERROR : inputId value is null or invalid");
-		return {
-			statusCode: 401,
-			body: "input data again",
+		console.log(" post_auth_IdDuplicationCheck 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			message: "inputId value is null or invalid: input data again",
 		};
+		return res.status(401).send(return_body);
 	}
 
 	//---- check DB there is nick or not ----//
@@ -26,26 +27,33 @@ exports.post_auth_IdDuplicationCheck = async (req, res) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log("Database connection error: ", err);
-		return {
-			statusCode: 501,
-			body: err,
+		console.log(
+			" post_auth_IdDuplicationCheck 에서 에러가 발생했습니다 : ",
+			err
+		);
+		const return_body = {
+			success: false,
+			message: "Database connection error",
 		};
+		return res.status(501).send(return_body);
 	}
 
 	//---- return result ----//
 
 	if (sqlResult.length === 0) {
 		//no duplication
-		return {
-			statusCode: 200,
-			body: inputId,
+		const return_body = {
+			success: true,
+			data: inputId,
+			message: "no duplication",
 		};
+		return res.status(200).send(return_body);
 	} else {
 		//duplication
-		return {
-			statusCode: 201,
-			body: "Duplicate ID",
+		const return_body = {
+			success: true,
+			message: "Duplicate ID",
 		};
+		return res.status(201).send(return_body);
 	}
 };
