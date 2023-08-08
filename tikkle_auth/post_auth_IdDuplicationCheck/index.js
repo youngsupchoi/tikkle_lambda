@@ -1,7 +1,7 @@
 const { queryDatabase } = require("db.js");
 
-exports.post_auth_IdDuplicationCheck = async (event) => {
-	const body = event.body;
+exports.post_auth_IdDuplicationCheck = async (req) => {
+	const body = req.body;
 	const inputId = body.inputId;
 
 	//---- check id format ----//

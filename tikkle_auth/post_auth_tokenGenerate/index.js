@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const { queryDatabase } = require("db.js");
 const { getSSMParameter } = require("ssm.js");
 
-exports.post_auth_tokenGenerate = async (event) => {
-	const body = event.body;
+exports.post_auth_tokenGenerate = async (req) => {
+	const body = req.body;
 	const userId = body.id;
 
 	//---- check user id ----//

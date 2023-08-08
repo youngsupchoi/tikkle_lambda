@@ -1,9 +1,9 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.post_notification_send = async (event) => {
-	const body = event.body;
-	const headers = event.headers;
+exports.post_notification_send = async (req) => {
+	const body = req.body;
+	const headers = req.headers;
 
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");

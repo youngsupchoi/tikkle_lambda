@@ -1,7 +1,7 @@
 const { checkToken } = require("token.js");
 
-exports.get_auth_checkToken = async (event) => {
-	const headers = event.headers;
+exports.get_auth_checkToken = async (req) => {
+	const headers = req.headers;
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");
 

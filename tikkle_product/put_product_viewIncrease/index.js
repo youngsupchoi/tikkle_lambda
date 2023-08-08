@@ -1,9 +1,9 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.put_product_viewIncrease = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.put_product_viewIncrease = async (req) => {
+	const headers = req.headers;
+	const body = req.body;
 
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");

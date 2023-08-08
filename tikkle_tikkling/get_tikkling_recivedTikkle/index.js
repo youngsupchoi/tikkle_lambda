@@ -1,8 +1,8 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
-exports.get_tikkling_recivedTikkle = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.get_tikkling_recivedTikkle = async (req) => {
+	const headers = req.headers;
+	const body = req.body;
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");
 
@@ -41,7 +41,7 @@ exports.get_tikkling_recivedTikkle = async (event) => {
 		//티클링 종료
 		const rows = await queryDatabase(
 			"SELECT * FROM sending_tikkle WHERE tikkling_id = ?;",
-			[event.body.tikkling_id]
+			[req.body.tikkling_id]
 		);
 
 		const return_body = {

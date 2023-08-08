@@ -4,9 +4,9 @@ const { getSSMParameter } = require("ssm.js");
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3();
 
-exports.get_image_deleteProfile = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.get_image_deleteProfile = async (req) => {
+	const headers = req.headers;
+	const body = req.body;
 
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");

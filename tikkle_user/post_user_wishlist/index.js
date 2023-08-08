@@ -1,9 +1,9 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.post_user_wishlist = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.post_user_wishlist = async (req) => {
+	const headers = req.headers;
+	const body = req.body;
 
 	const productId = body.productId;
 	const authorization = headers.authorization;

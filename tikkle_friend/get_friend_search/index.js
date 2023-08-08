@@ -1,9 +1,9 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.get_friend_search = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.get_friend_search = async (req) => {
+	const headers = req.headers;
+	const body = req.body;
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");
 
@@ -41,7 +41,7 @@ exports.get_friend_search = async (event) => {
 
 	try {
 		// body에서 nick을 추출하고 문자열인지 확인
-		const nick = event.queryStrignParameters.nick;
+		const nick = req.queryStrignParameters.nick;
 
 		if (typeof nick !== "string") {
 			throw new Error("입력 오류: nick은 문자열이어야 합니다.");

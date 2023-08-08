@@ -1,7 +1,7 @@
 const { queryDatabase } = require("db.js");
 
-exports.post_auth_registerUser = async (event) => {
-	const body = event.body;
+exports.post_auth_registerUser = async (req) => {
+	const body = req.body;
 
 	const name = body.name;
 	const birthday = body.birthday;

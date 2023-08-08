@@ -1,8 +1,8 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
-exports.put_tikkling_end = async (event) => {
-	const headers = event.headers;
-	const body = event.body;
+exports.put_tikkling_end = async (req) => {
+	const headers = req.headers;
+	const body = req.body;
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");
 
@@ -41,14 +41,14 @@ exports.put_tikkling_end = async (event) => {
 		//도착한 티클링 조각이 있는지 확인
 		const tikkle = await queryDatabase(
 			"SELECT * FROM sending_tikkle WHERE tikkling_id = ?",
-			[event.body.tikkling_id]
+			[req.body.tikkling_id]
 		);
 		const next_tikkle_state = tikkle.length == 0 ? 2 : 3;
 
 		//티클링 종료
 		const rows = await queryDatabase(
 			"UPDATE tikkling SET state_id = ? WHERE id = ?;",
-			[next_tikkle_state, event.body.tikkling_id]
+			[next_tikkle_state, req.body.tikkling_id]
 		);
 		const end_state =
 			next_tikkle_state == 2 ? "시작 전 종료" : "완료되기 전 종료";

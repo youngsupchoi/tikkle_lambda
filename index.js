@@ -301,6 +301,6 @@ api.post("/post_user_wishlist", async (req, res) => {
 
 //-------- handler ------------------------------------------------//
 
-exports.handler = async (event, context) => {
-	return await api.run(event, context);
+exports.handler = async (req, context) => {
+	return await api.run(req, context);
 };

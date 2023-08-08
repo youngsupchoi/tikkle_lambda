@@ -1,11 +1,11 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
-exports.put_friend_block = async (event) => {
+exports.put_friend_block = async (req) => {
 	//재설정하고자 하는 친구의 user_id
-	const target_friend_id = event.body.friend_id;
+	const target_friend_id = req.body.friend_id;
 
-	const headers = event.headers;
-	const body = event.body;
+	const headers = req.headers;
+	const body = req.body;
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");
 

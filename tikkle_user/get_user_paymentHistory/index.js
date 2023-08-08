@@ -1,9 +1,9 @@
 const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
-exports.get_user_paymentHistory = async (event) => {
-	const headers = event.headers;
-	//const body = event.body;
+exports.get_user_paymentHistory = async (req) => {
+	const headers = req.headers;
+	//const body = req.body;
 	const authorization = headers.authorization;
 	const [accessToken, refreshToken] = authorization.split(",");
 
