@@ -128,15 +128,15 @@ api.post("/post_auth_tokenGenerate", post_auth_tokenGenerate);
 
 //------- friend
 
-api.get("/get_friend_data/:mode", get_friend_data);
+api.get("/get_friend_data/:mode", authtoken, get_friend_data);
 
-api.get("/get_friend_event", get_friend_event);
+api.get("/get_friend_event", authtoken, get_friend_event);
 
-api.get("/get_friend_search/:nick", get_friend_search);
+api.get("/get_friend_search/:nick", authtoken, get_friend_search);
 
-api.post("/post_friend_phonecheck", post_friend_phonecheck);
+api.post("/post_friend_phonecheck", authtoken, post_friend_phonecheck);
 
-api.put("/put_friend_block", put_friend_block);
+api.put("/put_friend_block", authtoken, put_friend_block);
 
 //
 
@@ -168,15 +168,19 @@ api.put("/put_product_viewIncrease", authtoken, put_product_viewIncrease);
 //
 
 //------- tikkling
-api.get("/get_tikkling_friendinfo", get_tikkling_friendinfo);
+api.get("/get_tikkling_friendinfo", authtoken, get_tikkling_friendinfo);
 
-api.get("/get_tikkling_info/:tikkling_id", get_tikkling_info);
+api.get("/get_tikkling_info/:tikkling_id", authtoken, get_tikkling_info);
 
-api.post("/post_tikkling_receivedTikkle", post_tikkling_receivedTikkle);
+api.post(
+  "/post_tikkling_receivedTikkle",
+  authtoken,
+  post_tikkling_receivedTikkle
+);
 
-api.post("/post_tikkling_create", post_tikkling_create);
+api.post("/post_tikkling_create", authtoken, post_tikkling_create);
 
-api.put("/put_tikkling_end", put_tikkling_end);
+api.put("/put_tikkling_end", authtoken, put_tikkling_end);
 
 //
 
