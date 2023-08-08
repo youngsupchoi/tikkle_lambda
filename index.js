@@ -128,7 +128,7 @@ api.post("/post_auth_tokenGenerate", post_auth_tokenGenerate);
 
 //------- friend
 
-api.get("/get_friend_data", get_friend_data);
+api.get("/get_friend_data/:mode", get_friend_data);
 
 api.get("/get_friend_event", get_friend_event);
 

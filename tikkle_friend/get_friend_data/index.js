@@ -29,6 +29,7 @@ exports.get_friend_data = async (req, res) => {
   }
 
   const returnToken = returnBody.accessToken;
+  //main logic------------------------------------------------------------------------------------------------------------------//
 
   try {
     //차단된 친구 목록
