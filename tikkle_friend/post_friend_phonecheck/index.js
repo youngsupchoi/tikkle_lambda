@@ -2,34 +2,10 @@ const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
 exports.post_friend_phonecheck = async (event) => {
-  const headers = event.headers;
-  const body = event.body;
-  const authorization = headers.authorization;
-  const [accessToken, refreshToken] = authorization.split(",");
+  const body = req.body;
+  const id = req.id;
+  const returnToken = req.returnToken;
 
-  //-------- check token & get user id --------------------------------------------------------------------------------------//
-
-  let tokenCheck;
-  let returnBody;
-  let id;
-
-  try {
-    tokenCheck = await checkToken(accessToken, refreshToken);
-    returnBody = JSON.parse(tokenCheck.body);
-    id = returnBody.tokenData.id;
-  } catch (error) {
-    //return invalid when token is invalid
-    console.log("ERROR : the token value is null or invalid");
-    return res.status(410).send({ success: false, message: "login again" });
-  }
-
-  //return invalid when token is invalid
-  if (tokenCheck.statusCode !== 200) {
-    console.log("ERROR : the token value is null or invalid");
-    return res.status(410).send({ success: false, message: "login again" });
-  }
-
-  const returnToken = returnBody.accessToken;
   //main logic------------------------------------------------------------------------------------------------------------------//
   try {
     // phone_list가 문자열 배열인지 확인
