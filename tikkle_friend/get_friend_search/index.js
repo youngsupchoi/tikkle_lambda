@@ -54,7 +54,7 @@ exports.get_friend_search = async (req, res) => {
       data: rows,
       returnToken,
     };
-    res.status(200).send(return_body);
+    return res.status(200).send(return_body);
   } catch (error) {
     console.log("에러 : ", error);
     if (
