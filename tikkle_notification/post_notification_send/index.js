@@ -163,7 +163,7 @@ exports.post_notification_send = async (event) => {
 		statusCode: 200,
 		body: JSON.stringify({
 			returnToken: returnToken,
-			message: "sign up success!",
+			message: "notification success!",
 		}),
 	};
 };
