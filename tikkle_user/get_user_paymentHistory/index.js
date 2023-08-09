@@ -1,5 +1,4 @@
 const { queryDatabase } = require("db.js");
-const { checkToken } = require("token.js");
 
 exports.get_user_paymentHistory = async (req, res) => {
 	const body = req.body;
