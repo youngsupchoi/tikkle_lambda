@@ -1,4 +1,3 @@
-const { queryDatabase } = require("db.js");
 const { checkToken } = require("token.js");
 
 exports.authtoken = async (req, res, next) => {

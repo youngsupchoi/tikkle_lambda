@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const { checkToken } = require("token.js");
+
 const { getSSMParameter } = require("ssm.js");
 
 exports.get_image_profileSaveUrl = async (req, res) => {
@@ -28,10 +28,7 @@ exports.get_image_profileSaveUrl = async (req, res) => {
 	try {
 		url = await s3.getSignedUrl("putObject", params);
 	} catch (error) {
-		console.log(
-			" get_image_profileSaveUrl 에서 에러가 발생했습니다.",
-			error
-		);
+		console.log(" get_image_profileSaveUrl 에서 에러가 발생했습니다.", error);
 		const return_body = {
 			success: false,
 			data: null,

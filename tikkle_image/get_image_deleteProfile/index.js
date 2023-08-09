@@ -1,5 +1,5 @@
 const { queryDatabase } = require("db.js");
-const { checkToken } = require("token.js");
+
 const { getSSMParameter } = require("ssm.js");
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3();
@@ -46,10 +46,7 @@ exports.get_image_deleteProfile = async (req, res) => {
 
 		console.log("Src Object deleted successfully");
 	} catch (error) {
-		console.log(
-			" get_image_deleteProfile 에서 에러가 발생했습니다.",
-			error
-		);
+		console.log(" get_image_deleteProfile 에서 에러가 발생했습니다.", error);
 		const return_body = {
 			success: false,
 			data: null,
@@ -77,10 +74,7 @@ exports.get_image_deleteProfile = async (req, res) => {
 
 			console.log("Object deleted successfully", imageSize[i]);
 		} catch (error) {
-			console.log(
-				" get_image_deleteProfile 에서 에러가 발생했습니다.",
-				error
-			);
+			console.log(" get_image_deleteProfile 에서 에러가 발생했습니다.", error);
 			const return_body = {
 				success: false,
 				data: null,

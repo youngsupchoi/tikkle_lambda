@@ -1,5 +1,4 @@
 const { queryDatabase } = require("db.js");
-const { checkToken } = require("token.js");
 
 exports.post_product_info = async (req, res) => {
 	const body = req.body;
@@ -13,10 +12,9 @@ exports.post_product_info = async (req, res) => {
 	let sqlResult;
 
 	try {
-		const rows = await queryDatabase(
-			"select * from products where id = ?",
-			[productId]
-		);
+		const rows = await queryDatabase("select * from products where id = ?", [
+			productId,
+		]);
 		sqlResult = rows;
 		console.log("SQL result : ", sqlResult);
 	} catch (err) {
