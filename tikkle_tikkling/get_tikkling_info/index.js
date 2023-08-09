@@ -1,15 +1,15 @@
 const { queryDatabase } = require("db.js");
 
 exports.get_tikkling_info = async (req, res) => {
-  const body = req.body;
-  const id = req.id;
-  const returnToken = req.returnToken;
+	const body = req.body;
+	const id = req.id;
+	const returnToken = req.returnToken;
 
-  //main logic------------------------------------------------------------------------------------------------------------------//
+	//main logic------------------------------------------------------------------------------------------------------------------//
 
-  try {
-    // 쿼리 스트링 파라미터에서 tikkling_id를 추출, 숫자인지 확인
-    const tikkling_id = req.params ? req.params.tikkling_id : null;
+	try {
+		// 쿼리 스트링 파라미터에서 tikkling_id를 추출, 숫자인지 확인
+		const tikkling_id = req.params ? req.params.tikkling_id : null;
 
     if (!tikkling_id) {
       //tikkling_id 파라미터가 없을 경우 자신의 tikkling 정보를 DB에서 조회
@@ -64,4 +64,5 @@ exports.get_tikkling_info = async (req, res) => {
       return res.status(500).send({ success: false, message: "서버 오류" });
     }
   }
+
 };
