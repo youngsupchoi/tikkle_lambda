@@ -1,5 +1,4 @@
 const { queryDatabase } = require("db.js");
-const { checkToken } = require("token.js");
 
 exports.get_user_myWishlist = async (req, res) => {
 	const body = req.body;
@@ -12,9 +11,11 @@ exports.get_user_myWishlist = async (req, res) => {
 
 	try {
 		const rows = await queryDatabase(
-			"SELECT * FROM user_wish_list " +
-				"INNER JOIN products ON user_wish_list.product_id = products.id " +
-				"WHERE user_wish_list.user_id = ?",
+			`SELECT user_wish_list.*, products.*, brands.brand_name
+				FROM user_wish_list
+				INNER JOIN products ON user_wish_list.product_id = products.id
+				INNER JOIN brands ON products.brand_id = brands.id
+				WHERE user_wish_list.user_id = ?`,
 			[id]
 		);
 		sqlResult = rows;
