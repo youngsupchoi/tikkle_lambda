@@ -9,7 +9,7 @@ exports.post_tikkling_receivedTikkle = async (req, res) => {
 
   try {
     const rows = await queryDatabase(
-      "SELECT * FROM sending_tikkle WHERE tikkling_id = ?;",
+      "SELECT sending_tikkle.*, users.id, users.name, users.image FROM sending_tikkle inner join users on sending_tikkle.user_id = users.id WHERE sending_tikkle.tikkling_id = ?;",
       [body.tikkling_id]
     );
 

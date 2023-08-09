@@ -44,7 +44,8 @@ exports.get_tikkling_info = async (req, res) => {
       const return_body = {
         success: true,
         data: rows,
-        message: `$tikkling_id = {tikkling_id}의 티클링 정보 조회 성공`,
+        message: `tikkling_id = ${tikkling_id}의 티클링 정보 조회 성공`,
+        returnToken,
       };
       return res.status(200).send(return_body);
     }
