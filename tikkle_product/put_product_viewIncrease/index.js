@@ -1,5 +1,4 @@
 const { queryDatabase } = require("db.js");
-const { checkToken } = require("token.js");
 
 exports.put_product_viewIncrease = async (req, res) => {
 	const body = req.body;

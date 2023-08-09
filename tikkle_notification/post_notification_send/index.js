@@ -1,5 +1,4 @@
 const { queryDatabase } = require("db.js");
-const { checkToken } = require("token.js");
 
 exports.post_notification_send = async (req, res) => {
 	const body = req.body;
@@ -12,10 +11,7 @@ exports.post_notification_send = async (req, res) => {
 	//-------- check data format --------------------------------------------------------------------------------------//
 
 	if (
-		!(
-			typeof receive_user_id === "number" &&
-			Number.isInteger(receive_user_id)
-		)
+		!(typeof receive_user_id === "number" && Number.isInteger(receive_user_id))
 	) {
 		//return invalid
 		console.log(" post_notification_send 에서 에러가 발생했습니다.", err);
