@@ -141,25 +141,31 @@ exports.post_product_list = async (req, res) => {
 		let rows;
 		if (!search) {
 			rows = await queryDatabase(
-				`SELECT * 
-				FROM products
-				WHERE category_id = ?
-				AND price BETWEEN ? AND ?
-				AND is_deleted = 0
-				ORDER BY ${sortAttribute} ${sortWay}
-				LIMIT 20 OFFSET ? ;`,
+				`	SELECT p.*, b.brand_name, pc.name
+					FROM products p
+					INNER JOIN brands b ON p.brand_id = b.id
+					INNER JOIN product_category pc ON p.category_id = pc.id
+					WHERE p.category_id = ?
+						AND p.price BETWEEN ? AND ?
+						AND p.is_deleted = 0
+					ORDER BY ${sortAttribute} ${sortWay}
+					LIMIT 20 OFFSET ?;
+				`,
 				[category_id, priceMin, priceMax, (getNum - 1) * 20]
 			);
 		} else {
 			rows = await queryDatabase(
-				`SELECT * 
-			FROM products
-			WHERE category_id = ?
-			AND price BETWEEN ? AND ?
-			AND is_deleted = 0
-			AND (name LIKE '%${search}%' OR description LIKE '%${search}%')
-			ORDER BY ${sortAttribute} ${sortWay}
-			LIMIT 20 OFFSET ? ;`,
+				` SELECT p.*, b.brand_name, pc.name
+					FROM products p
+					INNER JOIN brands b ON p.brand_id = b.id
+					INNER JOIN product_category pc ON p.category_id = pc.id
+					WHERE p.category_id = ?
+						AND p.price BETWEEN ? AND ?
+						AND p.is_deleted = 0
+						AND (p.name  LIKE '%${search}%' OR description LIKE '%${search}%')
+					ORDER BY ${sortAttribute} ${sortWay}
+					LIMIT 20 OFFSET ?;
+				`,
 				[category_id, priceMin, priceMax, (getNum - 1) * 20]
 			);
 		}

@@ -8,11 +8,11 @@
 	"queryStringParameters": null,
 	"body": {
 		"category_id": 1,
-		"priceMin": 0,
+		"priceMin": null,
 		"priceMax": null,
 		"sortAttribute": "price",
 		"sortWay": "DESC",
 		"search": null,
-		"getNum": 2
+		"getNum": 1
 	}
 }
