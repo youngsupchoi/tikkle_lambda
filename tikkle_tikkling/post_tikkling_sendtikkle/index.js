@@ -64,7 +64,7 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
         message: "티클을 보낼 수 없습니다. (줄 수 있는 티클링 조각 수 초과)",
         returnToken,
       };
-      return res.status(403).send(return_body);
+      return res.status(400).send(return_body);
     }
   } catch (err) {
     console.error("Failed to connect or execute query:", err);
