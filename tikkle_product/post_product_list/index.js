@@ -141,7 +141,7 @@ exports.post_product_list = async (req, res) => {
 		let rows;
 		if (!search) {
 			rows = await queryDatabase(
-				`	SELECT p.*, b.brand_name, pc.name
+				`	SELECT p.*, b.brand_name, pc.name AS cat_name
 					FROM products p
 					INNER JOIN brands b ON p.brand_id = b.id
 					INNER JOIN product_category pc ON p.category_id = pc.id
@@ -155,7 +155,7 @@ exports.post_product_list = async (req, res) => {
 			);
 		} else {
 			rows = await queryDatabase(
-				` SELECT p.*, b.brand_name, pc.name
+				` SELECT p.*, b.brand_name, pc.name AS cat_name
 					FROM products p
 					INNER JOIN brands b ON p.brand_id = b.id
 					INNER JOIN product_category pc ON p.category_id = pc.id
