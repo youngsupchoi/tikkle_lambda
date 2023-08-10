@@ -88,7 +88,9 @@ const {
 const {
   put_tikkling_end,
 } = require("./tikkle_tikkling/put_tikkling_end/index.js");
-
+const {
+  post_tikkling_sendtikkle,
+} = require("./tikkle_tikkling/post_tikkling_sendtikkle/index.js");
 //user
 const {
   delete_user_wishlist,
@@ -182,6 +184,7 @@ api.post("/post_tikkling_create", authtoken, post_tikkling_create);
 
 api.put("/put_tikkling_end", authtoken, put_tikkling_end);
 
+api.post("/post_tikkling_sendtikkle", authtoken, post_tikkling_sendtikkle);
 //
 
 //------- user
