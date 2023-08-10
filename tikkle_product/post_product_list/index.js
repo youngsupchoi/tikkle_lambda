@@ -122,8 +122,7 @@ exports.post_product_list = async (req, res) => {
 		!getNum ||
 		typeof getNum !== "number" ||
 		!Number.isInteger(getNum) ||
-		getNum < 0 ||
-		getNum > 100
+		getNum < 0
 	) {
 		console.log(" post_product_list 에서 에러가 발생했습니다.");
 		const return_body = {
@@ -148,8 +147,8 @@ exports.post_product_list = async (req, res) => {
 				AND price BETWEEN ? AND ?
 				AND is_deleted = 0
 				ORDER BY ${sortAttribute} ${sortWay}
-				LIMIT ? ;`,
-				[category_id, priceMin, priceMax, getNum]
+				LIMIT 20 OFFSET ? ;`,
+				[category_id, priceMin, priceMax, (getNum - 1) * 20]
 			);
 		} else {
 			rows = await queryDatabase(
@@ -160,15 +159,16 @@ exports.post_product_list = async (req, res) => {
 			AND is_deleted = 0
 			AND (name LIKE '%${search}%' OR description LIKE '%${search}%')
 			ORDER BY ${sortAttribute} ${sortWay}
-			LIMIT ? ;`,
-				[category_id, priceMin, priceMax, getNum]
+			LIMIT 20 OFFSET ? ;`,
+				[category_id, priceMin, priceMax, (getNum - 1) * 20]
 			);
 		}
 
 		sqlResult = rows;
 		console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		console.log(err);
+		console.log(" post_product_list 에서 에러가 발생했습니다.\n", err);
 		const return_body = {
 			success: false,
 			data: null,
