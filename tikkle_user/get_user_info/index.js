@@ -38,7 +38,7 @@ exports.get_user_info = async (req, res) => {
 
 	const return_body = {
 		success: true,
-		data: retData[0],
+		data: sqlResult[0],
 		message: "success",
 		returnToken,
 	};
