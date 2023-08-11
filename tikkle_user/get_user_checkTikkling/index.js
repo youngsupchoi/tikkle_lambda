@@ -38,17 +38,36 @@ exports.get_user_checkTikkling = async (req, res) => {
 	const is_tikkling = sqlResult[0].is_tikkling;
 	// console.log('is tikkling : ',is_tikkling);
 
-	//-------- return result --------------------------------------------------------------------------------------//
+	//-------- if tikkling --------------------------------------------------------------------------------------//
 	if (is_tikkling === 1) {
+		try {
+			const rows = await queryDatabase(
+				"SELECT * FROM tikkling WHERE user_id = ? AND state_id = 1;",
+				[id]
+			);
+			sqlResult = rows;
+		} catch (err) {
+			console.log("get_user_checkTikkling에서 에러가 발생했습니다.", err);
+			const return_body = {
+				success: false,
+				data: null,
+				message: "SQL error",
+			};
+			return res.status(501).send(return_body);
+		}
+
+		const tikklingId = sqlResult[0].id;
+
 		const return_body = {
 			success: true,
-			data: is_tikkling,
+			data: tikklingId,
 			message: "success",
 			returnToken,
 		};
 		return res.status(201).send(return_body);
 	}
 
+	//-------- return --------------------------------------------------------------------------------------//
 	const return_body = {
 		success: true,
 		data: is_tikkling,
