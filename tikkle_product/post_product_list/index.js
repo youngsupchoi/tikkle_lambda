@@ -1,5 +1,4 @@
 const { queryDatabase } = require("db.js");
-const { checkToken } = require("token.js");
 
 exports.post_product_list = async (req, res) => {
 	const body = req.body;
@@ -123,8 +122,7 @@ exports.post_product_list = async (req, res) => {
 		!getNum ||
 		typeof getNum !== "number" ||
 		!Number.isInteger(getNum) ||
-		getNum < 0 ||
-		getNum > 100
+		getNum < 0
 	) {
 		console.log(" post_product_list 에서 에러가 발생했습니다.");
 		const return_body = {
@@ -143,33 +141,40 @@ exports.post_product_list = async (req, res) => {
 		let rows;
 		if (!search) {
 			rows = await queryDatabase(
-				`SELECT * 
-				FROM products
-				WHERE category_id = ?
-				AND price BETWEEN ? AND ?
-				AND is_deleted = 0
-				ORDER BY ${sortAttribute} ${sortWay}
-				LIMIT ? ;`,
-				[category_id, priceMin, priceMax, getNum]
+				`	SELECT p.*, b.brand_name, pc.name AS cat_name
+					FROM products p
+					INNER JOIN brands b ON p.brand_id = b.id
+					INNER JOIN product_category pc ON p.category_id = pc.id
+					WHERE p.category_id = ?
+						AND p.price BETWEEN ? AND ?
+						AND p.is_deleted = 0
+					ORDER BY ${sortAttribute} ${sortWay}
+					LIMIT 20 OFFSET ?;
+				`,
+				[category_id, priceMin, priceMax, (getNum - 1) * 20]
 			);
 		} else {
 			rows = await queryDatabase(
-				`SELECT * 
-			FROM products
-			WHERE category_id = ?
-			AND price BETWEEN ? AND ?
-			AND is_deleted = 0
-			AND (name LIKE '%${search}%' OR description LIKE '%${search}%')
-			ORDER BY ${sortAttribute} ${sortWay}
-			LIMIT ? ;`,
-				[category_id, priceMin, priceMax, getNum]
+				` SELECT p.*, b.brand_name, pc.name AS cat_name
+					FROM products p
+					INNER JOIN brands b ON p.brand_id = b.id
+					INNER JOIN product_category pc ON p.category_id = pc.id
+					WHERE p.category_id = ?
+						AND p.price BETWEEN ? AND ?
+						AND p.is_deleted = 0
+						AND (p.name  LIKE '%${search}%' OR description LIKE '%${search}%')
+					ORDER BY ${sortAttribute} ${sortWay}
+					LIMIT 20 OFFSET ?;
+				`,
+				[category_id, priceMin, priceMax, (getNum - 1) * 20]
 			);
 		}
 
 		sqlResult = rows;
 		console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		console.log(err);
+		console.log(" post_product_list 에서 에러가 발생했습니다.\n", err);
 		const return_body = {
 			success: false,
 			data: null,

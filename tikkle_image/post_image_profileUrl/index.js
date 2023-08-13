@@ -1,4 +1,3 @@
-const { checkToken } = require("token.js");
 const { queryDatabase } = require("db.js");
 
 exports.post_image_profileUrl = async (req, res) => {

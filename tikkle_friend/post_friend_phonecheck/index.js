@@ -1,7 +1,6 @@
 const { queryDatabase } = require("db.js");
-const { checkToken } = require("token.js");
 
-exports.post_friend_phonecheck = async (event) => {
+exports.post_friend_phonecheck = async (req, res) => {
   const body = req.body;
   const id = req.id;
   const returnToken = req.returnToken;

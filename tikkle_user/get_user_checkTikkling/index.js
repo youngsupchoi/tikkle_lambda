@@ -1,5 +1,4 @@
 const { queryDatabase } = require("db.js");
-const { checkToken } = require("token.js");
 
 exports.get_user_checkTikkling = async (req, res) => {
 	const body = req.body;
@@ -12,9 +11,7 @@ exports.get_user_checkTikkling = async (req, res) => {
 	let sqlResult;
 
 	try {
-		const rows = await queryDatabase("select * from users where id = ?", [
-			id,
-		]);
+		const rows = await queryDatabase("select * from users where id = ?", [id]);
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {

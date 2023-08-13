@@ -1,0 +1,10 @@
+{
+	"resource": "/get_user_myWishlist",
+	"path": "/get_user_myWishlist",
+	"httpMethod": "GET",
+	"headers": {
+		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjkwNDQzNTAxLCJleHAiOjE2OTA0NDQ0MDEsImlzcyI6IkxpRm9saSJ9.X09845lp7oKh9b61N6eAFJXaNjp-4qZLx_9Ybw1cRDc,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjkwNDQzNTAxLCJleHAiOjE2OTMwMzU1MDEsImlzcyI6IkxpRm9saSJ9.EMBAjUGMp0GIqJ2P90Gy5bRg_X5yv4TbyQRvOeGapzs"
+	},
+	"queryStringParameters": null,
+	"body": "{}"
+}

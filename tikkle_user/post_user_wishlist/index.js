@@ -1,5 +1,4 @@
 const { queryDatabase } = require("db.js");
-const { checkToken } = require("token.js");
 
 exports.post_user_wishlist = async (req, res) => {
 	const body = req.body;
