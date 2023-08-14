@@ -1,19 +1,19 @@
 const { queryDatabase } = require("db.js");
 
 exports.get_tikkling_info = async (req, res) => {
-	const body = req.body;
-	const id = req.id;
-	const returnToken = req.returnToken;
+  const body = req.body;
+  const id = req.id;
+  const returnToken = req.returnToken;
 
-	//main logic------------------------------------------------------------------------------------------------------------------//
+  //main logic------------------------------------------------------------------------------------------------------------------//
 
-	try {
-		// 쿼리 스트링 파라미터에서 tikkling_id를 추출, 숫자인지 확인
-		const tikkling_id = req.params ? req.params.tikkling_id : null;
+  try {
+    // 쿼리 스트링 파라미터에서 tikkling_id를 추출, 숫자인지 확인
+    const tikkling_id = req.params ? req.params.tikkling_id : null;
 
-    if (!tikkling_id) {
+    if (tikkling_id === 0) {
       //tikkling_id 파라미터가 없을 경우 자신의 tikkling 정보를 DB에서 조회
-      const query = `SELECT users.id as user_id, users.name as user_name, view.id as tikkling_id, view.funding_limit, view.tikkle_quantity, view.tikkle_count, view.thumbnail_image, view.brand_name, view.name as product_name  FROM active_tikkling_view as view inner join users on view.user_id = users.id WHERE users.id = ?`;
+      const query = `SELECT users.id as user_id, users.name as user_name, view.id as tikkling_id, view.funding_limit, view.tikkle_quantity, view.tikkle_count, view.thumbnail_image, view.brand_name, view.product_name as product_name FROM active_tikkling_view as view inner join users on view.user_id = users.id WHERE users.id = ?`;
       const rows = await queryDatabase(query, [id]);
       if (rows.length === 0) {
         return res
@@ -34,7 +34,7 @@ exports.get_tikkling_info = async (req, res) => {
       }
 
       // tikkling_id와 일치하는 tikkling의 정보를 DB에서 조회(내가 아닌 유저)
-      const query = `SELECT users.id as user_id, users.name as user_name, view.id as tikkling_id, view.funding_limit, view.tikkle_quantity, view.tikkle_count, view.thumbnail_image, view.brand_name, view.name as product_name  FROM active_tikkling_view as view inner join users on view.user_id = users.id WHERE view.id = ?`;
+      const query = `SELECT users.id as user_id, users.name as user_name, view.id as tikkling_id, view.funding_limit, view.tikkle_quantity, view.tikkle_count, view.thumbnail_image, view.brand_name, view.product_name as product_name  FROM active_tikkling_view as view inner join users on view.user_id = users.id WHERE view.id = ?`;
       const rows = await queryDatabase(query, [parsedId]);
       if (rows.length === 0) {
         return res
@@ -64,5 +64,4 @@ exports.get_tikkling_info = async (req, res) => {
       return res.status(500).send({ success: false, message: "서버 오류" });
     }
   }
-
 };
