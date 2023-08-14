@@ -32,10 +32,9 @@ exports.post_auth_phoneCheck = async (req, res) => {
 	let sqlResult;
 
 	try {
-		const rows = await queryDatabase(
-			"select * from users where phone = ?",
-			[phone]
-		);
+		const rows = await queryDatabase("select * from users where phone = ?", [
+			phone,
+		]);
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
@@ -55,6 +54,7 @@ exports.post_auth_phoneCheck = async (req, res) => {
 		const return_body = {
 			success: true,
 			message: "login",
+			userId: sqlResult[0].id,
 		};
 		return res.status(200).send(return_body);
 	} else if (sqlResult.length === 0) {
