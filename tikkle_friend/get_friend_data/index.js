@@ -12,7 +12,7 @@ exports.get_friend_data = async (req, res) => {
     let rows;
     if (req.params.mode === "block") {
       rows = await queryDatabase(
-        "SELECT u.name, u.image, u.nick FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.relation_state_id = 3 AND fr.central_user_id = ?",
+        "SELECT u.id, u.name, u.image, u.nick FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.relation_state_id = 3 AND fr.central_user_id = ?",
         [id]
       );
       //차단되지 않은 친구 목록
