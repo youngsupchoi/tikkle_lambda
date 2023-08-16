@@ -13,7 +13,7 @@ exports.get_tikkling_info = async (req, res) => {
 
     if (tikkling_id === 0) {
       //tikkling_id 파라미터가 없을 경우 자신의 tikkling 정보를 DB에서 조회
-      const query = `SELECT users.id as user_id, users.name as user_name, view.id as tikkling_id, view.funding_limit, view.tikkle_quantity, view.tikkle_count, view.thumbnail_image, view.brand_name, view.product_name as product_name FROM active_tikkling_view as view inner join users on view.user_id = users.id WHERE users.id = ?`;
+      const query = `SELECT tikkling_info.*, product_category.name as category_name FROM (SELECT users.id as user_id, users.name as user_name, view.id as tikkling_id, view.funding_limit, view.tikkle_quantity, view.tikkle_count, view.thumbnail_image, view.brand_name, view.product_name, view.category_id FROM active_tikkling_view as view inner join users on view.user_id = users.id WHERE users.id = ?) AS tikkling_info, product_category where tikkling_info.category_id = product_category.id`;
       const rows = await queryDatabase(query, [id]);
       if (rows.length === 0) {
         return res
@@ -34,7 +34,7 @@ exports.get_tikkling_info = async (req, res) => {
       }
 
       // tikkling_id와 일치하는 tikkling의 정보를 DB에서 조회(내가 아닌 유저)
-      const query = `SELECT users.id as user_id, users.name as user_name, view.id as tikkling_id, view.funding_limit, view.tikkle_quantity, view.tikkle_count, view.thumbnail_image, view.brand_name, view.product_name as product_name  FROM active_tikkling_view as view inner join users on view.user_id = users.id WHERE view.id = ?`;
+      const query = `SELECT tikkling_info.*, product_category.name as category_name FROM (SELECT users.id as user_id, users.name as user_name, view.id as tikkling_id, view.funding_limit, view.tikkle_quantity, view.tikkle_count, view.thumbnail_image, view.brand_name, view.product_name, view.category_id FROM active_tikkling_view as view inner join users on view.user_id = users.id WHERE view.id = ?) AS tikkling_info, product_category where tikkling_info.category_id = product_category.id`;
       const rows = await queryDatabase(query, [parsedId]);
       if (rows.length === 0) {
         return res
