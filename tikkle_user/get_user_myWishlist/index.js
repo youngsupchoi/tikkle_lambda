@@ -13,7 +13,7 @@ exports.get_user_myWishlist = async (req, res) => {
 		const rows = await queryDatabase(
 			`SELECT user_wish_list.product_id, user_wish_list.created_at, 
 			products.name, products.price, products.description, products.sales_volume, products.quantity, products.category_id, products.created_at, products.views,
-			products.is_deleted, products.notice_info_id, products.wishlist_count, products.thumbnail_image, brands.brand_name
+			products.is_deleted, products.wishlist_count, products.thumbnail_image, brands.brand_name
 				FROM user_wish_list
 				INNER JOIN products ON user_wish_list.product_id = products.id
 				INNER JOIN brands ON products.brand_id = brands.id
