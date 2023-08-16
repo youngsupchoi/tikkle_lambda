@@ -28,9 +28,7 @@ exports.post_notification_send = async (req, res) => {
 	let sqlResult;
 
 	try {
-		const rows = await queryDatabase("select * from users where id = ?", [
-			receive_user_id,
-		]);
+		const rows = await queryDatabase("select * from users where id = ?", [id]);
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
