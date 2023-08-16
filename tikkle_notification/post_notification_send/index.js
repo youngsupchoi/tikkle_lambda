@@ -56,6 +56,11 @@ exports.post_notification_send = async (req, res) => {
 	//console.log("name : ", name);
 
 	//-------- check notification_type_id and make message --------------------------------------------------------------------------------------//
+	const meta_data = {};
+	meta_data["receive_user_id"] = receive_user_id;
+	meta_data["source_user_id"] = id;
+	meta_data["source_user_profile"] =
+		"https://d2da4yi19up8sp.cloudfront.net/profile/48/" + id + ".JPG";
 
 	let message;
 	let deep_link;
@@ -77,18 +82,15 @@ exports.post_notification_send = async (req, res) => {
 		message = "티끌링이 완료되어 배송이 시작되었어요.";
 		deep_link = "deeplink_for_6";
 		link = "link_for_6";
+		meta_data["receive_user_id"] = null;
+		meta_data["source_user_id"] = null;
+		meta_data["source_user_profile"] = null;
 	} else if (notification_type_id === 8) {
 		message = name + "님이 티클을 환불했어요.";
 		deep_link = "deeplink_for_8";
 		link = "link_for_8";
 	} else {
 	}
-
-	const meta_data = {};
-	meta_data["receive_user_id"] = receive_user_id;
-	meta_data["source_user_id"] = id;
-	meta_data["source_user_profile"] =
-		"https://d2da4yi19up8sp.cloudfront.net/profile/48/" + id + ".JPG";
 
 	//-------- add notification data to DB --------------------------------------------------------------------------------------//
 
