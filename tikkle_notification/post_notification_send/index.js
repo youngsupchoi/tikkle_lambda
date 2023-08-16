@@ -60,7 +60,7 @@ exports.post_notification_send = async (req, res) => {
 	meta_data["receive_user_id"] = receive_user_id;
 	meta_data["source_user_id"] = id;
 	meta_data["source_user_profile"] =
-		"https://d2da4yi19up8sp.cloudfront.net/profile/48/" + id + ".JPG";
+		"https://d2da4yi19up8sp.cloudfront.net/profile/128/" + id + ".JPG";
 
 	let message;
 	let deep_link;
