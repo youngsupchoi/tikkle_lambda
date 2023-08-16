@@ -93,6 +93,8 @@ exports.post_notification_send = async (req, res) => {
 	const meta_data = {};
 	meta_data["receive_user_id"] = receive_user_id;
 	meta_data["source_user_id"] = id;
+	meta_data["source_user_profile"] =
+		"https://d2da4yi19up8sp.cloudfront.net/profile/48/" + id + ".JPG";
 
 	//-------- add notification data to DB --------------------------------------------------------------------------------------//
 
