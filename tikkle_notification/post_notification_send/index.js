@@ -56,43 +56,41 @@ exports.post_notification_send = async (req, res) => {
 	//console.log("name : ", name);
 
 	//-------- check notification_type_id and make message --------------------------------------------------------------------------------------//
+	const meta_data = {};
+	meta_data["receive_user_id"] = receive_user_id;
+	meta_data["source_user_id"] = id;
+	meta_data["source_user_profile"] =
+		"https://d2da4yi19up8sp.cloudfront.net/profile/48/" + id + ".JPG";
 
 	let message;
 	let deep_link;
 	let link;
 
 	if (notification_type_id === 1) {
-		message = "새로운 친구, " + name + "님이 가입했어요!";
+		message = name + "님이 가입했어요.";
 		deep_link = "deeplink_for_1";
 		link = "link_for_1";
 	} else if (notification_type_id === 3) {
-		message =
-			name +
-			"님의 티클링이 시작되었습니다!\n어서 " +
-			name +
-			"님의 기념일을 축하해주세요";
+		message = name + "님의 티클링이 시작되었어요.";
 		deep_link = "deeplink_for_3";
 		link = "link_for_3";
 	} else if (notification_type_id === 5) {
-		message = name + "님으로부터 티클이 도착했어요~! \n어서 확인해보세요";
+		message = name + "님이 보낸 티클을 확인해보세요.";
 		deep_link = "deeplink_for_5";
 		link = "link_for_5";
 	} else if (notification_type_id === 6) {
-		message = "티클이 모두 모였습니다! 어서 상품을 수령하세요~";
+		message = "티끌링이 완료되어 배송이 시작되었어요.";
 		deep_link = "deeplink_for_6";
 		link = "link_for_6";
+		meta_data["receive_user_id"] = null;
+		meta_data["source_user_id"] = null;
+		meta_data["source_user_profile"] = null;
 	} else if (notification_type_id === 8) {
-		message = "아쉽게도 " + name + "님이 보낸 티클을 환불했습니다🥲";
+		message = name + "님이 티클을 환불했어요.";
 		deep_link = "deeplink_for_8";
 		link = "link_for_8";
 	} else {
 	}
-
-	const meta_data = {};
-	meta_data["receive_user_id"] = receive_user_id;
-	meta_data["source_user_id"] = id;
-	meta_data["source_user_profile"] =
-		"https://d2da4yi19up8sp.cloudfront.net/profile/48/" + id + ".JPG";
 
 	//-------- add notification data to DB --------------------------------------------------------------------------------------//
 
