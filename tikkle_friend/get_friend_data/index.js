@@ -12,13 +12,13 @@ exports.get_friend_data = async (req, res) => {
     let rows;
     if (req.params.mode === "block") {
       rows = await queryDatabase(
-        "SELECT u.id, u.name, u.image, u.nick, fr.relation_state_id FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.relation_state_id = 3 AND fr.central_user_id = ?",
+        "SELECT u.id, u.name, u.image, u.nick, fr.relation_state_id FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.relation_state_id = 3 AND fr.central_user_id = ? AND u.is_deleted = 0",
         [id]
       );
       //차단되지 않은 친구 목록
     } else if (req.params.mode === "unblock") {
       rows = await queryDatabase(
-        "SELECT u.id, u.name, u.image, u.nick, fr.relation_state_id FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.relation_state_id != 3 AND fr.central_user_id = ?",
+        "SELECT u.id, u.name, u.image, u.nick, fr.relation_state_id FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.relation_state_id != 3 AND fr.central_user_id = ? AND u.is_deleted = 0",
         [id]
       );
 
