@@ -37,6 +37,7 @@ exports.get_user_isNotice = async (req, res) => {
 		const return_body = {
 			success: true,
 			message: "No notification!",
+			data: { is_notification: false },
 			returnToken,
 		};
 		return res.status(200).send(return_body);
@@ -44,6 +45,7 @@ exports.get_user_isNotice = async (req, res) => {
 		const return_body = {
 			success: true,
 			message: "There is notification you should read!",
+			data: { is_notification: true },
 			returnToken,
 		};
 		return res.status(201).send(return_body);
