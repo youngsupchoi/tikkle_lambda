@@ -8,7 +8,7 @@
   "queryStringParameters": null,
   "body": {
     "tikkling_id": 5,
-    "tikkle_quantity": 30,
+    "tikkle_quantity":100,
     "message": "선물이지롱"
   }
 }
