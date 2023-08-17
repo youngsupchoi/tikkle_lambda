@@ -16,7 +16,7 @@ exports.put_tikkling_end = async (req, res) => {
 
     //티클링 종료
     const rows = await queryDatabase(
-      "UPDATE tikkling SET state_id = ? WHERE id = ?;",
+      "UPDATE tikkling SET state_id = ?, terminated_at = now() WHERE id = ?;",
       [next_tikkle_state, req.body.tikkling_id]
     );
     const end_state =
