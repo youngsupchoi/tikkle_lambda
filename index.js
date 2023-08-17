@@ -116,6 +116,7 @@ const {
 	get_user_isNotice,
 } = require("./tikkle_user/get_user_isNotice/index.js");
 const { put_user_address } = require("./tikkle_user/put_user_address/index.js");
+const { put_user_nick } = require("./tikkle_user/put_user_nick/index.js");
 
 //-------- API's ------------------------------------------------//
 
@@ -211,6 +212,8 @@ api.post("/post_user_wishlist", authtoken, post_user_wishlist);
 api.get("/get_user_isNotice", authtoken, get_user_isNotice);
 
 api.put("/put_user_address", authtoken, put_user_address);
+
+api.put("/put_user_nick", authtoken, put_user_nick);
 
 //
 
