@@ -61,7 +61,6 @@ exports.put_user_address = async (req, res) => {
 
 	const return_body = {
 		success: true,
-		data: sqlResult,
 		message: "success to update address",
 		returnToken,
 	};
