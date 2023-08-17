@@ -9,7 +9,7 @@ exports.get_tikkling_friendinfo = async (req, res) => {
 
   try {
     const rows = await queryDatabase(
-      "SELECT *  FROM active_tikkling_view  INNER JOIN (SELECT id as user_id, name as user_name, birthday, nick, phone, gender,              image as friend_image, address, detail_address, is_tikkling, device_token       FROM users       WHERE id IN           (SELECT friend_user_id   FROM friends_relation WHERE central_user_id = 5 and relation_state_id in (1, 2)) ) users ON active_tikkling_view.user_id = users.user_id;",
+      `SELECT * FROM active_tikkling_view  INNER JOIN (SELECT id as user_id, name as user_name, birthday, nick, phone, gender, image as friend_image, address, detail_address, is_tikkling, device_token FROM users WHERE id IN (SELECT friend_user_id FROM friends_relation WHERE central_user_id = 5 and relation_state_id in (1, 2)) ) users ON active_tikkling_view.user_id = users.user_id;`,
       [id]
     );
 
