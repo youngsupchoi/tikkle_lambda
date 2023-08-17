@@ -6,7 +6,7 @@ exports.post_auth_IdDuplicationCheck = async (req, res) => {
 
 	//---- check id format ----//
 
-	if (!inputId || typeof inputId !== "string" || inputId.length > 30) {
+	if (!inputId || typeof inputId !== "string" || inputId.length > 12) {
 		//return invalid
 		console.log(" post_auth_IdDuplicationCheck 에서 에러가 발생했습니다.");
 		const return_body = {
