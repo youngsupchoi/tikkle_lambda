@@ -40,31 +40,24 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
     }
     //줄 수 있는 상태라면 티클 전송
     const result = await queryDatabase(
-      "INSERT INTO sending_tikkle (tikkling_id, user_id, quantity, message) SELECT ? AS tikkling_id, ? AS user_id, ? AS quantity, ? AS message FROM tikkling WHERE id = ? AND ? + COALESCE((SELECT SUM(quantity) FROM sending_tikkle WHERE tikkling_id = ?), 0) <= tikkle_quantity;",
-      [
-        req.body.tikkling_id,
-        id,
-        req.body.tikkle_quantity,
-        req.body.message,
-        req.body.tikkling_id,
-        req.body.tikkle_quantity,
-        req.body.tikkling_id,
-      ]
+      `CALL insert_sending_tikkle(?, ?, ?, ?);`,
+      [req.body.tikkling_id, id, req.body.tikkle_quantity, req.body.message]
     );
-    if (result.affectedRows === 1) {
+    if (result.affectedRows === 0) {
       const return_body = {
         success: true,
         message: `티클 ${req.body.tikkle_quantity}개를 성공적으로 보냈습니다.`,
         returnToken,
       };
       return res.status(200).send(return_body);
-    } else if (result.affectedRows === 0) {
+    } else {
       const return_body = {
         success: false,
-        message: "티클을 보낼 수 없습니다. (줄 수 있는 티클링 조각 수 초과)",
+        message:
+          "티클전송중 타인이 먼저 티클전송을 하였습니다. 티클을 보낼 수 없습니다. (줄 수 있는 티클링 조각 수 초과 or 티클을 줄 수 있는 상태가 아닙니다.)",
         returnToken,
       };
-      return res.status(400).send(return_body);
+      return res.status(406).send(return_body);
     }
   } catch (err) {
     console.error("Failed to connect or execute query:", err);
