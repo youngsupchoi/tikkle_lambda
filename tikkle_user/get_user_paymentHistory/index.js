@@ -12,7 +12,7 @@ exports.get_user_paymentHistory = async (req, res) => {
 	try {
 		const rows = await queryDatabase(
 			`	SELECT st.id AS sending_id, st.created_at AS send_at, st.message, st.quantity AS send_quantity,
-								st.tikkling_id, t.funding_limit, t.created_at AS tikkling_created_at , t.tikkle_quantity, t.terminated_at AS tikkling_terminated_at,
+								st.tikkling_id, t.type AS tikkling_type ,t.funding_limit, t.created_at AS tikkling_created_at , t.tikkle_quantity, t.terminated_at AS tikkling_terminated_at,
 								t.state_id, ts.name AS state_name,
 								t.product_id, p.name AS product_name, p.price AS product_price, p.thumbnail_image AS product_image,
 								st.user_id AS receiver_id, u.name AS user_name, u.nick AS user_nick, u.image AS user_image
