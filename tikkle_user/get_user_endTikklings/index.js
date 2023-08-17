@@ -11,7 +11,7 @@ exports.get_user_endTikklings = async (req, res) => {
 
 	try {
 		const rows = await queryDatabase(
-			`SELECT tikkling.user_id, tikkling.funding_limit, tikkling.created_at, tikkling.tikkle_quantity, tikkling.terminated_at, tikkling.product_id, tikkling.terminated_at,
+			`SELECT tikkling.user_id, tikkling.type AS tikkling_type, tikkling.funding_limit, tikkling.created_at, tikkling.tikkle_quantity, tikkling.terminated_at, tikkling.product_id, tikkling.terminated_at,
 			tikkling.state_id, tikkling_state.name AS state_name,
 			products.name AS product_name, products.price, products.description, products.sales_volume, products.quantity, products.views,
 			products.is_deleted, products.wishlist_count, products.thumbnail_image, brands.brand_name
