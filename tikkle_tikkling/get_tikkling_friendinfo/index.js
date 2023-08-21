@@ -21,7 +21,6 @@ exports.get_tikkling_friendinfo = async (req, res) => {
       u.address, 
       u.detail_address, 
       u.is_tikkling, 
-      u.device_token
       FROM active_tikkling_view atv
       JOIN users u ON atv.user_id = u.id
       WHERE u.id IN (
