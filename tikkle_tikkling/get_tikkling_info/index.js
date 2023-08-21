@@ -34,7 +34,24 @@ exports.get_tikkling_info = async (req, res) => {
       }
 
       // tikkling_id와 일치하는 tikkling의 정보를 DB에서 조회(내가 아닌 유저)
-      const query = `SELECT tikkling_info.*, product_category.name as category_name FROM (SELECT users.id as user_id, users.name as user_name, view.id as tikkling_id, view.funding_limit, view.tikkle_quantity, view.tikkle_count, view.thumbnail_image, view.brand_name, view.product_name, view.category_id, view.type FROM active_tikkling_view as view inner join users on view.user_id = users.id WHERE view.id = ?) AS tikkling_info, product_category where tikkling_info.category_id = product_category.id`;
+      const query = `SELECT 
+      u.id AS user_id, 
+      u.name AS user_name, 
+      a.id AS tikkling_id, 
+      a.funding_limit, 
+      a.tikkle_quantity, 
+      a.tikkle_count, 
+      a.thumbnail_image, 
+      a.brand_name, 
+      a.product_name, 
+      a.category_id, 
+      a.type, 
+      pc.name AS category_name 
+      FROM active_tikkling_view a 
+      JOIN users u ON a.user_id = u.id 
+      JOIN product_category pc ON a.category_id = pc.id 
+      WHERE a.id = ?;
+      `;
       const rows = await queryDatabase(query, [parsedId]);
       if (rows.length === 0) {
         return res
