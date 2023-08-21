@@ -39,6 +39,16 @@ exports.post_auth_registerUser = async (req, res) => {
 		return res.status(401).send(return_body);
 	}
 
+	if (!isUserAgeValid(birthday)) {
+		console.log("post_auth_registerUser 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "if your age is under 14 you cannot use this servise!",
+		};
+		return res.status(403).send(return_body);
+	}
+
 	//check nick
 	if (!nick || typeof nick !== "string" || nick.length > 30) {
 		//return invalid
@@ -96,17 +106,7 @@ exports.post_auth_registerUser = async (req, res) => {
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 	  `;
 
-	const values = [
-		name,
-		birthday,
-		nick,
-		phone,
-		gender,
-		null,
-		null,
-		null,
-		false,
-	];
+	const values = [name, birthday, nick, phone, gender, null, null, null, false];
 
 	try {
 		const rows = await queryDatabase(insertQuery, values);
@@ -140,3 +140,26 @@ exports.post_auth_registerUser = async (req, res) => {
 	};
 	return res.status(200).send(return_body);
 };
+
+function isUserAgeValid(dateOfBirth) {
+	// Convert dateOfBirth string to a Date object
+	const dob = new Date(dateOfBirth);
+
+	// Calculate current date
+	const currentDate = new Date();
+
+	// Calculate age
+	let age = currentDate.getFullYear() - dob.getFullYear();
+
+	// Check if birthday hasn't occurred yet this year
+	if (
+		currentDate.getMonth() < dob.getMonth() ||
+		(currentDate.getMonth() === dob.getMonth() &&
+			currentDate.getDate() < dob.getDate())
+	) {
+		age--;
+	}
+
+	// Compare age with minimum age requirement (14)
+	return age >= 14;
+}
