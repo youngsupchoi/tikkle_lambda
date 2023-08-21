@@ -102,11 +102,22 @@ exports.post_auth_registerUser = async (req, res) => {
 
 	const insertQuery = `
 		INSERT INTO users 
-		(name, birthday, nick, phone, gender, image, address, detail_address, is_tikkling)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		(name, birthday, nick, phone, gender, image, address, detail_address, is_tikkling, tikkling_ticket)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	  `;
 
-	const values = [name, birthday, nick, phone, gender, null, null, null, false];
+	const values = [
+		name,
+		birthday,
+		nick,
+		phone,
+		gender,
+		null,
+		null,
+		null,
+		false,
+		2,
+	];
 
 	try {
 		const rows = await queryDatabase(insertQuery, values);
