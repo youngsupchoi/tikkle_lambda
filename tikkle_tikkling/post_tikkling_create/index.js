@@ -9,7 +9,10 @@ exports.post_tikkling_create = async (req, res) => {
 
   try {
     const [is_tikkling, product_stock] = await Promise.all([
-      queryDatabase("select is_tikkling from users where id = ?", [id]),
+      queryDatabase(
+        "select is_tikkling, tikkling_ticket from users where id = ?",
+        [id]
+      ),
       queryDatabase("select quantity from products where id = ?", [
         req.body.product_id,
       ]),
@@ -38,6 +41,13 @@ exports.post_tikkling_create = async (req, res) => {
       };
       return res.status(403).send(return_body);
     }
+    if (is_tikkling[0].tikkling_ticket == 0) {
+      const return_body = {
+        success: false,
+        message: "잘못된 요청, 티클링 티켓이 없습니다.",
+      };
+      return res.status(403).send(return_body);
+    }
 
     //티클링 생성
     const rows = await queryDatabase(
@@ -55,7 +65,7 @@ exports.post_tikkling_create = async (req, res) => {
       "UPDATE `products` SET `quantity` = quantity-1 WHERE (`id` = ?);",
       [req.body.product_id]
     );
-
+    //TODO: 티클링 티켓을 하나 줄임
     const return_body = {
       success: true,
       message: "티클링 생성을 성공하였습니다.",
