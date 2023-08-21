@@ -50,7 +50,7 @@ exports.get_tikkling_info = async (req, res) => {
       FROM active_tikkling_view a 
       JOIN users u ON a.user_id = u.id 
       JOIN product_category pc ON a.category_id = pc.id 
-      WHERE a.id = ?;
+      WHERE a.id = ? AND a.state_id = 1;
       `;
       const rows = await queryDatabase(query, [parsedId]);
       if (rows.length === 0) {
