@@ -10,7 +10,16 @@ exports.get_friend_event = async (req, res) => {
   try {
     //유저의 차단되지 않은 친구중 다가오는 7일 이내에 생일이 있는 친구의 정보를 가져옴
     const rows = await queryDatabase(
-      "SELECT u.name, u.birthday, u.image, u.is_tikkling FROM users u INNER JOIN friends_relation fr ON u.id = fr.friend_user_id WHERE fr.central_user_id = ? AND fr.relation_state_id != 3  AND u.birthday BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY);",
+      `SELECT 
+      u.name, 
+      u.birthday, 
+      u.image, 
+      u.is_tikkling
+      FROM users u
+      JOIN friends_relation fr ON u.id = fr.friend_user_id
+      WHERE fr.central_user_id = ? 
+      AND fr.relation_state_id <> 3  
+      AND u.birthday BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY);`,
       [id]
     );
     let retrun_body;
