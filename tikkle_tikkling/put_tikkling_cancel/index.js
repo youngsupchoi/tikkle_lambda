@@ -38,15 +38,19 @@ exports.put_tikkling_cancel = async (req, res) => {
     if (check_tikkling[0].sending_tikkle_count != 0) {
       const return_body = {
         success: false,
-        message: "티클링 조각이 도착한 상태에서는 티클링을 취소할 수 없습니다.",
+        message: "티클이 도착한 상태에서는 티클링을 취소할 수 없습니다.",
         returnToken,
       };
       return res.status(401).send(return_body);
     } else {
-      //티클링 취소
+      //티클링 취소, 티클링 티켓 환급, 상품 수량 복구
       const rows = await queryDatabase(
-        "UPDATE tikkling SET state_id = 2, terminated_at = now() WHERE id = ?;",
-        [req.body.tikkling_id]
+        `
+        UPDATE tikkling SET state_id = 2, terminated_at = now() WHERE id = ?;
+        UPDATE users SET tikkling_ticket = tikkling_ticket + 1 WHERE id = ?;
+        UPDATE products SET quantity = quantity + 1 WHERE id = (SELECT product_id FROM tikkling WHERE id = ?);
+        `,
+        [req.body.tikkling_id, id, req.body.tikkling_id]
       );
       const return_body = {
         success: true,
