@@ -6,6 +6,9 @@ exports.put_tikkling_end = async (req, res) => {
   const returnToken = req.returnToken;
   //main logic------------------------------------------------------------------------------------------------------------------//
   //TODO: 조금 더 하나의 트랜잭션으로 처리해야할 필요성이 있음
+  //TODO: 티클 환급 선택시 products 테이블에 quantity를 늘려줘야함
+  //TODO: 티클 환급, 환불, 사용 선택시 sending_tikkle에서 해당 tikkle들 상태 변환
+  //TODO: 조각이 모두 모인 후 티클의 환불이 일어날시에 해당 티클링의 상태를 다시 1로 변환해야함
   try {
     //티클링이 상태가 이미 변화했는지 확인
     const check_tikkling = await queryDatabase(
