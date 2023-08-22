@@ -43,15 +43,23 @@ exports.put_tikkling_cancel = async (req, res) => {
       };
       return res.status(401).send(return_body);
     } else {
+      //FIXME: 하나의 연결로 쿼리를 전달하도록 수정
       //티클링 취소, 티클링 티켓 환급, 상품 수량 복구
-      const rows = await queryDatabase(
-        `
-        UPDATE tikkling SET state_id = 2, terminated_at = now() WHERE id = ?;
-        UPDATE users SET tikkling_ticket = tikkling_ticket + 1 WHERE id = ?;
-        UPDATE products SET quantity = quantity + 1 WHERE id = (SELECT product_id FROM tikkling WHERE id = ?);
-        `,
-        [req.body.tikkling_id, id, req.body.tikkling_id]
-      );
+      await Promise.all([
+        queryDatabase(
+          `UPDATE tikkling SET state_id = 2, terminated_at = now() WHERE id = ?;`,
+          [req.body.tikkling_id]
+        ),
+        queryDatabase(
+          `UPDATE users SET tikkling_ticket = tikkling_ticket + 1 WHERE id = ?;`,
+          [id]
+        ),
+        queryDatabase(
+          `UPDATE products SET quantity = quantity + 1 WHERE id = (SELECT product_id FROM tikkling WHERE id = ?);`,
+          [req.body.tikkling_id]
+        ),
+      ]);
+
       const return_body = {
         success: true,
         message: `티클링을 성공적으로 취소하였습니다.`,

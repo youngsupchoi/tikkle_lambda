@@ -1,5 +1,5 @@
 const { queryDatabase } = require("db.js");
-
+const { queryDatabase_multi } = require("db_query.js");
 exports.post_tikkling_sendtikkle = async (req, res) => {
   const body = req.body;
   const id = req.id;
@@ -39,11 +39,16 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
       return res.status(400).send(return_body);
     }
     //줄 수 있는 상태라면 티클 전송
-    const result = await queryDatabase(
-      `CALL insert_sending_tikkle(?, ?, ?, ?);`,
+    //FIXME: 본인의 티클링은 티클을 수령하지 않음
+    //FIXME: 하나의 티클링에 대해서는 몇번의 티클을 보내든 티클링 티켓은 하나를 받음
+    const results = await queryDatabase_multi(
+      `CALL insert_sending_tikkle(?, ?, ?, ?, @success);
+      select @success as success;`,
       [req.body.tikkling_id, id, req.body.tikkle_quantity, req.body.message]
     );
-    if (result.affectedRows === 0) {
+
+    const success = results[1][0].success;
+    if (success === 1) {
       const return_body = {
         success: true,
         message: `티클 ${req.body.tikkle_quantity}개를 성공적으로 보냈습니다.`,
