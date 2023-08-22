@@ -1,0 +1,14 @@
+{
+	"resource": "/put_user_address",
+	"path": "/put_user_address",
+	"httpMethod": "PUT",
+	"headers": {
+		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNjkwNTIwNzQ2LCJleHAiOjE2OTA1MjE2NDYsImlzcyI6IkxpRm9saSJ9.w-4NVe-YbhdeXUPKmiZpOZMi8it_FmwNp3jrbIYh4ME,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNjkwNTIwNzQ2LCJleHAiOjE2OTMxMTI3NDYsImlzcyI6IkxpRm9saSJ9.Cl7fT5xT3VxAwpL7QbL8k7z9vaFkaWXr6iDlgReYo0o"
+	},
+	"queryStringParameters": null,
+	"body": {
+		"zonecode": "16881",
+		"address": "경기 용인시 수지구 실험로 111",
+		"detail_address": "반포자이아파트 111동 6301호"
+	}
+}

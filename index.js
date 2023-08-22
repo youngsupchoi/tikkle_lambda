@@ -91,6 +91,9 @@ const {
 const {
   post_tikkling_sendtikkle,
 } = require("./tikkle_tikkling/post_tikkling_sendtikkle/index.js");
+const {
+  put_tikkling_cancel,
+} = require("./tikkle_tikkling/put_tikkling_cancel/index.js");
 //user
 const {
   delete_user_wishlist,
@@ -112,6 +115,11 @@ const { post_user_friend } = require("./tikkle_user/post_user_friend/index.js");
 const {
   post_user_wishlist,
 } = require("./tikkle_user/post_user_wishlist/index.js");
+const {
+  get_user_isNotice,
+} = require("./tikkle_user/get_user_isNotice/index.js");
+const { put_user_address } = require("./tikkle_user/put_user_address/index.js");
+const { put_user_nick } = require("./tikkle_user/put_user_nick/index.js");
 
 //-------- API's ------------------------------------------------//
 
@@ -185,6 +193,8 @@ api.post("/post_tikkling_create", authtoken, post_tikkling_create);
 api.put("/put_tikkling_end", authtoken, put_tikkling_end);
 
 api.post("/post_tikkling_sendtikkle", authtoken, post_tikkling_sendtikkle);
+
+api.put("/put_tikkling_cancel", authtoken, put_tikkling_cancel);
 //
 
 //------- user
@@ -203,6 +213,12 @@ api.get("/get_user_paymentHistory", authtoken, get_user_paymentHistory);
 api.post("/post_user_friend", authtoken, post_user_friend);
 
 api.post("/post_user_wishlist", authtoken, post_user_wishlist);
+
+api.get("/get_user_isNotice", authtoken, get_user_isNotice);
+
+api.put("/put_user_address", authtoken, put_user_address);
+
+api.put("/put_user_nick", authtoken, put_user_nick);
 
 //
 

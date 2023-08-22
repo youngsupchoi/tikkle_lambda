@@ -7,6 +7,18 @@ exports.post_user_friend = async (req, res) => {
 
 	const friendId = body.friendId;
 
+	//-------- is the friendId valid? --------------------------------------------------------------------------------------//
+
+	if (id === friendId) {
+		console.log("post_user_friend 에서 에러가 발생했습니다.");
+		const return_body = {
+			success: false,
+			data: null,
+			message: "You cannot be friend yourself",
+		};
+		return res.status(401).send(return_body);
+	}
+
 	//-------- get friend data & check,   post friend data to DB if there is no friend data --------------------------------------------------------------------------------------//
 
 	const insertQuery = `INSERT INTO friends_relation (central_user_id, friend_user_id, relation_state_id)

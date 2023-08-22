@@ -1,5 +1,5 @@
 const { queryDatabase } = require("db.js");
-
+const { queryDatabase_multi } = require("db_query.js");
 exports.post_tikkling_sendtikkle = async (req, res) => {
   const body = req.body;
   const id = req.id;
@@ -39,32 +39,30 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
       return res.status(400).send(return_body);
     }
     //줄 수 있는 상태라면 티클 전송
-    const result = await queryDatabase(
-      "INSERT INTO sending_tikkle (tikkling_id, user_id, quantity, message) SELECT ? AS tikkling_id, ? AS user_id, ? AS quantity, ? AS message FROM tikkling WHERE id = ? AND ? + COALESCE((SELECT SUM(quantity) FROM sending_tikkle WHERE tikkling_id = ?), 0) <= tikkle_quantity;",
-      [
-        req.body.tikkling_id,
-        id,
-        req.body.tikkle_quantity,
-        req.body.message,
-        req.body.tikkling_id,
-        req.body.tikkle_quantity,
-        req.body.tikkling_id,
-      ]
+    //FIXME: 본인의 티클링은 티클을 수령하지 않음
+    //FIXME: 하나의 티클링에 대해서는 몇번의 티클을 보내든 티클링 티켓은 하나를 받음
+    const results = await queryDatabase_multi(
+      `CALL insert_sending_tikkle(?, ?, ?, ?, @success);
+      select @success as success;`,
+      [req.body.tikkling_id, id, req.body.tikkle_quantity, req.body.message]
     );
-    if (result.affectedRows === 1) {
+
+    const success = results[1][0].success;
+    if (success === 1) {
       const return_body = {
         success: true,
         message: `티클 ${req.body.tikkle_quantity}개를 성공적으로 보냈습니다.`,
         returnToken,
       };
       return res.status(200).send(return_body);
-    } else if (result.affectedRows === 0) {
+    } else {
       const return_body = {
         success: false,
-        message: "티클을 보낼 수 없습니다. (줄 수 있는 티클링 조각 수 초과)",
+        message:
+          "티클전송중 타인이 먼저 티클전송을 하였습니다. 티클을 보낼 수 없습니다. (줄 수 있는 티클링 조각 수 초과 or 티클을 줄 수 있는 상태가 아닙니다.)",
         returnToken,
       };
-      return res.status(400).send(return_body);
+      return res.status(406).send(return_body);
     }
   } catch (err) {
     console.error("Failed to connect or execute query:", err);

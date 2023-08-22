@@ -12,7 +12,7 @@ exports.get_user_checkTikkling = async (req, res) => {
 
 	try {
 		const rows = await queryDatabase(
-			"SELECT * FROM tikkling WHERE user_id = ? AND state_id = 1;",
+			"SELECT * FROM tikkling WHERE user_id = ? AND terminated_at IS NULL;",
 			[id]
 		);
 		sqlResult = rows;
@@ -28,7 +28,7 @@ exports.get_user_checkTikkling = async (req, res) => {
 	}
 
 	//-------- if tikkling --------------------------------------------------------------------------------------//
-	if (sqlResult.length === 1) {
+	if (sqlResult.length !== 0) {
 		const return_body = {
 			success: true,
 			data: sqlResult[0].id,

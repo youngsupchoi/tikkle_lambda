@@ -11,10 +11,11 @@ exports.get_notification_list = async (req, res) => {
 
 	try {
 		const rows = await queryDatabase(
-			`	SELECT *
-				FROM notification
-				WHERE user_id = ? AND is_deleted <> ?
-				ORDER BY created_at DESC;`,
+			`	SELECT n.*, nt.name AS notification_type_name
+				FROM notification AS n
+				INNER JOIN notification_type AS nt ON n.notification_type_id = nt.id
+				WHERE n.user_id = ? AND n.is_deleted <> ?
+				ORDER BY n.created_at DESC;`,
 			[id, 1]
 		);
 		sqlResult = rows;

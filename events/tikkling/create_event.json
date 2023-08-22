@@ -9,6 +9,7 @@
   "body": {
     "funding_limit": "2023-08-30",
     "tikkle_quantity": 100,
-    "product_id": 5
+    "product_id": 5,
+    "type": "생일"
   }
 }

@@ -5,10 +5,10 @@
 	"headers": {},
 	"queryStringParameters": null,
 	"body": {
-		"name": "John Doe",
-		"birthday": "1990-08-15",
-		"nick": "john_doe121212",
-		"phone": "1234568890",
+		"name": "12e",
+		"birthday": "2007-08-22",
+		"nick": "1211",
+		"phone": "8232563990",
 		"gender": "male"
 	}
 }
