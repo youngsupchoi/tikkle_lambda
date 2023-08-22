@@ -60,12 +60,19 @@ exports.post_tikkling_create = async (req, res) => {
         req.body.type,
       ]
     );
-    //재고를 하나 줄임
-    await queryDatabase(
-      "UPDATE `products` SET `quantity` = quantity-1 WHERE (`id` = ?);",
-      [req.body.product_id]
-    );
-    //TODO: 티클링 티켓을 하나 줄임
+    //상품의 재고와 티켓을 하나 줄임
+    //FIXME: 하나의 connect로 쿼리 전송
+    await Promise.all([
+      queryDatabase(
+        `UPDATE products SET quantity = quantity-1 WHERE (id = ?);`,
+        [req.body.product_id]
+      ),
+      queryDatabase(
+        `UPDATE users SET tikkling_ticket = tikkling_ticket-1 WHERE (id = ?);`,
+        [id]
+      ),
+    ]);
+
     const return_body = {
       success: true,
       message: "티클링 생성을 성공하였습니다.",
