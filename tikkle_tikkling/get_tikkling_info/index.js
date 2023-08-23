@@ -11,7 +11,7 @@ exports.get_tikkling_info = async (req, res) => {
     // 쿼리 스트링 파라미터에서 tikkling_id를 추출, 숫자인지 확인
     const tikkling_id = req.params ? req.params.tikkling_id : null;
 
-    if (tikkling_id === 0) {
+    if (tikkling_id == 0) {
       //tikkling_id 파라미터가 없을 경우 자신의 tikkling 정보를 DB에서 조회
       const query = `SELECT 
       u.id AS user_id, 
@@ -31,7 +31,7 @@ exports.get_tikkling_info = async (req, res) => {
       JOIN product_category pc ON a.category_id = pc.id 
       WHERE u.id = ?;`;
       const rows = await queryDatabase(query, [id]);
-      if (rows.length === 0) {
+      if (rows.length == 0) {
         return res
           .status(404)
           .send({ success: false, message: "티클링 정보가 없습니다." });
