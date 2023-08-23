@@ -9,7 +9,9 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
   try {
     //줄 수 있는 상태인지 확인
     const check_tikkling = await queryDatabase(
-      "SELECT t.id AS tikkling_id, t.tikkle_quantity AS total_tikkle_quantity, IFNULL((SELECT SUM(s.quantity) FROM sending_tikkle s WHERE s.tikkling_id = ?), 0) AS received_tikkle_quantity, t.state_id FROM tikkling t WHERE t.id = ?; ",
+      `SELECT t.id AS tikkling_id, t.user_id AS user_id, t.tikkle_quantity AS total_tikkle_quantity, IFNULL((SELECT SUM(s.quantity) FROM sending_tikkle s WHERE s.tikkling_id = ?), 0) AS received_tikkle_quantity, t.state_id 
+      FROM tikkling t 
+      WHERE t.id = ?;`,
       [req.body.tikkling_id, req.body.tikkling_id]
     );
 
@@ -39,19 +41,50 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
       return res.status(400).send(return_body);
     }
     //줄 수 있는 상태라면 티클 전송
-    //FIXME: 본인의 티클링은 티클을 수령하지 않음
-    //FIXME: 하나의 티클링에 대해서는 몇번의 티클을 보내든 티클링 티켓은 하나를 받음
     const results = await queryDatabase_multi(
       `CALL insert_sending_tikkle(?, ?, ?, ?, @success);
       select @success as success;`,
       [req.body.tikkling_id, id, req.body.tikkle_quantity, req.body.message]
     );
 
+    let ticket_message = "자신의 티클 보내기에서는 티켓을 받을 수 없습니다.";
+    //보내는 사람과 받는 사람이 다를 때 티켓 지급 및 알림
+    if (check_tikkling[0].user_id != id) {
+      const [is_already_send, sender_info] = await queryDatabase_multi(
+        `SELECT id FROM sending_tikkle WHERE tikkling_id = ? AND sender_id = ?;
+        SELECT name, image FROM users WHERE id = ?;
+        `,
+        [req.body.tikkling_id, id, id]
+      );
+      ticket_message = "이미 티켓을 지급 받았습니다.";
+      //티클을 처음 보낼때만 티켓을 1개 지급
+      if (is_already_send.length == 0) {
+        await queryDatabase(
+          `UPDATE users SET ticket = ticket + 1 WHERE id = ?;`,
+          [id]
+        );
+        ticket_message = "티클링 티켓 1개를 획득하였습니다.";
+      }
+      //티클을 보낼 때마다 알림을 보냄
+      await queryDatabase(
+        `INSERT INTO notifications (user_id, type, message, meta_data) VALUES (?, ?, ?, ?);`,
+        [
+          check_tikkling[0].user_id,
+          5,
+          `${sender_info[0].name}님이 보낸 티클을 확인해보세요.`,
+          `{
+            "source_user_id": ${id},
+            "source_user_profile": "${sender_info[0].image}",
+          }`,
+        ]
+      );
+    }
+
     const success = results[1][0].success;
     if (success === 1) {
       const return_body = {
         success: true,
-        message: `티클 ${req.body.tikkle_quantity}개를 성공적으로 보냈습니다.`,
+        message: `티클 ${req.body.tikkle_quantity}개를 성공적으로 보냈습니다.${ticket_message}}`,
         returnToken,
       };
       return res.status(200).send(return_body);
@@ -65,8 +98,8 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
       return res.status(406).send(return_body);
     }
   } catch (err) {
-    console.error("Failed to connect or execute query:", err);
-    console.log("put_tikkling_end에서 에러가 발생했습니다.");
+    console.error(err);
+    console.log("post_tikkling_sendtikkle에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       message: "서버 에러",
