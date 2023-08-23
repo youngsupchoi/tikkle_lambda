@@ -84,7 +84,7 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
     if (success === 1) {
       const return_body = {
         success: true,
-        message: `티클 ${req.body.tikkle_quantity}개를 성공적으로 보냈습니다.${ticket_message}}`,
+        message: `티클을 성공적으로 보냈습니다. ${ticket_message}}`,
         returnToken,
       };
       return res.status(200).send(return_body);
