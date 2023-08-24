@@ -17,7 +17,8 @@ exports.get_user_myWishlist = async (req, res) => {
 				FROM user_wish_list
 				INNER JOIN products ON user_wish_list.product_id = products.id
 				INNER JOIN brands ON products.brand_id = brands.id
-				WHERE user_wish_list.user_id = ?`,
+				WHERE user_wish_list.user_id = ?
+				ORDER BY user_wish_list.created_at DESC`,
 			[id]
 		);
 		sqlResult = rows;
