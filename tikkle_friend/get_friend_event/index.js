@@ -16,7 +16,7 @@ exports.get_friend_event = async (req, res) => {
       u.image, 
       u.is_tikkling
       FROM users u
-      JOIN frieisnds_relation fr ON u.id = fr.friend_user_id
+      JOIN friends_relation fr ON u.id = fr.friend_user_id
       WHERE fr.central_user_id = ? 
       AND fr.relation_state_id <> 3  
       AND u.birthday BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY);`,
