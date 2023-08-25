@@ -22,13 +22,14 @@ exports.post_product_list = async (req, res) => {
 		!Number.isInteger(category_id) ||
 		category_id > 20
 	) {
-		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		console.log("post_product_list 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "01",
 			message: "category_id value is null or invalid",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//check priceMin, priceMax
@@ -49,13 +50,14 @@ exports.post_product_list = async (req, res) => {
 		priceMax > 9999999999 ||
 		priceMax < 0
 	) {
-		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		console.log("post_product_list 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "02",
 			message: "priceMin or priceMax value is null or invalid",
+			returnToken: null,
 		};
-		return res.status(402).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//check sortAttribute
@@ -68,11 +70,13 @@ exports.post_product_list = async (req, res) => {
 		console.log(" post_product_list 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "03",
 			message: "sortAttribute value is null or invalid",
+			returnToken: null,
 		};
-		return res.status(403).send(return_body);
+		return res.status(400).send(return_body);
 	}
+
 	if (
 		sortAttribute != "sales_volume" &&
 		sortAttribute != "price" &&
@@ -80,13 +84,14 @@ exports.post_product_list = async (req, res) => {
 		sortAttribute != "wishlist_count"
 	) {
 		//return invalid
-		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		console.log("post_product_list 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "03",
 			message: "sortAttribute value is null or invalid",
+			returnToken: null,
 		};
-		return res.status(403).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//check sortWay
@@ -96,25 +101,27 @@ exports.post_product_list = async (req, res) => {
 		(sortWay !== "ASC" && sortWay !== "DESC")
 	) {
 		//return invalid
-		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		console.log("post_product_list 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "04",
 			message: "sortWay value is null or invalid",
+			returnToken: null,
 		};
-		return res.status(405).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//check search
 	if (search && (typeof search !== "string" || search.length > 100)) {
 		//return invalid
-		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		console.log("post_product_list 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "05",
 			message: "search value is invalid",
+			returnToken: null,
 		};
-		return res.status(406).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//check getNum
@@ -124,13 +131,14 @@ exports.post_product_list = async (req, res) => {
 		!Number.isInteger(getNum) ||
 		getNum < 0
 	) {
-		console.log(" post_product_list 에서 에러가 발생했습니다.");
+		console.log("post_product_list 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "06",
 			message: "getNum value is null or invalid",
+			returnToken: null,
 		};
-		return res.status(407).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//-------- check DB --------------------------------------------------------------------------------------//
@@ -171,16 +179,16 @@ exports.post_product_list = async (req, res) => {
 		}
 
 		sqlResult = rows;
-		console.log("SQL result : ", sqlResult);
+		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(err);
 		console.log(" post_product_list 에서 에러가 발생했습니다.\n", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "SQL error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	const retData = sqlResult;
@@ -190,8 +198,9 @@ exports.post_product_list = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		message: "success",
-		returnToken,
+		detail_code: "00",
+		message: "success get product list",
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

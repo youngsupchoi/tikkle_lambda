@@ -28,11 +28,12 @@ exports.get_image_profileSaveUrl = async (req, res) => {
 	try {
 		url = await s3.getSignedUrl("putObject", params);
 	} catch (error) {
-		console.log(" get_image_profileSaveUrl 에서 에러가 발생했습니다.", error);
+		console.log("get_image_profileSaveUrl 에서 에러가 발생했습니다.", error);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "url making fail",
+			returnToken: null,
 		};
 		return res.status(500).send(return_body);
 	}
@@ -42,8 +43,9 @@ exports.get_image_profileSaveUrl = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: url,
-		message: "success",
-		returnToken,
+		detail_code: "00",
+		message: "success to make url",
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

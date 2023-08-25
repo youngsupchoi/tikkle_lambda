@@ -6,7 +6,8 @@ exports.post_tikkling_create = async (req, res) => {
   const returnToken = req.returnToken;
 
   //main logic------------------------------------------------------------------------------------------------------------------//
-
+  //TODO: funding_limit에 대한 validation 추가
+  //TODO: tikkle_quantity에 대한 validation 추가
   try {
     const [is_tikkling, product_stock] = await Promise.all([
       queryDatabase(
@@ -21,30 +22,38 @@ exports.post_tikkling_create = async (req, res) => {
     //티클링중이면 에러
     if (is_tikkling[0].is_tikkling === 1) {
       const return_body = {
+        detail_code: "01",
         success: false,
         message: "잘못된 요청, 이미 티클링중인 유저입니다.",
+        returnToken,
       };
       return res.status(403).send(return_body);
     }
     if (product_stock.length === 0) {
       const return_body = {
+        detail_code: "00",
         success: false,
         message: "잘못된 요청, 존재하지 않는 상품입니다.",
+        returnToken: null,
       };
       return res.status(404).send(return_body);
     }
     //해당상품 재고가 남아있는지 확인 - 해당 이벤트 동시 발생시 에러 가능성 있음
     if (product_stock[0].quantity == 0) {
       const return_body = {
+        detail_code: "02",
         success: false,
         message: "잘못된 요청, 해당 상품의 재고가 남아있지 않습니다.",
+        returnToken: null,
       };
       return res.status(403).send(return_body);
     }
     if (is_tikkling[0].tikkling_ticket == 0) {
       const return_body = {
+        detail_code: "03",
         success: false,
         message: "잘못된 요청, 티클링 티켓이 없습니다.",
+        returnToken: null,
       };
       return res.status(403).send(return_body);
     }
@@ -75,6 +84,7 @@ exports.post_tikkling_create = async (req, res) => {
 
     const return_body = {
       success: true,
+      detail_code: "00",
       message: "티클링 생성을 성공하였습니다.",
       returnToken,
     };
@@ -85,7 +95,9 @@ exports.post_tikkling_create = async (req, res) => {
 
     const return_body = {
       success: false,
+      detail_code: "00",
       message: "서버 에러",
+      returnToken: null,
     };
     return res.status(500).send(return_body);
   }

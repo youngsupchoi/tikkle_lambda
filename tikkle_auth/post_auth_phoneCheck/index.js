@@ -18,13 +18,14 @@ exports.post_auth_phoneCheck = async (req, res) => {
 	) {
 		//return invalid
 
-		console.log(" post_auth_phoneCheck 에서 에러가 발생했습니다.");
+		console.log("post_auth_phoneCheck 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "phone number value is null or invalid : input data again",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//---- check DB there is number or not ----//
@@ -41,10 +42,11 @@ exports.post_auth_phoneCheck = async (req, res) => {
 		console.log(" post_auth_phoneCheck 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "02",
 			message: "Database connection error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	//---- return result ----//
@@ -53,7 +55,9 @@ exports.post_auth_phoneCheck = async (req, res) => {
 		//already sign in
 		const return_body = {
 			success: true,
+			detail_code: "10",
 			message: "login",
+			returnToken: null,
 			userId: sqlResult[0].id,
 		};
 		return res.status(200).send(return_body);
@@ -62,16 +66,19 @@ exports.post_auth_phoneCheck = async (req, res) => {
 
 		const return_body = {
 			success: true,
+			detail_code: "11",
 			message: "sign up",
+			returnToken: null,
 		};
-		return res.status(201).send(return_body);
+		return res.status(200).send(return_body);
 	} else {
 		console.log(" post_auth_phoneCheck 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "03",
+			returnToken: null,
 			message: "many same number",
 		};
-		return res.status(502).send(return_body);
+		return res.status(500).send(return_body);
 	}
 };

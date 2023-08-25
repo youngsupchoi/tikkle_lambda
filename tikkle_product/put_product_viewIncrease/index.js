@@ -15,13 +15,14 @@ exports.put_product_viewIncrease = async (req, res) => {
 		typeof productId !== "number" ||
 		!Number.isInteger(productId)
 	) {
-		console.log(" put_product_viewIncrease 에서 에러가 발생했습니다.");
+		console.log("put_product_viewIncrease 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "productId value is null or invalid",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//-------- increase view  --------------------------------------------------------------------------------------//
@@ -37,13 +38,14 @@ exports.put_product_viewIncrease = async (req, res) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(" put_product_viewIncrease 에서 에러가 발생했습니다.", err);
+		console.log("put_product_viewIncrease 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "SQL error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	//-------- return result --------------------------------------------------------------------------------------//
@@ -51,8 +53,9 @@ exports.put_product_viewIncrease = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: sqlResult,
-		message: "success",
-		returnToken,
+		detail_code: "00",
+		message: "success increase product view",
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

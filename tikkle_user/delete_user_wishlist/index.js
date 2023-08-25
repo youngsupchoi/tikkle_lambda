@@ -24,10 +24,11 @@ exports.delete_user_wishlist = async (req, res) => {
 		console.log("delete_user_whishlist에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "Database post error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	console.log("result : ", sqlResult);
@@ -39,8 +40,9 @@ exports.delete_user_wishlist = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		message: "success",
-		returnToken,
+		detail_code: "00",
+		message: "success delete user wishlist",
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

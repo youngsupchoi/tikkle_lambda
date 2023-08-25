@@ -29,6 +29,7 @@ exports.post_friend_phonecheck = async (req, res) => {
     const return_body = {
       success: true,
       data: rows,
+      detail_code: "00",
       message: "전화번호 조회 성공",
       returnToken,
     };
@@ -36,20 +37,38 @@ exports.post_friend_phonecheck = async (req, res) => {
   } catch (error) {
     console.log("에러 : ", error);
     if (
-      error.message === "입력 오류: phone_list는 문자열의 배열이어야 합니다." ||
+      error.message === "입력 오류: phone_list는 문자열의 배열이어야 합니다."
+    ) {
+      console.log(
+        "비정상적 요청-post_friend_phonecheck: phone_list는 문자열의 배열이어야 합니다."
+      );
+      const return_body = {
+        success: false,
+        detail_code: "01",
+        message: "비정상적 요청, phone_list는 문자열의 배열이어야 합니다.",
+        returnToken: null,
+      };
+      return res.status(400).send(return_body);
+    } else if (
       error.message === "입력 오류: phone_list는 빈 배열이면 안 됩니다."
     ) {
       const return_body = {
         success: false,
-        message: "잘못된 요청: " + error.message,
+        detail_code: "02",
+        message: "비정상적 요청, phone_list는 빈 배열이면 안 됩니다.",
+        returnToken,
       };
       return res.status(400).send(return_body);
     } else {
+      console.log("error:", error);
+      console.log("서버 에러-post_friend_phonecheck");
       const return_body = {
         success: false,
+        detail_code: "00",
         message: "서버 오류",
+        returnToken: null,
       };
-      console.log("post_friend_phonecheck에서 문제가 발생했습니다.");
+
       return res.status(500).send(return_body);
     }
   }

@@ -26,10 +26,11 @@ exports.put_user_address = async (req, res) => {
 		console.log("put_user_addressd의 입력 데이터에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "address value is null or invalid",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//--------  update address  --------------------------------------------------------------------------------------//
@@ -48,21 +49,23 @@ exports.put_user_address = async (req, res) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(" put_user_address의 query에서 에러가 발생했습니다.", err);
+		console.log("put_user_address의 query에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "SQL error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	//-------- return result --------------------------------------------------------------------------------------//
 
 	const return_body = {
 		success: true,
+		detail_code: "00",
 		message: "success to update address",
-		returnToken,
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

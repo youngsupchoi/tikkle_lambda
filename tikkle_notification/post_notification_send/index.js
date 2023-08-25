@@ -14,13 +14,14 @@ exports.post_notification_send = async (req, res) => {
 		!(typeof receive_user_id === "number" && Number.isInteger(receive_user_id))
 	) {
 		//return invalid
-		console.log(" post_notification_send 에서 에러가 발생했습니다.", err);
+		console.log("post_notification_send 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "inputId userId is null or invalid",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//-------- get user data from DB --------------------------------------------------------------------------------------//
@@ -32,24 +33,26 @@ exports.post_notification_send = async (req, res) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(" post_notification_send 에서 에러가 발생했습니다.", err);
+		console.log("post_notification_send 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "02",
 			message: "SQL error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	// check data is one
 	if (sqlResult.length !== 1) {
-		console.log(" post_notification_send 에서 에러가 발생했습니다.", err);
+		console.log("post_notification_send 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "02",
 			message: "SQL error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	const name = sqlResult[0].name;
@@ -114,13 +117,14 @@ exports.post_notification_send = async (req, res) => {
 		sqlResult = rows;
 		console.log("SQL result : ", sqlResult.insertId);
 	} catch (err) {
-		console.log(" post_notification_send 에서 에러가 발생했습니다.", err);
+		console.log("post_notification_send 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "03",
 			message: "Database post error",
+			returnToken: null,
 		};
-		return res.status(502).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	//-------- send notification by SNS --------------------------------------------------------------------------------------//
@@ -129,9 +133,9 @@ exports.post_notification_send = async (req, res) => {
 
 	const return_body = {
 		success: true,
-		data: null,
-		message: "notification success!",
-		returnToken,
+		detail_code: "00",
+		message: "send notification success!",
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

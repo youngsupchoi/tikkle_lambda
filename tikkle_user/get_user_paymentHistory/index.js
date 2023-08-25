@@ -34,10 +34,11 @@ exports.get_user_paymentHistory = async (req, res) => {
 		console.log(" get_user_paymentHistory 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "SQL error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	const retData = sqlResult;
@@ -47,8 +48,9 @@ exports.get_user_paymentHistory = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		message: "success",
-		returnToken,
+		detail_code: "00",
+		message: "success get user paymentHistory",
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

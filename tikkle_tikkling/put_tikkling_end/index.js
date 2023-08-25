@@ -19,9 +19,12 @@ exports.put_tikkling_end = async (req, res) => {
     );
     //티클링이 없는 경우
     if (check_tikkling.length == 0) {
+      console.log("비정상적 요청-put_tikkling_end: 티클링을 찾을 수 없습니다.");
       const return_body = {
         success: false,
-        message: "잘못된 요청, 티클링을 찾을 수 없습니다.",
+        detail_code: "00",
+        message: "비정상적 요청, 티클링을 찾을 수 없습니다.",
+        returnToken: null,
       };
       return res.status(404).send(return_body);
     }
@@ -29,6 +32,7 @@ exports.put_tikkling_end = async (req, res) => {
     else if (check_tikkling[0].terminated_at != null) {
       const return_body = {
         success: false,
+        detail_code: "00",
         message: "이미 종료된 티클링입니다.",
         returnToken,
       };
@@ -37,10 +41,15 @@ exports.put_tikkling_end = async (req, res) => {
 
     //도착한 티클링 조각이 있는지 확인
     if (check_tikkling[0].sending_tikkle_count == 0) {
+      console.log(
+        "비정상적 요청-put_tikkling_end: 도착한 티클이 없을때 cancel이 아닌 end를 요청."
+      );
       const return_body = {
         success: false,
+        detail_code: "00",
         message:
-          "잘못된 요청, 도착한 티클이 없다면 해당 api를 요청할 수 없습니다.",
+          "비정상적 요청, 도착한 티클이 없다면 해당 api를 요청할 수 없습니다.",
+        returnToken: null,
       };
       return res.status(403).send(return_body);
     }
@@ -71,6 +80,7 @@ exports.put_tikkling_end = async (req, res) => {
 
     const return_body = {
       success: true,
+      detail_code: "00",
       message: `티클링을 성공적으로 종료하였습니다.`,
       returnToken,
     };
@@ -80,7 +90,9 @@ exports.put_tikkling_end = async (req, res) => {
     console.log("put_tikkling_end에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
+      detail_code: "00",
       message: "서버 에러",
+      returnToken: null,
     };
     return res.status(500).send(return_body);
   }

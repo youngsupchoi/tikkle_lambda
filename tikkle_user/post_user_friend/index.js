@@ -13,10 +13,11 @@ exports.post_user_friend = async (req, res) => {
 		console.log("post_user_friend 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "You cannot be friend yourself",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//-------- get friend data & check,   post friend data to DB if there is no friend data --------------------------------------------------------------------------------------//
@@ -45,27 +46,33 @@ exports.post_user_friend = async (req, res) => {
 		console.log(" post_user_friend 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "SQL error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	//-------- return result --------------------------------------------------------------------------------------//
-	let message = "success";
 
 	// console.log("ret1 : ", ret1);
 	// console.log("ret2 : ", ret2);
 
 	if (ret1.affectedRows !== 1) {
-		message = "already friend";
+		const return_body = {
+			success: true,
+			detail_code: "10",
+			message: "already friend",
+			returnToken: returnToken,
+		};
+		return res.status(200).send(return_body);
+	} else {
+		const return_body = {
+			success: true,
+			detail_code: "11",
+			message: "success post user friend",
+			returnToken: returnToken,
+		};
+		return res.status(200).send(return_body);
 	}
-
-	const return_body = {
-		success: true,
-		data: null,
-		message: message,
-		returnToken,
-	};
-	return res.status(200).send(return_body);
 };

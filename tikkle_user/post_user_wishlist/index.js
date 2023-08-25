@@ -24,31 +24,32 @@ exports.post_user_wishlist = async (req, res) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult.insertId);
 	} catch (err) {
-		console.log(" post_user_wishlist 에서 에러가 발생했습니다.", err);
+		console.log("post_user_wishlist 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
-			message: "SQL error",
+			detail_code: "01",
+			message: "SQL error : while insert into user_wish_list",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	console.log("result : ", sqlResult);
 	const retData = sqlResult;
 
 	if (sqlResult.affectedRows === 0) {
-		console.log(" post_user_wishlist 에서 에러가 발생했습니다.");
+		console.log("post_user_wishlist 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "02",
 			message: "deleted product or already exist in wishlist",
+			returnToken: null,
 		};
-		return res.status(502).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	//-------- add wishlist_count  --------------------------------------------------------------------------------------//
 
-	// 재고 데이터 줄이기
 	try {
 		const rows = await queryDatabase(
 			"UPDATE products SET wishlist_count = wishlist_count + ? WHERE id = ?",
@@ -58,13 +59,14 @@ exports.post_user_wishlist = async (req, res) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(" post_user_wishlist 에서 에러가 발생했습니다.", err);
+		console.log("post_user_wishlist 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
-			message: "SQL error",
+			detail_code: "03",
+			message: "SQL error: while update wishlist_count",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	//-------- return result --------------------------------------------------------------------------------------//
@@ -72,8 +74,9 @@ exports.post_user_wishlist = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		message: "success",
-		returnToken,
+		detail_code: "00",
+		message: "success post user wishlist",
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

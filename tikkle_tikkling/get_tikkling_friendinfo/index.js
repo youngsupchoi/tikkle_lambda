@@ -33,17 +33,20 @@ exports.get_tikkling_friendinfo = async (req, res) => {
     const return_body = {
       success: true,
       data: rows,
+      detail_code: "00",
       message: "친구의 티클링 정보 조회 성공",
       returnToken,
     };
     return res.status(200).send(return_body);
   } catch (err) {
-    console.error("Failed to connect or execute query:", err);
+    console.error("error: ", err);
+    console.log("get_tikkling_friendinfo에서 문제가 발생했습니다.");
     const return_body = {
       success: false,
+      detail_code: "00",
       message: "서버 에러",
+      returnToken: null,
     };
-    console.log("get_tikkling_friendinfo에서 문제가 발생했습니다.");
     return res.status(500).send(return_body);
   }
 };

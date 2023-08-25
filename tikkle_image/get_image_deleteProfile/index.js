@@ -24,10 +24,11 @@ exports.get_image_deleteProfile = async (req, res) => {
 		console.log(" get_image_deleteProfile 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "01",
 			message: "SQL error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	//-------- delete user image s3 file  --------------------------------------------------------------------------------------//
@@ -46,13 +47,14 @@ exports.get_image_deleteProfile = async (req, res) => {
 
 		console.log("Src Object deleted successfully");
 	} catch (error) {
-		console.log(" get_image_deleteProfile 에서 에러가 발생했습니다.", error);
+		console.log("get_image_deleteProfile 에서 에러가 발생했습니다.", error);
 		const return_body = {
 			success: false,
-			data: null,
-			message: "Error deletingsrc  object in s3",
+			detail_code: "02",
+			message: "Error deleting src object in s3",
+			returnToken: null,
 		};
-		return res.status(502).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	const bucket_online = await getSSMParameter("s3_image_buket");
@@ -74,13 +76,14 @@ exports.get_image_deleteProfile = async (req, res) => {
 
 			console.log("Object deleted successfully", imageSize[i]);
 		} catch (error) {
-			console.log(" get_image_deleteProfile 에서 에러가 발생했습니다.", error);
+			console.log("get_image_deleteProfile 에서 에러가 발생했습니다.", error);
 			const return_body = {
 				success: false,
-				data: null,
+				detail_code: "03",
 				message: "Error deleting object in s3 : " + imageSize[i],
+				returnToken: null,
 			};
-			return res.status(502).send(return_body);
+			return res.status(500).send(return_body);
 		}
 	}
 	//-------- return result --------------------------------------------------------------------------------------//
@@ -88,8 +91,9 @@ exports.get_image_deleteProfile = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: sqlResult,
-		message: "success",
-		returnToken,
+		detail_code: "00",
+		message: "success to delete profile image",
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

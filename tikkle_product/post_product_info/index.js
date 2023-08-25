@@ -16,15 +16,16 @@ exports.post_product_info = async (req, res) => {
 			productId,
 		]);
 		sqlResult = rows;
-		console.log("SQL result : ", sqlResult);
+		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(" post_product_info 에서 에러가 발생했습니다.", err);
+		console.log("post_product_info 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "SQL error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	// check data is one
@@ -32,10 +33,11 @@ exports.post_product_info = async (req, res) => {
 		console.log(" post_product_info 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "SQL error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	const retData = sqlResult[0];
@@ -45,8 +47,9 @@ exports.post_product_info = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		message: "success",
-		returnToken,
+		detail_code: "00",
+		message: "success get product info",
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

@@ -17,10 +17,13 @@ exports.post_auth_registerUser = async (req, res) => {
 	if (!name || typeof name !== "string" || name.length > 30) {
 		//return invalid
 		console.log("ERROR : name value is null or invalid");
-		return {
-			statusCode: 401,
-			body: "input name again",
+		const return_body = {
+			success: false,
+			detail_code: "01",
+			message: "input name again",
+			returnToken: null,
 		};
+		return res.status(400).send(return_body);
 	}
 
 	//check birthday
@@ -33,32 +36,35 @@ exports.post_auth_registerUser = async (req, res) => {
 		console.log(" post_auth_registerUser 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "02",
 			message: "birthday value is null or invalid : input birthday again",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	if (!isUserAgeValid(birthday)) {
 		console.log("post_auth_registerUser 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "03",
 			message: "if your age is under 14 you cannot use this servise!",
+			returnToken: null,
 		};
-		return res.status(403).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//check nick
 	if (!nick || typeof nick !== "string" || nick.length > 30) {
 		//return invalid
-		console.log(" post_auth_registerUser 에서 에러가 발생했습니다.");
+		console.log("post_auth_registerUser 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "04",
 			message: "nick value is null or invalid : input nick again",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	// Check if the string matches the numeric pattern and its length is between 9 and 12
@@ -74,10 +80,11 @@ exports.post_auth_registerUser = async (req, res) => {
 		console.log(" post_auth_registerUser 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "05",
 			message: "phone value is null or invalid : input phone again",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//check gender
@@ -87,13 +94,14 @@ exports.post_auth_registerUser = async (req, res) => {
 		!(gender === "male" || gender === "female" || gender === "others")
 	) {
 		//return invalid
-		console.log(" post_auth_registerUser 에서 에러가 발생했습니다.");
+		console.log("post_auth_registerUser 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "06",
 			message: "gender value is null or invalid : input gender again",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	}
 
 	//-------- add user data to DB --------------------------------------------------------------------------------------//
@@ -127,10 +135,11 @@ exports.post_auth_registerUser = async (req, res) => {
 		console.log(" post_auth_registerUser 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
+			detail_code: "00",
 			message: "Database post error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	// //error when not 1 row is affected
@@ -147,7 +156,9 @@ exports.post_auth_registerUser = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: sqlResult.insertId,
+		detail_code: "00",
 		message: "sign up success!",
+		returnToken: null,
 	};
 	return res.status(200).send(return_body);
 };

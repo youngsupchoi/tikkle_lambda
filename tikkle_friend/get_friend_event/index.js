@@ -27,6 +27,7 @@ exports.get_friend_event = async (req, res) => {
       return_body = {
         success: true,
         data: rows,
+        detail_code: "01",
         message: "생일인 친구가 없습니다.",
         returnToken,
       };
@@ -34,6 +35,7 @@ exports.get_friend_event = async (req, res) => {
       return_body = {
         success: true,
         data: rows,
+        detail_code: "02",
         message: "성공적으로 생일인 친구를 불러왔습니다.",
         returnToken,
       };
@@ -45,7 +47,9 @@ exports.get_friend_event = async (req, res) => {
     console.log("get_friend_event에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
+      detail_code: "00",
       message: "서버에러",
+      returnToken: null,
     };
     return res.status(500).send(return_body);
   }
