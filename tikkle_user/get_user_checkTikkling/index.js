@@ -21,7 +21,7 @@ exports.get_user_checkTikkling = async (req, res) => {
 		console.log("get_user_checkTikkling에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "SQL error",
 			returnToken: null,
 		};

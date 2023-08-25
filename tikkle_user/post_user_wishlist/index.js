@@ -74,7 +74,7 @@ exports.post_user_wishlist = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		detail_code: "10",
+		detail_code: "00",
 		message: "success post user wishlist",
 		returnToken: returnToken,
 	};

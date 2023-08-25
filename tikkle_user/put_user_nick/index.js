@@ -14,7 +14,7 @@ exports.put_user_nick = async (req, res) => {
 		console.log("put_user_nick의 입력 데이터에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "nick value is null or invalid",
 			returnToken: null,
 		};
@@ -40,7 +40,7 @@ exports.put_user_nick = async (req, res) => {
 		console.log("put_user_nick의 query에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			detail_code: "02",
+			detail_code: "00",
 			message: "SQL error",
 			returnToken: null,
 		};
@@ -52,7 +52,7 @@ exports.put_user_nick = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: nick,
-		detail_code: "10",
+		detail_code: "00",
 		message: "success to update nick",
 		returnToken: returnToken,
 	};

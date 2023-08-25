@@ -21,7 +21,7 @@ exports.post_product_info = async (req, res) => {
 		console.log("post_product_info 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "SQL error",
 			returnToken: null,
 		};
@@ -33,7 +33,7 @@ exports.post_product_info = async (req, res) => {
 		console.log(" post_product_info 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "SQL error",
 			returnToken: null,
 		};
@@ -47,7 +47,7 @@ exports.post_product_info = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		detail_code: "10",
+		detail_code: "00",
 		message: "success get product info",
 		returnToken: returnToken,
 	};

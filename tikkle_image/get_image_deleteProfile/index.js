@@ -91,7 +91,7 @@ exports.get_image_deleteProfile = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: sqlResult,
-		detail_code: "10",
+		detail_code: "00",
 		message: "success to delete profile image",
 		returnToken: returnToken,
 	};

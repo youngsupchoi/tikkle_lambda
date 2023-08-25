@@ -24,7 +24,7 @@ exports.put_notification_delete = async (req, res) => {
 		console.log("put_notification_delete 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "SQL error",
 			returnToken: null,
 		};
@@ -38,7 +38,7 @@ exports.put_notification_delete = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		detail_code: "10",
+		detail_code: "00",
 		message: "success delete notification",
 		returnToken: returnToken,
 	};

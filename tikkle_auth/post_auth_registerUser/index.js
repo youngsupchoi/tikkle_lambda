@@ -135,7 +135,7 @@ exports.post_auth_registerUser = async (req, res) => {
 		console.log(" post_auth_registerUser 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			detail_code: "07",
+			detail_code: "00",
 			message: "Database post error",
 			returnToken: null,
 		};
@@ -156,7 +156,7 @@ exports.post_auth_registerUser = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: sqlResult.insertId,
-		detail_code: "10",
+		detail_code: "00",
 		message: "sign up success!",
 		returnToken: null,
 	};

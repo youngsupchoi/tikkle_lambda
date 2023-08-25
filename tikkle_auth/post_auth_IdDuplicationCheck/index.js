@@ -11,7 +11,7 @@ exports.post_auth_IdDuplicationCheck = async (req, res) => {
 		console.log("post_auth_IdDuplicationCheck 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "inputId value is null or invalid: input data again",
 			returnToken: null,
 		};
@@ -35,7 +35,7 @@ exports.post_auth_IdDuplicationCheck = async (req, res) => {
 		);
 		const return_body = {
 			success: false,
-			detail_code: "02",
+			detail_code: "00",
 			message: "Database connection error",
 			returnToken: null,
 		};

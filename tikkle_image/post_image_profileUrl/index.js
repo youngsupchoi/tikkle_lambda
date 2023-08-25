@@ -21,7 +21,7 @@ exports.post_image_profileUrl = async (req, res) => {
 		console.log("ERROR : size value is null or invalid");
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			body: "input image size again",
 			returnToken: null,
 		};
@@ -42,7 +42,7 @@ exports.post_image_profileUrl = async (req, res) => {
 		console.log("post_image_profileUrl 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			detail_code: "02",
+			detail_code: "00",
 			message: "SQL error",
 			returnToken: null,
 		};
@@ -54,7 +54,7 @@ exports.post_image_profileUrl = async (req, res) => {
 		console.log("post_image_profileUrl 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			detail_code: "02",
+			detail_code: "00",
 			message: "SQL error",
 			returnToken: null,
 		};
