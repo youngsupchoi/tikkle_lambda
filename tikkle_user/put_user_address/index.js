@@ -67,6 +67,7 @@ exports.put_user_address = async (req, res) => {
 		success: true,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "success to update address",
 		returnToken,
 	};

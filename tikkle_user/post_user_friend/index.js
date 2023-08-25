@@ -70,6 +70,7 @@ exports.post_user_friend = async (req, res) => {
 		data: null,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: message,
 		returnToken,
 	};

@@ -140,6 +140,7 @@ exports.post_notification_send = async (req, res) => {
 		data: null,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "notification success!",
 		returnToken,
 	};

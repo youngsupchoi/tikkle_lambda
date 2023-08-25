@@ -208,6 +208,7 @@ exports.post_product_list = async (req, res) => {
 		data: retData,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "success",
 		returnToken,
 	};

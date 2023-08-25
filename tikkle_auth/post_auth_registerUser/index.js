@@ -163,6 +163,7 @@ exports.post_auth_registerUser = async (req, res) => {
 		data: sqlResult.insertId,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "sign up success!",
 	};
 	return res.status(200).send(return_body);

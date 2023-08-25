@@ -48,6 +48,7 @@ exports.get_user_checkTikkling = async (req, res) => {
 		data: 0,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "Not Tikkling",
 		returnToken,
 	};

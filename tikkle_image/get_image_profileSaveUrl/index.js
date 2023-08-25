@@ -46,6 +46,7 @@ exports.get_image_profileSaveUrl = async (req, res) => {
 		data: url,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "success",
 		returnToken,
 	};

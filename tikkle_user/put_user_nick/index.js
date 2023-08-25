@@ -56,6 +56,7 @@ exports.put_user_nick = async (req, res) => {
 		data: nick,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "success to update nick",
 		returnToken,
 	};

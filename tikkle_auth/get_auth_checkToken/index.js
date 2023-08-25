@@ -73,6 +73,7 @@ exports.get_auth_checkToken = async (req, res) => {
 		data: null,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "success",
 		returnToken,
 	};

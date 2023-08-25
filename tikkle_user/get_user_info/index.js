@@ -45,6 +45,7 @@ exports.get_user_info = async (req, res) => {
 		data: sqlResult[0],
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "success",
 		returnToken,
 	};

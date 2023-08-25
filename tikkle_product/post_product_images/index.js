@@ -45,6 +45,7 @@ exports.post_product_images = async (req, res) => {
 		data: urls,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "success",
 		returnToken,
 	};

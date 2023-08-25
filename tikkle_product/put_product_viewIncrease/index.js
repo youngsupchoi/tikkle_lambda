@@ -57,6 +57,7 @@ exports.put_product_viewIncrease = async (req, res) => {
 		data: sqlResult,
 		message_title: null,
 		message_detail: null,
+		detail_code: null,
 		message: "success",
 		returnToken,
 	};
