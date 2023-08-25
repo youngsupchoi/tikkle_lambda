@@ -56,7 +56,8 @@ exports.get_friend_data = async (req, res) => {
     };
     return res.status(200).send(return_body);
   } catch (err) {
-    console.error("Failed to connect or execute query:", err);
+    console.error("error:", err);
+    console.log("서버 에러-get_friend_data");
     const return_body = {
       success: false,
       detail_code: "00",
