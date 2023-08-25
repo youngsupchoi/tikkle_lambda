@@ -1,5 +1,4 @@
-const { queryDatabase } = require("db.js");
-const { queryDatabase_multi } = require("db_query.js");
+const { queryDatabase, queryDatabase_multi } = require("db.js");
 
 exports.post_tikkling_sendtikkle = async (req, res) => {
   const body = req.body;
