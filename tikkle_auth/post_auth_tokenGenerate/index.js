@@ -10,27 +10,25 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 
 	//check input value
 	if (typeof userId !== "number" || isNaN(userId)) {
-		console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다.");
+		console.log("post_auth_tokenGenerate 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
-			message_title: null,
-			message_detail: null,
+			detail_code: "01",
 			message: "id value is null or invalid",
+			returnToken: null,
 		};
-		return res.status(401).send(return_body);
+		return res.status(400).send(return_body);
 	} else {
 		const idString = userId.toString();
 		if (idString.length > 11) {
-			console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다.");
+			console.log("post_auth_tokenGenerate 에서 에러가 발생했습니다.");
 			const return_body = {
 				success: false,
-				data: null,
-				message_title: null,
-				message_detail: null,
+				detail_code: "01",
 				message: "id value is null or invalid",
+				returnToken: null,
 			};
-			return res.status(401).send(return_body);
+			return res.status(400).send(return_body);
 		}
 	}
 
@@ -46,28 +44,26 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다 : ", err);
+		console.log("post_auth_tokenGenerate 에서 에러가 발생했습니다 : ", err);
 		const return_body = {
 			success: false,
-			data: null,
-			message_title: null,
-			message_detail: null,
+			detail_code: "02",
 			message: "Database connection error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	// no data
 	if (sqlResult.length !== 1) {
-		console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다.");
+		console.log("post_auth_tokenGenerate 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
-			message_title: null,
-			message_detail: null,
+			detail_code: "03",
 			message: "There is no user of input id",
+			returnToken: null,
 		};
-		return res.status(402).send(return_body);
+		return res.status(404).send(return_body);
 	}
 
 	// deleted user
@@ -75,15 +71,14 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 	// console.log("data: ", sqlResult[0].is_deleted);
 
 	if (sqlResult[0].is_deleted === 1) {
-		console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다.");
+		console.log("post_auth_tokenGenerate 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
-			message_title: null,
-			message_detail: null,
+			detail_code: "04",
 			message: "Deleted user",
+			returnToken: null,
 		};
-		return res.status(403).send(return_body);
+		return res.status(404).send(return_body);
 	}
 
 	//---- generate tokken ----//
@@ -96,13 +91,12 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 		accessToken = await generateAccessToken(userId);
 		refreshToken = await generateRefreshToken(userId);
 	} catch (error) {
-		console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다.");
+		console.log("post_auth_tokenGenerate 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			data: null,
-			message_title: null,
-			message_detail: null,
+			detail_code: "05",
 			message: "cannot make token",
+			returnToken: null,
 		};
 		return res.status(500).send(return_body);
 	}
@@ -115,7 +109,9 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 			accessToken: accessToken,
 			refreshToken: refreshToken,
 		}),
-		message: "success",
+		detail_code: "10",
+		message: "success to generate token",
+		returnToken: null,
 	};
 	return res.status(200).send(return_body);
 };
