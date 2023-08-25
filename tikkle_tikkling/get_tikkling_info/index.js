@@ -16,7 +16,7 @@ exports.get_tikkling_info = async (req, res) => {
       const query = `SELECT 
       u.id AS user_id, 
       u.name AS user_name, 
-      a.id AS tikkling_id, 
+      a.tikkling_id, 
       a.funding_limit, 
       a.tikkle_quantity, 
       a.tikkle_count, 
@@ -58,7 +58,7 @@ exports.get_tikkling_info = async (req, res) => {
       const query = `SELECT 
       u.id AS user_id, 
       u.name AS user_name, 
-      a.id AS tikkling_id, 
+      a.tikkling_id, 
       a.funding_limit, 
       a.tikkle_quantity, 
       a.tikkle_count, 
