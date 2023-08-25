@@ -29,12 +29,10 @@ exports.post_tikkling_receivedTikkle = async (req, res) => {
 			WHERE  sending_tikkle.tikkling_id = ?; `,
       [body.tikkling_id]
     );
-
     const return_body = {
       success: true,
       data: rows,
-      message_title: null,
-      message_detail: null,
+      detail_code: "00",
       message: "특정 티클링의 받은 티클 정보 조회 성공",
       returnToken,
     };
@@ -43,8 +41,8 @@ exports.post_tikkling_receivedTikkle = async (req, res) => {
     console.error("Failed to connect or execute query:", err);
     const return_body = {
       success: false,
-      message_title: null,
-      message_detail: null,
+      detail_code: "00",
+      returnToken: null,
       message: "서버 에러",
     };
     return res.status(500).send(return_body);
