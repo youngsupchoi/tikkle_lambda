@@ -18,7 +18,7 @@ exports.put_product_viewIncrease = async (req, res) => {
 		console.log("put_product_viewIncrease 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "productId value is null or invalid",
 			returnToken: null,
 		};
@@ -41,7 +41,7 @@ exports.put_product_viewIncrease = async (req, res) => {
 		console.log("put_product_viewIncrease 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			detail_code: "02",
+			detail_code: "00",
 			message: "SQL error",
 			returnToken: null,
 		};
@@ -53,7 +53,7 @@ exports.put_product_viewIncrease = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: sqlResult,
-		detail_code: "10",
+		detail_code: "00",
 		message: "success increase product view",
 		returnToken: returnToken,
 	};

@@ -28,7 +28,7 @@ exports.get_user_endTikklings = async (req, res) => {
 		console.log("get_user_endTikklings 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "SQL error",
 			returnToken: null,
 		};
@@ -42,7 +42,7 @@ exports.get_user_endTikklings = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		detail_code: "10",
+		detail_code: "00",
 		message: "success get user endTikklings",
 		returnToken: returnToken,
 	};

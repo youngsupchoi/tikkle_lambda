@@ -56,7 +56,7 @@ exports.get_notification_list = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		detail_code: "10",
+		detail_code: "00",
 		message: "success get notification list",
 		returnToken: returnToken,
 	};

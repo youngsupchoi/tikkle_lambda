@@ -21,7 +21,7 @@ exports.post_auth_phoneCheck = async (req, res) => {
 		console.log("post_auth_phoneCheck 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "phone number value is null or invalid : input data again",
 			returnToken: null,
 		};

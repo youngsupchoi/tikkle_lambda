@@ -17,7 +17,7 @@ exports.post_notification_send = async (req, res) => {
 		console.log("post_notification_send 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "inputId userId is null or invalid",
 			returnToken: null,
 		};
@@ -133,7 +133,7 @@ exports.post_notification_send = async (req, res) => {
 
 	const return_body = {
 		success: true,
-		detail_code: "10",
+		detail_code: "00",
 		message: "send notification success!",
 		returnToken: returnToken,
 	};

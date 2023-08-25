@@ -31,7 +31,7 @@ exports.get_image_profileSaveUrl = async (req, res) => {
 		console.log("get_image_profileSaveUrl 에서 에러가 발생했습니다.", error);
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "url making fail",
 			returnToken: null,
 		};
@@ -43,7 +43,7 @@ exports.get_image_profileSaveUrl = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: url,
-		detail_code: "10",
+		detail_code: "00",
 		message: "success to make url",
 		returnToken: returnToken,
 	};

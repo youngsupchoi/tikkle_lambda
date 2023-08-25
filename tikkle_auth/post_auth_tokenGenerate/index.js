@@ -24,7 +24,7 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 			console.log("post_auth_tokenGenerate 에서 에러가 발생했습니다.");
 			const return_body = {
 				success: false,
-				detail_code: "01",
+				detail_code: "00",
 				message: "id value is null or invalid",
 				returnToken: null,
 			};
@@ -109,7 +109,7 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 			accessToken: accessToken,
 			refreshToken: refreshToken,
 		}),
-		detail_code: "10",
+		detail_code: "00",
 		message: "success to generate token",
 		returnToken: null,
 	};

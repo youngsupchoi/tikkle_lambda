@@ -26,7 +26,7 @@ exports.put_user_address = async (req, res) => {
 		console.log("put_user_addressd의 입력 데이터에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
-			detail_code: "01",
+			detail_code: "00",
 			message: "address value is null or invalid",
 			returnToken: null,
 		};
@@ -52,7 +52,7 @@ exports.put_user_address = async (req, res) => {
 		console.log("put_user_address의 query에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			detail_code: "02",
+			detail_code: "00",
 			message: "SQL error",
 			returnToken: null,
 		};
@@ -63,7 +63,7 @@ exports.put_user_address = async (req, res) => {
 
 	const return_body = {
 		success: true,
-		detail_code: "10",
+		detail_code: "00",
 		message: "success to update address",
 		returnToken: returnToken,
 	};
