@@ -24,6 +24,8 @@ exports.get_user_isNotice = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "SQL error",
 		};
 		return res.status(501).send(return_body);
@@ -36,6 +38,8 @@ exports.get_user_isNotice = async (req, res) => {
 	if (retlen === 0) {
 		const return_body = {
 			success: true,
+			message_title: null,
+			message_detail: null,
 			message: "No notification!",
 			data: { is_notification: false },
 			returnToken,
@@ -44,6 +48,8 @@ exports.get_user_isNotice = async (req, res) => {
 	} else {
 		const return_body = {
 			success: true,
+			message_title: null,
+			message_detail: null,
 			message: "There is notification you should read!",
 			data: { is_notification: true },
 			returnToken,

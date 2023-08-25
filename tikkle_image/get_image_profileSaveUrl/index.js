@@ -32,6 +32,8 @@ exports.get_image_profileSaveUrl = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "url making fail",
 		};
 		return res.status(500).send(return_body);
@@ -42,6 +44,8 @@ exports.get_image_profileSaveUrl = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: url,
+		message_title: null,
+		message_detail: null,
 		message: "success",
 		returnToken,
 	};

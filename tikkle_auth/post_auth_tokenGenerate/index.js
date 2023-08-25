@@ -14,6 +14,8 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "id value is null or invalid",
 		};
 		return res.status(401).send(return_body);
@@ -24,6 +26,8 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 			const return_body = {
 				success: false,
 				data: null,
+				message_title: null,
+				message_detail: null,
 				message: "id value is null or invalid",
 			};
 			return res.status(401).send(return_body);
@@ -42,13 +46,12 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(
-			" post_auth_tokenGenerate 에서 에러가 발생했습니다 : ",
-			err
-		);
+		console.log(" post_auth_tokenGenerate 에서 에러가 발생했습니다 : ", err);
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "Database connection error",
 		};
 		return res.status(501).send(return_body);
@@ -60,6 +63,8 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "There is no user of input id",
 		};
 		return res.status(402).send(return_body);
@@ -74,6 +79,8 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "Deleted user",
 		};
 		return res.status(403).send(return_body);
@@ -93,6 +100,8 @@ exports.post_auth_tokenGenerate = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "cannot make token",
 		};
 		return res.status(500).send(return_body);

@@ -26,6 +26,8 @@ exports.post_product_list = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "category_id value is null or invalid",
 		};
 		return res.status(401).send(return_body);
@@ -53,6 +55,8 @@ exports.post_product_list = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "priceMin or priceMax value is null or invalid",
 		};
 		return res.status(402).send(return_body);
@@ -69,6 +73,8 @@ exports.post_product_list = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "sortAttribute value is null or invalid",
 		};
 		return res.status(403).send(return_body);
@@ -84,6 +90,8 @@ exports.post_product_list = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "sortAttribute value is null or invalid",
 		};
 		return res.status(403).send(return_body);
@@ -100,6 +108,8 @@ exports.post_product_list = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "sortWay value is null or invalid",
 		};
 		return res.status(405).send(return_body);
@@ -112,6 +122,8 @@ exports.post_product_list = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "search value is invalid",
 		};
 		return res.status(406).send(return_body);
@@ -128,6 +140,8 @@ exports.post_product_list = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "getNum value is null or invalid",
 		};
 		return res.status(407).send(return_body);
@@ -178,6 +192,8 @@ exports.post_product_list = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "SQL error",
 		};
 		return res.status(501).send(return_body);
@@ -190,6 +206,8 @@ exports.post_product_list = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
+		message_title: null,
+		message_detail: null,
 		message: "success",
 		returnToken,
 	};

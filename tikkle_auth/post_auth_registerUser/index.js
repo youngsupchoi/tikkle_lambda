@@ -19,6 +19,8 @@ exports.post_auth_registerUser = async (req, res) => {
 		console.log("ERROR : name value is null or invalid");
 		return {
 			statusCode: 401,
+			message_title: null,
+			message_detail: null,
 			body: "input name again",
 		};
 	}
@@ -34,6 +36,8 @@ exports.post_auth_registerUser = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "birthday value is null or invalid : input birthday again",
 		};
 		return res.status(401).send(return_body);
@@ -44,6 +48,8 @@ exports.post_auth_registerUser = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "if your age is under 14 you cannot use this servise!",
 		};
 		return res.status(403).send(return_body);
@@ -56,6 +62,8 @@ exports.post_auth_registerUser = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "nick value is null or invalid : input nick again",
 		};
 		return res.status(401).send(return_body);
@@ -75,6 +83,8 @@ exports.post_auth_registerUser = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "phone value is null or invalid : input phone again",
 		};
 		return res.status(401).send(return_body);
@@ -91,6 +101,8 @@ exports.post_auth_registerUser = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "gender value is null or invalid : input gender again",
 		};
 		return res.status(401).send(return_body);
@@ -128,6 +140,8 @@ exports.post_auth_registerUser = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "Database post error",
 		};
 		return res.status(501).send(return_body);
@@ -147,6 +161,8 @@ exports.post_auth_registerUser = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: sqlResult.insertId,
+		message_title: null,
+		message_detail: null,
 		message: "sign up success!",
 	};
 	return res.status(200).send(return_body);
