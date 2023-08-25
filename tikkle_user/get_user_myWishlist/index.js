@@ -27,6 +27,8 @@ exports.get_user_myWishlist = async (req, res) => {
 		console.log(" get_user_myWishlist 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
+			message_title: null,
+			message_detail: null,
 			data: null,
 			message: "SQL error",
 		};
@@ -40,6 +42,9 @@ exports.get_user_myWishlist = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
+		message_title: null,
+		message_detail: null,
+		detail_code: null,
 		message: "success",
 		returnToken,
 	};

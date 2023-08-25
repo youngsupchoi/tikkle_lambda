@@ -25,6 +25,8 @@ exports.get_image_deleteProfile = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "SQL error",
 		};
 		return res.status(501).send(return_body);
@@ -50,6 +52,8 @@ exports.get_image_deleteProfile = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "Error deletingsrc  object in s3",
 		};
 		return res.status(502).send(return_body);
@@ -78,6 +82,8 @@ exports.get_image_deleteProfile = async (req, res) => {
 			const return_body = {
 				success: false,
 				data: null,
+				message_title: null,
+				message_detail: null,
 				message: "Error deleting object in s3 : " + imageSize[i],
 			};
 			return res.status(502).send(return_body);
@@ -88,6 +94,9 @@ exports.get_image_deleteProfile = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: sqlResult,
+		message_title: null,
+		message_detail: null,
+		detail_code: null,
 		message: "success",
 		returnToken,
 	};

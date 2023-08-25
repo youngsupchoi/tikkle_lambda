@@ -27,6 +27,8 @@ exports.get_friend_search = async (req, res) => {
 		const return_body = {
 			success: true,
 			data: rows,
+			message_title: null,
+			message_detail: null,
 			returnToken,
 		};
 		return res.status(200).send(return_body);
@@ -38,6 +40,8 @@ exports.get_friend_search = async (req, res) => {
 		) {
 			const return_body = {
 				success: false,
+				message_title: null,
+				message_detail: null,
 				message: "잘못된 요청: " + error.message,
 			};
 			return res.status(400).send(return_body);
@@ -45,6 +49,8 @@ exports.get_friend_search = async (req, res) => {
 			console.log("get_friend_search에서 에러가 발생했습니다.");
 			const return_body = {
 				success: false,
+				message_title: null,
+				message_detail: null,
 				message: "내부 서버 오류",
 			};
 			return res.status(500).send(return_body);

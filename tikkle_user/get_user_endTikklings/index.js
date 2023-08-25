@@ -29,6 +29,8 @@ exports.get_user_endTikklings = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "SQL error",
 		};
 		return res.status(501).send(return_body);
@@ -41,6 +43,9 @@ exports.get_user_endTikklings = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
+		message_title: null,
+		message_detail: null,
+		detail_code: null,
 		message: "success",
 		returnToken,
 	};

@@ -22,6 +22,8 @@ exports.post_auth_phoneCheck = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "phone number value is null or invalid : input data again",
 		};
 		return res.status(401).send(return_body);
@@ -42,6 +44,8 @@ exports.post_auth_phoneCheck = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "Database connection error",
 		};
 		return res.status(501).send(return_body);
@@ -53,6 +57,8 @@ exports.post_auth_phoneCheck = async (req, res) => {
 		//already sign in
 		const return_body = {
 			success: true,
+			message_title: null,
+			message_detail: null,
 			message: "login",
 			userId: sqlResult[0].id,
 		};
@@ -62,6 +68,8 @@ exports.post_auth_phoneCheck = async (req, res) => {
 
 		const return_body = {
 			success: true,
+			message_title: null,
+			message_detail: null,
 			message: "sign up",
 		};
 		return res.status(201).send(return_body);
@@ -70,6 +78,8 @@ exports.post_auth_phoneCheck = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "many same number",
 		};
 		return res.status(502).send(return_body);

@@ -27,6 +27,8 @@ exports.get_auth_checkToken = async (req, res) => {
 		console.log(" get_auth_checkToken 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
+			message_title: null,
+			message_detail: null,
 			message: "the token value is null or invalid : Log in again",
 		};
 		return res.status(401).send(return_body);
@@ -41,6 +43,8 @@ exports.get_auth_checkToken = async (req, res) => {
 		console.log(" get_auth_checkToken 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
+			message_title: null,
+			message_detail: null,
 			message: "the token value is null or invalid : Log in again",
 		};
 		return res.status(401).send(return_body);
@@ -57,6 +61,8 @@ exports.get_auth_checkToken = async (req, res) => {
 		const return_body = {
 			success: true,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "success",
 		};
 		return res.status(200).send(return_body);
@@ -65,6 +71,9 @@ exports.get_auth_checkToken = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: null,
+		message_title: null,
+		message_detail: null,
+		detail_code: null,
 		message: "success",
 		returnToken,
 	};

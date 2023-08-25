@@ -22,6 +22,8 @@ exports.get_user_checkTikkling = async (req, res) => {
 		const return_body = {
 			success: false,
 			data: null,
+			message_title: null,
+			message_detail: null,
 			message: "SQL error",
 		};
 		return res.status(501).send(return_body);
@@ -32,6 +34,8 @@ exports.get_user_checkTikkling = async (req, res) => {
 		const return_body = {
 			success: true,
 			data: sqlResult[0].id,
+			message_title: null,
+			message_detail: null,
 			message: "Tikkling",
 			returnToken,
 		};
@@ -42,6 +46,9 @@ exports.get_user_checkTikkling = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: 0,
+		message_title: null,
+		message_detail: null,
+		detail_code: null,
 		message: "Not Tikkling",
 		returnToken,
 	};
