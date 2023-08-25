@@ -21,15 +21,14 @@ exports.get_notification_list = async (req, res) => {
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {
-		console.log(" get_notification_list 에서 에러가 발생했습니다.", err);
+		console.log("get_notification_list 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
-			message_title: null,
-			message_detail: null,
-			message: "SQL error",
+			detail_code: "01",
+			message: "SQL error : check DB error",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	const retData = sqlResult;
@@ -42,15 +41,14 @@ exports.get_notification_list = async (req, res) => {
 			[id, 1]
 		);
 	} catch (err) {
-		console.log(" get_notification_list 에서 에러가 발생했습니다.", err);
+		console.log("get_notification_list 에서 에러가 발생했습니다.", err);
 		const return_body = {
 			success: false,
-			data: null,
-			message_title: null,
-			message_detail: null,
-			message: "SQL error",
+			detail_code: "02",
+			message: "SQL error: error when update data",
+			returnToken: null,
 		};
-		return res.status(501).send(return_body);
+		return res.status(500).send(return_body);
 	}
 
 	//-------- return result --------------------------------------------------------------------------------------//
@@ -58,11 +56,9 @@ exports.get_notification_list = async (req, res) => {
 	const return_body = {
 		success: true,
 		data: retData,
-		message_title: null,
-		message_detail: null,
-		detail_code: null,
-		message: "success",
-		returnToken,
+		detail_code: "10",
+		message: "success get notification list",
+		returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };
