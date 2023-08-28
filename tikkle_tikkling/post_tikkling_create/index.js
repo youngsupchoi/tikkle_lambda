@@ -71,16 +71,12 @@ exports.post_tikkling_create = async (req, res) => {
     );
     //상품의 재고와 티켓을 하나 줄임
     //FIXME: 하나의 connect로 쿼리 전송
-    await Promise.all([
-      queryDatabase(
-        `UPDATE products SET quantity = quantity-1 WHERE (id = ?);`,
-        [req.body.product_id]
-      ),
-      queryDatabase(
-        `UPDATE users SET tikkling_ticket = tikkling_ticket-1 WHERE (id = ?);`,
-        [id]
-      ),
-    ]);
+    await queryDatabase_multi(
+      `
+    UPDATE products SET quantity = quantity-1 WHERE (id = ?);
+    UPDATE users SET tikkling_ticket = tikkling_ticket-1 WHERE (id = ?);`,
+      [req.body.product_id, id]
+    );
 
     const return_body = {
       success: true,
