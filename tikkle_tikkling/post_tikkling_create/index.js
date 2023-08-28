@@ -73,9 +73,13 @@ exports.post_tikkling_create = async (req, res) => {
     //FIXME: 하나의 connect로 쿼리 전송
     await queryDatabase_multi(
       `
+    TRANSACTION;
     UPDATE products SET quantity = quantity-1 WHERE (id = ?);
-    UPDATE users SET tikkling_ticket = tikkling_ticket-1 WHERE (id = ?);`,
-      [req.body.product_id, id]
+    UPDATE users SET tikkling_ticket = tikkling_ticket-1 WHERE (id = ?);
+    DELETE FROM wishlists WHERE (user_id = ? AND product_id = ?);
+    COMMIT;
+    `,
+      [req.body.product_id, id, id, req.body.product_id]
     );
 
     const return_body = {
