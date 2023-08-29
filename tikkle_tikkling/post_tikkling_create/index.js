@@ -8,7 +8,25 @@ exports.post_tikkling_create = async (req, res) => {
   //main logic------------------------------------------------------------------------------------------------------------------//
   //TODO: funding_limit에 대한 validation 추가
   //TODO: tikkle_quantity에 대한 validation 추가
+  //TODO: 하나의 연결로 수정
   try {
+    //body의 funding_limit와 오늘날짜를 비교해서 7일 이내인지 확인
+    //비교 단위를 변수로 설정
+    const diffUnit = 8;
+    const today = new Date();
+    const funding_limit = new Date(req.body.funding_limit);
+    const diff = funding_limit.getTime() - today.getTime();
+    const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+    if (diffDays > diffUnit) {
+      const return_body = {
+        detail_code: "04",
+        success: false,
+        message: `잘못된 요청, 티클링 마감일은 ${diffUnit}일 이내여야 합니다. 이를 수정하고 싶다면 diffUnit의 변경을 요청해주세요`,
+        returnToken: null,
+      };
+      return res.status(403).send(return_body);
+    }
+
     const [user_info, product_info, friends] = await Promise.all([
       queryDatabase(
         "select name, image, is_tikkling, tikkling_ticket from users where id = ?",
