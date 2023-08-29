@@ -68,23 +68,28 @@ exports.post_notification_send = async (req, res) => {
 	let message;
 	let deep_link;
 	let link;
+	let source_user_id;
 
 	if (notification_type_id === 1) {
 		message = name + "님이 가입했어요.";
 		deep_link = "deeplink_for_1";
 		link = "link_for_1";
+		source_user_id = id;
 	} else if (notification_type_id === 3) {
 		message = name + "님의 티클링이 시작되었어요.";
 		deep_link = "deeplink_for_3";
 		link = "link_for_3";
+		source_user_id = id;
 	} else if (notification_type_id === 5) {
 		message = name + "님이 보낸 티클을 확인해보세요.";
 		deep_link = "deeplink_for_5";
 		link = "link_for_5";
+		source_user_id = id;
 	} else if (notification_type_id === 6) {
 		message = "티끌링이 완료되어 배송이 시작되었어요.";
 		deep_link = "deeplink_for_6";
 		link = "link_for_6";
+		source_user_id = 0;
 		meta_data["receive_user_id"] = null;
 		meta_data["source_user_id"] = null;
 		meta_data["source_user_profile"] = null;
@@ -92,6 +97,7 @@ exports.post_notification_send = async (req, res) => {
 		message = name + "님이 티클을 환불했어요.";
 		deep_link = "deeplink_for_8";
 		link = "link_for_8";
+		source_user_id = id;
 	} else {
 	}
 
@@ -99,8 +105,8 @@ exports.post_notification_send = async (req, res) => {
 
 	const insertQuery = `
 		INSERT INTO notification
-		(user_id, message, is_deleted, is_read, notification_type_id, deep_link, link, meta_data)
-		VALUES (?, ?, 0, 0, ?, ?, ?, ?)
+		(user_id, message, is_deleted, is_read, notification_type_id, deep_link, link, meta_data, source_user_id)
+		VALUES (?, ?, 0, 0, ?, ?, ?, ?, ?)
 	  `;
 
 	const values = [
@@ -110,6 +116,7 @@ exports.post_notification_send = async (req, res) => {
 		deep_link,
 		link,
 		JSON.stringify(meta_data),
+		source_user_id,
 	];
 
 	try {
