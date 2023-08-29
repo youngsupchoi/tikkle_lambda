@@ -8,7 +8,7 @@
 	"queryStringParameters": null,
 	"body": {
 		"funding_limit": "2023-9-3",
-		"tikkle_quantity": 100,
+		"tikkle_quantity": 3,
 		"product_id": 5,
 		"type": "생일"
 	}

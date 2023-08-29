@@ -6,8 +6,7 @@ exports.post_tikkling_create = async (req, res) => {
   const returnToken = req.returnToken;
 
   //main logic------------------------------------------------------------------------------------------------------------------//
-  //TODO: tikkle_quantity에 대한 validation 추가
-  //TODO: 하나의 연결로 수정
+
   try {
     //body의 funding_limit와 오늘날짜를 비교해서 7일 이내인지 확인
     //비교 단위를 변수로 설정
@@ -26,19 +25,12 @@ exports.post_tikkling_create = async (req, res) => {
       return res.status(403).send(return_body);
     }
 
-    const [user_info, product_info, friends] = await Promise.all([
-      queryDatabase(
-        "select name, image, is_tikkling, tikkling_ticket from users where id = ?",
-        [id]
-      ),
-      queryDatabase("select quantity, price from products where id = ?", [
-        req.body.product_id,
-      ]),
-      queryDatabase(
-        `SELECT friend_user_id from friends_relation where central_user_id = ? and relation_state_id in (1, 2)`,
-        [id]
-      ),
-    ]);
+    const [user_info, product_info, friends] = await queryDatabase_multi(
+      `select name, image, is_tikkling, tikkling_ticket from users where id = ?;
+      select quantity, price from products where id = ?;
+      SELECT friend_user_id from friends_relation where central_user_id = ? and relation_state_id in (1, 2);`,
+      [id, req.body.product_id, id]
+    );
     //body의 tikkle_quantity와 price를 비교해서 올바른지 확인
     const correct_tikkle_quantity = product_info[0].price / 5000;
     if (correct_tikkle_quantity !== req.body.tikkle_quantity) {
