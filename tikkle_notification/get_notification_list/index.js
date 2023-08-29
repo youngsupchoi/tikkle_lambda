@@ -10,16 +10,18 @@ exports.get_notification_list = async (req, res) => {
 	let sqlResult;
 
 	try {
-		const rows = await queryDatabase(
+		const rows1 = await queryDatabase(
 			`	SELECT n.*, nt.name AS notification_type_name
-				FROM notification AS n
-				INNER JOIN notification_type AS nt ON n.notification_type_id = nt.id
-				WHERE n.user_id = ? AND n.is_deleted <> ?
-				ORDER BY n.created_at DESC;`,
+			FROM notification AS n
+			INNER JOIN notification_type AS nt ON n.notification_type_id = nt.id
+			LEFT JOIN friends_relation AS fr ON (n.user_id = fr.central_user_id AND n.source_user_id = fr.friend_user_id)
+			WHERE n.user_id = ? AND n.is_deleted <> ?
+					AND (fr.relation_state_id IS NULL OR fr.relation_state_id <> 3 OR n.source_user_id = 0)
+			ORDER BY n.created_at DESC;
+			`,
 			[id, 1]
 		);
-		sqlResult = rows;
-		//console.log("SQL result : ", sqlResult);
+		sqlResult = rows1;
 	} catch (err) {
 		console.log("get_notification_list 에서 에러가 발생했습니다.", err);
 		const return_body = {
