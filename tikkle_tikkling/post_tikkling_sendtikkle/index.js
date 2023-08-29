@@ -75,6 +75,7 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
       //티클을 보낼 때마다 알림을 보냄
       await queryDatabase(
         `INSERT INTO notification (user_id, notification_type_id, message, meta_data, source_user_id) VALUES (?, ?, ?, ?, ?);`,
+
         [
           check_tikkling[0].user_id,
           5,
