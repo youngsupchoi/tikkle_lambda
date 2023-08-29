@@ -6,7 +6,6 @@ exports.post_tikkling_create = async (req, res) => {
   const returnToken = req.returnToken;
 
   //main logic------------------------------------------------------------------------------------------------------------------//
-  //TODO: funding_limit에 대한 validation 추가
   //TODO: tikkle_quantity에 대한 validation 추가
   //TODO: 하나의 연결로 수정
   try {
@@ -32,7 +31,7 @@ exports.post_tikkling_create = async (req, res) => {
         "select name, image, is_tikkling, tikkling_ticket from users where id = ?",
         [id]
       ),
-      queryDatabase("select quantity from products where id = ?", [
+      queryDatabase("select quantity, price from products where id = ?", [
         req.body.product_id,
       ]),
       queryDatabase(
@@ -40,7 +39,17 @@ exports.post_tikkling_create = async (req, res) => {
         [id]
       ),
     ]);
-
+    //body의 tikkle_quantity와 price를 비교해서 올바른지 확인
+    const correct_tikkle_quantity = product_info[0].price / 5000;
+    if (correct_tikkle_quantity !== req.body.tikkle_quantity) {
+      const return_body = {
+        detail_code: "05",
+        success: false,
+        message: `잘못된 요청, 티클링 티클 개수가 올바르지 않습니다. 티클 개수는 ${correct_tikkle_quantity}개여야 합니다.`,
+        returnToken: null,
+      };
+      return res.status(403).send(return_body);
+    }
     //티클링중이면 에러
     if (user_info[0].is_tikkling === 1) {
       const return_body = {
