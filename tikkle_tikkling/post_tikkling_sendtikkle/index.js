@@ -1,5 +1,4 @@
-const { queryDatabase } = require("db.js");
-const { queryDatabase_multi } = require("db_query.js");
+const { queryDatabase, queryDatabase_multi } = require("db.js");
 
 exports.post_tikkling_sendtikkle = async (req, res) => {
   const body = req.body;
@@ -57,7 +56,7 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
     //보내는 사람과 받는 사람이 다를 때 티켓 지급 및 알림
     if (check_tikkling[0].user_id != id) {
       const [is_already_send, sender_info] = await queryDatabase_multi(
-        `SELECT id FROM sending_tikkle WHERE tikkling_id = ? AND sender_id = ?;
+        `SELECT id FROM sending_tikkle WHERE tikkling_id = ? AND user_id = ?;
         SELECT name, image FROM users WHERE id = ?;
         `,
         [req.body.tikkling_id, id, id]
@@ -75,15 +74,16 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
       }
       //티클을 보낼 때마다 알림을 보냄
       await queryDatabase(
-        `INSERT INTO notifications (user_id, type, message, meta_data) VALUES (?, ?, ?, ?);`,
+        `INSERT INTO notification (user_id, notification_type_id, message, meta_data, source_user_id) VALUES (?, ?, ?, ?, ?);`,
+
         [
           check_tikkling[0].user_id,
           5,
           `${sender_info[0].name}님이 보낸 티클을 확인해보세요.`,
           `{
-            "source_user_id": ${id},
             "source_user_profile": "${sender_info[0].image}",
           }`,
+          id,
         ]
       );
     }

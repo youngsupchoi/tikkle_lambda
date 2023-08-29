@@ -3,7 +3,7 @@
 	"path": "/get_user_checkTikkling",
 	"httpMethod": "GET",
 	"headers": {
-		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsImlhdCI6MTY5MTY0NTI5NiwiZXhwIjoxNjkxNjQ2MTk2LCJpc3MiOiJMaUZvbGkifQ.e9kkE0lkij8NtWmegnaQWq93DvfWbU8lk-EGgLmCQO8,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsImlhdCI6MTY5MTY0NTI5NywiZXhwIjoxNjk0MjM3Mjk3LCJpc3MiOiJMaUZvbGkifQ.fSi6fprFa7YyBVzQIV8MSWVtcszrvFW6EAr9C-OLnVA"
+		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsImlhdCI6MTY5MzE5NTkxOSwiZXhwIjoxNjkzMTk2ODE5LCJpc3MiOiJMaUZvbGkifQ.7SY5b5eC-SRqLEreAVUE8QzWcs3esjyD7dE8yO_0umM,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsImlhdCI6MTY5MzE5NTkxOSwiZXhwIjoxNjk1Nzg3OTE5LCJpc3MiOiJMaUZvbGkifQ.O7pUQUSGVM-x54ox-p_M4-F7tm2CDKST8tJLTUrnGjc"
 	},
 	"queryStringParameters": null,
 	"body": "{}"
