@@ -149,24 +149,26 @@ exports.post_product_list = async (req, res) => {
 		let rows;
 		if (!search) {
 			rows = await queryDatabase(
-				`	SELECT p.*, b.brand_name, pc.name AS cat_name
+				`	SELECT p.*, b.brand_name, pc.name AS cat_name, uwl.product_id AS wishlisted
 					FROM products p
 					INNER JOIN brands b ON p.brand_id = b.id
 					INNER JOIN product_category pc ON p.category_id = pc.id
+					LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id AND uwl.user_id = ? 
 					WHERE p.category_id = ?
 						AND p.price BETWEEN ? AND ?
 						AND p.is_deleted = 0
 					ORDER BY ${sortAttribute} ${sortWay}
 					LIMIT 20 OFFSET ?;
 				`,
-				[category_id, priceMin, priceMax, (getNum - 1) * 20]
+				[id, category_id, priceMin, priceMax, (getNum - 1) * 20]
 			);
 		} else {
 			rows = await queryDatabase(
-				` SELECT p.*, b.brand_name, pc.name AS cat_name
+				` SELECT p.*, b.brand_name, pc.name AS cat_name, uwl.product_id AS wishlisted
 					FROM products p
 					INNER JOIN brands b ON p.brand_id = b.id
 					INNER JOIN product_category pc ON p.category_id = pc.id
+					LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id AND uwl.user_id = ? 
 					WHERE p.category_id = ?
 						AND p.price BETWEEN ? AND ?
 						AND p.is_deleted = 0
@@ -174,7 +176,7 @@ exports.post_product_list = async (req, res) => {
 					ORDER BY ${sortAttribute} ${sortWay}
 					LIMIT 20 OFFSET ?;
 				`,
-				[category_id, priceMin, priceMax, (getNum - 1) * 20]
+				[id, category_id, priceMin, priceMax, (getNum - 1) * 20]
 			);
 		}
 
