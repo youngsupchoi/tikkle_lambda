@@ -17,7 +17,7 @@ exports.get_friend_event = async (req, res) => {
       u.is_tikkling
   FROM users u
   JOIN friends_relation fr ON u.id = fr.friend_user_id
-  WHERE fr.central_user_id = 2
+  WHERE fr.central_user_id = ?
   AND fr.relation_state_id <> 3
   AND DATE_ADD(u.birthday, 
                INTERVAL YEAR(CURDATE())-YEAR(u.birthday)
