@@ -120,37 +120,31 @@ exports.post_notification_send = async (req, res) => {
 	//console.log("reciver : ", receiver);
 
 	//-------- add notification data to DB --------------------------------------------------------------------------------------//
-	for (let i = 0; i < receiver.length; i++) {
-		const insertQuery = `
-		INSERT INTO notification
-		(user_id, message, is_deleted, is_read, notification_type_id, deep_link, link, meta_data, source_user_id)
-		VALUES (?, ?, 0, 0, ?, ?, ?, ?, ?)
-	  `;
 
-		const values = [
-			receiver[i].friend_user_id,
-			message,
-			notification_type_id,
-			deep_link,
-			link,
-			JSON.stringify(meta_data),
-			source_user_id,
-		];
-
-		try {
-			const rows = await queryDatabase(insertQuery, values);
-			sqlResult = rows;
-			//console.log("SQL result : ", sqlResult.insertId);
-		} catch (err) {
-			console.log("post_notification_send 에서 에러가 발생했습니다.", err);
-			const return_body = {
-				success: false,
-				detail_code: "03",
-				message: "Database post error",
-				returnToken: null,
-			};
-			return res.status(500).send(return_body);
+	if (receiver.length > 0) {
+		let notificationValues = "";
+		for (let i = 0; i < receiver.length; i++) {
+			notificationValues += "( ";
+			notificationValues += `${receiver[i].friend_user_id}, `;
+			notificationValues += `'${message}', `;
+			notificationValues += `0, `;
+			notificationValues += `0, `;
+			notificationValues += `${notification_type_id}, `;
+			notificationValues += `'${deep_link}', `;
+			notificationValues += `'${link}', `;
+			notificationValues += `'${JSON.stringify(meta_data)}', `;
+			notificationValues += `${source_user_id} `;
+			notificationValues += ")";
+			if (i < receiver.length - 1) notificationValues += ", ";
 		}
+
+		//console.log("notification : ", notificationValues);
+
+		await queryDatabase(
+			`INSERT INTO notification
+			(user_id, message, is_deleted, is_read, notification_type_id, deep_link, link, meta_data, source_user_id) 
+			VALUES ${notificationValues}`
+		);
 	}
 
 	//-------- send notification by SNS --------------------------------------------------------------------------------------//
