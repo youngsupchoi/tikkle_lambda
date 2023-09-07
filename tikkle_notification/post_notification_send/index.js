@@ -96,6 +96,7 @@ exports.post_notification_send = async (req, res) => {
 		deep_link = "deeplink_for_6";
 		link = "link_for_6";
 		source_user_id = id;
+		receive_user_id = id;
 	} else if (notification_type_id === 8) {
 		message = name + "님이 티클을 환불했어요.";
 		deep_link = "deeplink_for_8";
