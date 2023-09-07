@@ -68,6 +68,29 @@ exports.post_notification_send = async (req, res) => {
 		deep_link = "deeplink_for_5";
 		link = "link_for_5";
 		source_user_id = id;
+
+		//receive_user_id 대신 tikkling id 가오는 상황이라 쿼리로 바꿔줌
+		let sqlResult_tikkling;
+
+		try {
+			const rows = await queryDatabase(
+				"select user_id from tikkling where id = ?",
+				[receive_user_id]
+			);
+			sqlResult_tikkling = rows;
+			//console.log("SQL result : ", sqlResult_tikkling);
+		} catch (err) {
+			console.log("post_notification_send 에서 에러가 발생했습니다.", err);
+			const return_body = {
+				success: false,
+				detail_code: "02",
+				message: "SQL error",
+				returnToken: null,
+			};
+			return res.status(500).send(return_body);
+		}
+
+		receive_user_id = sqlResult_tikkling[0].user_id;
 	} else if (notification_type_id === 6) {
 		message = "티끌링이 완료되어 배송이 시작되었어요.";
 		deep_link = "deeplink_for_6";
@@ -78,6 +101,29 @@ exports.post_notification_send = async (req, res) => {
 		deep_link = "deeplink_for_8";
 		link = "link_for_8";
 		source_user_id = id;
+
+		//receive_user_id 대신 tikkling id 가오는 상황이라 쿼리로 바꿔줌
+		let sqlResult_tikkling;
+
+		try {
+			const rows = await queryDatabase(
+				"select user_id from tikkling where id = ?",
+				[receive_user_id]
+			);
+			sqlResult_tikkling = rows;
+			//console.log("SQL result : ", sqlResult_tikkling);
+		} catch (err) {
+			console.log("post_notification_send 에서 에러가 발생했습니다.", err);
+			const return_body = {
+				success: false,
+				detail_code: "02",
+				message: "SQL error",
+				returnToken: null,
+			};
+			return res.status(500).send(return_body);
+		}
+
+		receive_user_id = sqlResult_tikkling[0].user_id;
 	} else {
 	}
 
