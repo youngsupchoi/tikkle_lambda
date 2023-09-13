@@ -17,10 +17,10 @@ exports.post_product_info = async (req, res) => {
 				FROM products p
 				INNER JOIN brands b ON p.brand_id = b.id
 				INNER JOIN product_category pc ON p.category_id = pc.id
-				LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id
-				WHERE p.id = ? AND uwl.user_id = ?;
+				LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id AND uwl.user_id = ?
+				WHERE p.id = ? ;
 		`,
-			[productId, id]
+			[id, productId]
 		);
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
