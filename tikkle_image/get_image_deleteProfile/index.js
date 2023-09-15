@@ -9,13 +9,34 @@ exports.get_image_deleteProfile = async (req, res) => {
 	const id = req.id;
 	const returnToken = req.returnToken;
 
+	//get old image url
+	let pastUrl;
+
+	try {
+		const rows = await queryDatabase(
+			`	SELECT image
+			 	FROM users
+				WHERE id = ?
+			`,
+			[id]
+		);
+
+		pastUrl = rows[0].image;
+	} catch (err) {
+		console.log("SQL error: ", err);
+		return {
+			statusCode: 501,
+			body: "SQL error: ",
+		};
+	}
+
 	//-------- delete user image data  --------------------------------------------------------------------------------------//
 	let sqlResult;
-	// 재고 데이터 줄이기
+
 	try {
 		const rows = await queryDatabase(
 			"UPDATE users SET image = ? WHERE id = ?",
-			[null, id]
+			["https://d2da4yi19up8sp.cloudfront.net/profile/default.JPG", id]
 		);
 
 		sqlResult = rows;
@@ -57,35 +78,35 @@ exports.get_image_deleteProfile = async (req, res) => {
 		return res.status(500).send(return_body);
 	}
 
-	const bucket_online = await getSSMParameter("s3_image_buket");
-	const online_filename = id.toString() + ".JPG";
+	// delete resized image
+	const timeStamp = pastUrl.split("-")[1].split(".")[0];
 
-	const imageSize = [36, 48, 64, 128];
+	console.log("timeStamp : ", timeStamp);
 
-	for (let i = 0; i < imageSize.length; i++) {
-		const bucket = bucket_online + "/profile/" + imageSize[i];
+	const dstBucket = "tikkle-s3.online/profile";
+	const fileName = id + "-" + timeStamp + ".JPG";
 
-		// Delete the object
-		try {
-			const deleteParams = {
-				Bucket: bucket,
-				Key: online_filename,
-			};
+	//console.log("dstBucket : ", dstBucket);
+	//console.log("fileName : ", fileName);
 
-			await s3.deleteObject(deleteParams).promise();
+	try {
+		const params = {
+			Bucket: dstBucket,
+			Key: fileName,
+		};
 
-			console.log("Object deleted successfully", imageSize[i]);
-		} catch (error) {
-			console.log("get_image_deleteProfile 에서 에러가 발생했습니다.", error);
-			const return_body = {
-				success: false,
-				detail_code: "03",
-				message: "Error deleting object in s3 : " + imageSize[i],
-				returnToken: null,
-			};
-			return res.status(500).send(return_body);
-		}
+		const result = await s3.deleteObject(params).promise();
+	} catch (err) {
+		console.log("get_image_deleteProfile 에서 에러가 발생했습니다.", error);
+		const return_body = {
+			success: false,
+			detail_code: "02",
+			message: "Error deleting src object in s3",
+			returnToken: null,
+		};
+		return res.status(500).send(return_body);
 	}
+
 	//-------- return result --------------------------------------------------------------------------------------//
 
 	const return_body = {
