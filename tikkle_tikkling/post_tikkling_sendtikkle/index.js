@@ -80,7 +80,7 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
 					check_tikkling[0].user_id,
 					5,
 					`${sender_info[0].name}님이 보낸 티클을 확인해보세요.`,
-					`${sender_info[0].image},`,
+					`${sender_info[0].image}`,
 					id,
 				]
 			);
