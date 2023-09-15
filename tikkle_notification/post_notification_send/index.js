@@ -169,15 +169,15 @@ exports.post_notification_send = async (req, res) => {
 	if (receiver.length > 0) {
 		let notificationValues = "";
 		for (let i = 0; i < receiver.length; i++) {
-			notificationValues += "( ";
-			notificationValues += `${receiver[i].friend_user_id}, `;
+			notificationValues += "(";
+			notificationValues += `${receiver[i].friend_user_id},`;
 			notificationValues += `'${message}', `;
 			notificationValues += `0, `;
 			notificationValues += `0, `;
 			notificationValues += `${notification_type_id}, `;
 			notificationValues += `'${deep_link}', `;
 			notificationValues += `'${link}', `;
-			notificationValues += `'${meta_data}', `;
+			notificationValues += `${meta_data}, `;
 			notificationValues += `${source_user_id} `;
 			notificationValues += ")";
 			if (i < receiver.length - 1) notificationValues += ", ";
