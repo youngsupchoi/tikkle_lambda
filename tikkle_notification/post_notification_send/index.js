@@ -176,7 +176,7 @@ exports.post_notification_send = async (req, res) => {
 			notificationValues += `${notification_type_id}, `;
 			notificationValues += `'${deep_link}', `;
 			notificationValues += `'${link}', `;
-			notificationValues += `${meta_data}, `;
+			notificationValues += `'${meta_data}', `;
 			notificationValues += `${source_user_id} `;
 			notificationValues += ")";
 			if (i < receiver.length - 1) notificationValues += ", ";
