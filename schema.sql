@@ -187,7 +187,7 @@ BEGIN
     WHERE `id` = NEW.`user_id`;
 END;
 //
-s
+
 
 
 -- 1: 배송 준비, 2: 출발, 3: 도착, 4: 수령
@@ -328,12 +328,10 @@ BEGIN
 
     IF received_tikkle_count + sending_quantity <= total_tikkle_quantity AND tikkling_state_id = 1 THEN
         INSERT INTO sending_tikkle (tikkling_id, user_id, quantity, message) VALUES (desired_tikkling_id, sending_user_id, sending_quantity, sending_message);
-        INSERT INTO notification (user_id, message, notification_type_id, deep_link, link) VALUES ((SELECT user_id FROM tikkling WHERE id = desired_tikkling_id), "이제 티클을 상품으로 바꿀 수 있어요", 6, NULL, NULL);
         SELECT COALESCE(SUM(quantity), 0) INTO new_received_tikkle_count FROM sending_tikkle WHERE tikkling_id = desired_tikkling_id;
         
         IF new_received_tikkle_count >= total_tikkle_quantity THEN
             UPDATE tikkling SET state_id = 4 WHERE id = desired_tikkling_id AND state_id = 1;
-            INSERT INTO notification (user_id, message, notification_type_id, deep_link, link) VALUES ((SELECT user_id FROM tikkling WHERE id = desired_tikkling_id), "이제 티클을 상품으로 바꿀 수 있어요", 6, NULL, NULL);
         END IF;
         
         SET out_result = TRUE;
