@@ -44,9 +44,7 @@ exports.post_notification_send = async (req, res) => {
 	//console.log("name : ", name);
 
 	//-------- check notification_type_id and make message --------------------------------------------------------------------------------------//
-	const meta_data = {};
-	meta_data["source_user_id"] = id;
-	meta_data["source_user_profile"] = profile;
+	const meta_data = profile;
 
 	let message;
 	let deep_link;
@@ -179,7 +177,7 @@ exports.post_notification_send = async (req, res) => {
 			notificationValues += `${notification_type_id}, `;
 			notificationValues += `'${deep_link}', `;
 			notificationValues += `'${link}', `;
-			notificationValues += `'${JSON.stringify(meta_data)}', `;
+			notificationValues += `'${meta_data}', `;
 			notificationValues += `${source_user_id} `;
 			notificationValues += ")";
 			if (i < receiver.length - 1) notificationValues += ", ";
