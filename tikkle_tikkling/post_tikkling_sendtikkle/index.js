@@ -64,9 +64,9 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
 			ticket_message = "이미 티켓을 지급 받았습니다.";
 			detail_code = "02";
 			//티클을 처음 보낼때만 티켓을 1개 지급
-			if (is_already_send.length == 0) {
+			if (is_already_send.length == 1) {
 				await queryDatabase(
-					`UPDATE users SET ticket = ticket + 1 WHERE id = ?;`,
+					`UPDATE users SET  tikkling_ticket =  tikkling_ticket + 1 WHERE id = ?;`,
 					[id]
 				);
 				ticket_message = "티클링 티켓 1개를 획득하였습니다.";
