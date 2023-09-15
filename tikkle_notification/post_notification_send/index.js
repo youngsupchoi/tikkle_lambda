@@ -69,7 +69,6 @@ exports.post_notification_send = async (req, res) => {
 
 		//receive_user_id 대신 tikkling id 가오는 상황이라 쿼리로 바꿔줌
 		let sqlResult_tikkling;
-
 		try {
 			const rows = await queryDatabase(
 				"select user_id from tikkling where id = ?",
@@ -183,7 +182,7 @@ exports.post_notification_send = async (req, res) => {
 			if (i < receiver.length - 1) notificationValues += ", ";
 		}
 
-		//console.log("notification : ", notificationValues);d
+		console.log("notification : ", notificationValues);
 
 		await queryDatabase(
 			`INSERT INTO notification
