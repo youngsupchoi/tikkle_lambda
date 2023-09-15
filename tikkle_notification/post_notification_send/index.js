@@ -40,13 +40,13 @@ exports.post_notification_send = async (req, res) => {
 	}
 
 	const name = sqlResult[0].name;
+	const profile = sqlResult[0].image;
 	//console.log("name : ", name);
 
 	//-------- check notification_type_id and make message --------------------------------------------------------------------------------------//
 	const meta_data = {};
 	meta_data["source_user_id"] = id;
-	meta_data["source_user_profile"] =
-		"https://d2da4yi19up8sp.cloudfront.net/profile/128/" + id + ".JPG";
+	meta_data["source_user_profile"] = profile;
 
 	let message;
 	let deep_link;
