@@ -183,7 +183,7 @@ exports.post_notification_send = async (req, res) => {
 			if (i < receiver.length - 1) notificationValues += ", ";
 		}
 
-		//console.log("notification : ", notificationValues);
+		//console.log("notification : ", notificationValues);d
 
 		await queryDatabase(
 			`INSERT INTO notification
