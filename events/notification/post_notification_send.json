@@ -7,7 +7,7 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"receive_user_id": 1,
-		"notification_type_id": 8
+		"receive_user_id": 78,
+		"notification_type_id": 3
 	}
 }
