@@ -72,20 +72,6 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
         ticket_message = "티클링 티켓 1개를 획득하였습니다.";
         detail_code = "03";
       }
-      //티클을 보낼 때마다 알림을 보냄
-      await queryDatabase(
-        `INSERT INTO notification (user_id, notification_type_id, message, meta_data, source_user_id) VALUES (?, ?, ?, ?, ?);`,
-
-        [
-          check_tikkling[0].user_id,
-          5,
-          `${sender_info[0].name}님이 보낸 티클을 확인해보세요.`,
-          `{
-            "source_user_profile": "${sender_info[0].image}",
-          }`,
-          id,
-        ]
-      );
     }
 
     const success = results[1][0].success;
