@@ -288,6 +288,7 @@ drop table if exists delivery_info;
 CREATE TABLE `delivery_info` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `invoice_number` VARCHAR(255) NULL,
+    `courier_company_code` VARCHAR(10) NULL,
     `tikkling_id` INT NOT NULL,
     `state_id` INT NOT NULL DEFAULT 1,
     `address` VARCHAR(255) NOT NULL,
@@ -297,7 +298,8 @@ CREATE TABLE `delivery_info` (
     `actual_delivery_date` DATE NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
-    FOREIGN KEY (`state_id`) REFERENCES `delivery_state`(`id`)
+    FOREIGN KEY (`state_id`) REFERENCES `delivery_state`(`id`),
+    FOREIGN KEY (`courier_company_code`) REFERENCES `courier_company`(`code`)
 );
 
 
