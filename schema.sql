@@ -19,7 +19,8 @@ CREATE TABLE `users` (
 	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `is_tikkling` BOOL NOT NULL DEFAULT false,
 	`device_token` VARCHAR(255),
-	`tikkling_ticket` INT NOT NULL DEFAULT 0
+	`tikkling_ticket` INT NOT NULL DEFAULT 0,
+    `refund_account` VARCHAR(255) DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE (`nick`),
 	UNIQUE (`phone`)
