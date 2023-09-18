@@ -123,6 +123,7 @@ const { put_user_nick } = require("./tikkle_user/put_user_nick/index.js");
 const {
   post_tikkling_buymytikkle,
 } = require("./tikkle_tikkling/post_tikkilng_buymytikkle/index.js");
+const { put_user_account } = require("./tikkle_user/put_user_account/index.js");
 
 //-------- API's ------------------------------------------------//
 
@@ -224,6 +225,8 @@ api.get("/get_user_isNotice", authtoken, get_user_isNotice);
 api.put("/put_user_address", authtoken, put_user_address);
 
 api.put("/put_user_nick", authtoken, put_user_nick);
+
+api.put("/put_user_account", authtoken, put_user_account);
 
 //
 
