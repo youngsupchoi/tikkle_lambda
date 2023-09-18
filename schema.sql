@@ -20,7 +20,8 @@ CREATE TABLE `users` (
   `is_tikkling` BOOL NOT NULL DEFAULT false,
 	`device_token` VARCHAR(255),
 	`tikkling_ticket` INT NOT NULL DEFAULT 0,
-    `refund_account` VARCHAR(255) DEFAULT NULL,
+    `account` VARCHAR(255) DEFAULT NULL,
+    `bank_name` VARCHAR(255) DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE (`nick`),
 	UNIQUE (`phone`)
@@ -227,7 +228,7 @@ CREATE TABLE `refund` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `tikkling_id` INT NOT NULL,
     `user_id` INT NOT NULL,
-    `bank` VARCHAR(255) NOT NULL,
+    `bank_name` VARCHAR(255) NOT NULL,
     `account` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `state_id` INT NOT NULL DEFAULT 0,
