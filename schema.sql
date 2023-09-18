@@ -294,7 +294,7 @@ CREATE TABLE `delivery_info` (
     `address` VARCHAR(255) NOT NULL,
     `detail_address` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `expected_delivery_date` DATE NOT NULL,
+    `expected_delivery_date` DATE NULL,
     `actual_delivery_date` DATE NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
