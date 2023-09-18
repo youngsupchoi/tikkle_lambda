@@ -214,6 +214,31 @@ CREATE TABLE `delivery_info` (
     FOREIGN KEY (`state_id`) REFERENCES `delivery_state`(`id`)
 );
 
+CREATE TABLE `refund_state` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+INSERT INTO refund_state (name) values ('환불 요청');
+INSERT INTO refund_state (name) values ('환불 완료');
+
+CREATE TABLE `refund` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `tikkling_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    `bank` VARCHAR(255) NOT NULL,
+    `account` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `state_id` INT NOT NULL DEFAULT 1,
+    `expected_refund_amount` INT NOT NULL,
+    `actual_refund_amount` INT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
+    FOREIGN KEY (`state_id`) REFERENCES `refund_state`(`id`)
+);
+
 -- 1: 친구, 2: 친구 대기, 3: 차단
 CREATE TABLE `relation_state` ( 
     `id` INT NOT NULL AUTO_INCREMENT,
