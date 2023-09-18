@@ -197,7 +197,7 @@ api.post(
 
 api.post("/post_tikkling_create", authtoken, post_tikkling_create);
 
-api.put("/put_tikkling_end", authtoken, put_tikkling_end);
+api.put("/put_tikkling_end/:type", authtoken, put_tikkling_end);
 
 api.post("/post_tikkling_sendtikkle", authtoken, post_tikkling_sendtikkle);
 
