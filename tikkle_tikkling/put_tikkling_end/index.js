@@ -81,13 +81,12 @@ exports.put_tikkling_end = async (req, res) => {
         await queryDatabase_multi(
           `START TRANSACTION;
           UPDATE tikkling SET terminated_at = now() WHERE id = ?;
-          INSERT INTO refund (tikkling_id, user_id, bank_name, account, expected_refund_amount) VALUES (?, ?, ?, ?, ?);
+          INSERT INTO refund (tikkling_id, bank_name, account, expected_refund_amount) VALUES (?, ?, ?, ?);
           COMMIT;
           `,
           [
             req.body.tikkling_id,
             req.body.tikkling_id,
-            id,
             user_info.bank_name,
             user_info.account,
             check_tikkling[0].sending_tikkle_count * 5000 * 0.9,
