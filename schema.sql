@@ -294,6 +294,7 @@ CREATE TABLE `delivery_info` (
     `address` VARCHAR(255) NOT NULL,
     `detail_address` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `start_delivery_date` DATE NULL,
     `expected_delivery_date` DATE NULL,
     `actual_delivery_date` DATE NULL,
     PRIMARY KEY (`id`),
