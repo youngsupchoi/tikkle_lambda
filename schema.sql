@@ -466,7 +466,7 @@ DROP PROCEDURE IF EXISTS `create_tikkling`;
 -- 새로운 create_tikkling 저장 프로시저 추가
 DELIMITER //
 
-CREATE DEFINER=`HeungkyuLee`@`%` PROCEDURE `create_tikkling`(
+CREATE PROCEDURE `create_tikkling`(
     IN input_user_id INT,
     IN funding_limit VARCHAR(255),
     IN tikkle_quantity INT,
