@@ -59,6 +59,7 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
 				`SELECT id FROM sending_tikkle WHERE tikkling_id = ? AND user_id = ?;
         SELECT name, image FROM users WHERE id = ?;
         `,
+
 				[req.body.tikkling_id, id, id]
 			);
 			ticket_message = "이미 티켓을 지급 받았습니다.";

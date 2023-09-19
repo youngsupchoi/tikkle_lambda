@@ -19,7 +19,9 @@ CREATE TABLE `users` (
 	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `is_tikkling` BOOL NOT NULL DEFAULT false,
 	`device_token` VARCHAR(255),
-	`tikkling_ticket` INT NOT NULL DEFAULT 0
+	`tikkling_ticket` INT NOT NULL DEFAULT 0,
+    `account` VARCHAR(255) DEFAULT NULL,
+    `bank_name` VARCHAR(255) DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE (`nick`),
 	UNIQUE (`phone`)
@@ -188,6 +190,86 @@ BEGIN
 END;
 //
 
+CREATE TABLE `courier_company` (
+    `name` VARCHAR(255) NOT NULL,
+    `code` VARCHAR(10) NOT NULL,
+    PRIMARY KEY (`code`)
+);
+
+INSERT INTO `courier_company` (name, code) VALUES ('CJ대한통운', '04');
+INSERT INTO `courier_company` (name, code) VALUES ('한진택배', '05');
+INSERT INTO `courier_company` (name, code) VALUES ('롯데택배', '08');
+INSERT INTO `courier_company` (name, code) VALUES ('우체국택배', '01');
+INSERT INTO `courier_company` (name, code) VALUES ('로젠택배', '06');
+INSERT INTO `courier_company` (name, code) VALUES ('일양로지스', '11');
+INSERT INTO `courier_company` (name, code) VALUES ('한덱스', '20');
+INSERT INTO `courier_company` (name, code) VALUES ('대신택배', '22');
+INSERT INTO `courier_company` (name, code) VALUES ('경동택배', '23');
+INSERT INTO `courier_company` (name, code) VALUES ('합동택배', '32');
+INSERT INTO `courier_company` (name, code) VALUES ('CU 편의점택배', '46');
+INSERT INTO `courier_company` (name, code) VALUES ('GS Postbox 택배', '24');
+INSERT INTO `courier_company` (name, code) VALUES ('한의사랑택배', '16');
+INSERT INTO `courier_company` (name, code) VALUES ('천일택배', '17');
+INSERT INTO `courier_company` (name, code) VALUES ('건영택배', '18');
+INSERT INTO `courier_company` (name, code) VALUES ('굿투럭', '40');
+INSERT INTO `courier_company` (name, code) VALUES ('애니트랙', '43');
+INSERT INTO `courier_company` (name, code) VALUES ('SLX택배', '44');
+INSERT INTO `courier_company` (name, code) VALUES ('우리택배(구호남택배)', '45');
+INSERT INTO `courier_company` (name, code) VALUES ('우리한방택배', '47');
+INSERT INTO `courier_company` (name, code) VALUES ('농협택배', '53');
+INSERT INTO `courier_company` (name, code) VALUES ('홈픽택배', '54');
+INSERT INTO `courier_company` (name, code) VALUES ('IK물류', '71');
+INSERT INTO `courier_company` (name, code) VALUES ('성훈물류', '72');
+INSERT INTO `courier_company` (name, code) VALUES ('용마로지스', '74');
+INSERT INTO `courier_company` (name, code) VALUES ('원더스퀵', '75');
+INSERT INTO `courier_company` (name, code) VALUES ('로지스밸리택배', '79');
+INSERT INTO `courier_company` (name, code) VALUES ('컬리넥스트마일', '82');
+INSERT INTO `courier_company` (name, code) VALUES ('풀앳홈', '85');
+INSERT INTO `courier_company` (name, code) VALUES ('삼성전자물류', '86');
+INSERT INTO `courier_company` (name, code) VALUES ('큐런택배', '88');
+INSERT INTO `courier_company` (name, code) VALUES ('두발히어로', '89');
+INSERT INTO `courier_company` (name, code) VALUES ('위니아딤채', '90');
+INSERT INTO `courier_company` (name, code) VALUES ('지니고 당일배송', '92');
+INSERT INTO `courier_company` (name, code) VALUES ('오늘의픽업', '94');
+INSERT INTO `courier_company` (name, code) VALUES ('로지스밸리', '96');
+INSERT INTO `courier_company` (name, code) VALUES ('한샘서비스원 택배', '101');
+INSERT INTO `courier_company` (name, code) VALUES ('NDEX KOREA', '103');
+INSERT INTO `courier_company` (name, code) VALUES ('도도플렉스(dodoflex)', '104');
+INSERT INTO `courier_company` (name, code) VALUES ('LG전자(판토스)', '107');
+INSERT INTO `courier_company` (name, code) VALUES ('부릉', '110');
+INSERT INTO `courier_company` (name, code) VALUES ('1004홈', '112');
+INSERT INTO `courier_company` (name, code) VALUES ('썬더히어로', '113');
+INSERT INTO `courier_company` (name, code) VALUES ('(주)팀프레시', '116');
+INSERT INTO `courier_company` (name, code) VALUES ('롯데칠성', '118');
+INSERT INTO `courier_company` (name, code) VALUES ('핑퐁', '119');
+INSERT INTO `courier_company` (name, code) VALUES ('발렉스 특수물류', '120');
+INSERT INTO `courier_company` (name, code) VALUES ('엔티엘피스', '123');
+INSERT INTO `courier_company` (name, code) VALUES ('GTS로지스', '125');
+INSERT INTO `courier_company` (name, code) VALUES ('로지스팟', '127');
+INSERT INTO `courier_company` (name, code) VALUES ('홈픽 오늘도착', '129');
+INSERT INTO `courier_company` (name, code) VALUES ('로지스파트너', '130');
+INSERT INTO `courier_company` (name, code) VALUES ('딜리래빗', '131');
+INSERT INTO `courier_company` (name, code) VALUES ('지오피', '132');
+INSERT INTO `courier_company` (name, code) VALUES ('에이치케이홀딩스', '134');
+INSERT INTO `courier_company` (name, code) VALUES ('HTNS', '135');
+INSERT INTO `courier_company` (name, code) VALUES ('케이제이티', '136');
+INSERT INTO `courier_company` (name, code) VALUES ('더바오', '137');
+INSERT INTO `courier_company` (name, code) VALUES ('라스트마일', '138');
+INSERT INTO `courier_company` (name, code) VALUES ('오늘회 러쉬', '139');
+INSERT INTO `courier_company` (name, code) VALUES ('탱고앤고', '142');
+INSERT INTO `courier_company` (name, code) VALUES ('투데이', '143');
+INSERT INTO `courier_company` (name, code) VALUES ('현대글로비스', '145');
+INSERT INTO `courier_company` (name, code) VALUES ('ARGO', '148');
+INSERT INTO `courier_company` (name, code) VALUES ('자이언트', '151');
+INSERT INTO `courier_company` (name, code) VALUES ('HY', '155');
+INSERT INTO `courier_company` (name, code) VALUES ('유피로지스', '156');
+INSERT INTO `courier_company` (name, code) VALUES ('우진인터로지스', '157');
+INSERT INTO `courier_company` (name, code) VALUES ('삼다수 가정배송', '159');
+INSERT INTO `courier_company` (name, code) VALUES ('와이드테크', '160');
+INSERT INTO `courier_company` (name, code) VALUES ('위니온로지스', '163');
+INSERT INTO `courier_company` (name, code) VALUES ('딜리박스', '167');
+INSERT INTO `courier_company` (name, code) VALUES ('이스트라', '168');
+
 
 
 -- 1: 배송 준비, 2: 출발, 3: 도착, 4: 수령
@@ -202,15 +284,49 @@ INSERT INTO delivery_state (name) values ('출발');
 INSERT INTO delivery_state (name) values ('도착');
 INSERT INTO delivery_state (name) values ('수령');
 
-
+drop table if exists delivery_info;
 CREATE TABLE `delivery_info` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `invoice_number` VARCHAR(255) NULL,
+    `courier_company_code` VARCHAR(10) NULL,
     `tikkling_id` INT NOT NULL,
-    `state_id` INT NOT NULL,    
+    `state_id` INT NOT NULL DEFAULT 1,
+    `address` VARCHAR(255) NOT NULL,
+    `detail_address` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `start_delivery_date` DATE NULL,
+    `expected_delivery_date` DATE NULL,
+    `actual_delivery_date` DATE NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
-    FOREIGN KEY (`state_id`) REFERENCES `delivery_state`(`id`)
+    FOREIGN KEY (`state_id`) REFERENCES `delivery_state`(`id`),
+    FOREIGN KEY (`courier_company_code`) REFERENCES `courier_company`(`code`)
+);
+
+
+CREATE TABLE `refund_state` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+INSERT INTO refund_state (name) values ('환불 요청');
+INSERT INTO refund_state (name) values ('환불 완료');
+
+
+CREATE TABLE `refund` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `tikkling_id` INT NOT NULL,
+    `bank_name` VARCHAR(255) NOT NULL,
+    `account` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `state_id` INT NOT NULL DEFAULT 1,
+    `expected_refund_amount` INT NOT NULL,
+    `actual_refund_amount` INT NULL,
+    `refund_date` DATE NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
+    FOREIGN KEY (`state_id`) REFERENCES `refund_state`(`id`)
 );
 
 -- 1: 친구, 2: 친구 대기, 3: 차단

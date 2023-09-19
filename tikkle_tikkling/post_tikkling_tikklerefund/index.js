@@ -49,7 +49,25 @@ const check_tikkle_not_used = async (tikkle_data) => {
   }
 };
 
-exports.post_tikkling_refundtikkle = async (req, res) => {
+/**
+ * Checks if the tikkle is used.
+ * @param {number} tikkle_id
+ * @returns {boolean} True if the tikkle is used, otherwise false.
+ *
+ */
+const reactive_tikkling = async (tikkle_data) => {
+  try{
+    const result = await queryDatabase(`UPDATE tikkling SET state_id = 1 WHERE id = ?;`, [
+      tikkle_data.tikkling_id,
+    ]);
+  }
+  
+
+  
+  
+};
+
+exports.post_tikkling_tikklerefund = async (req, res) => {
   const body = req.body;
   const id = req.id;
   const returnToken = req.returnToken;
@@ -95,7 +113,6 @@ exports.post_tikkling_refundtikkle = async (req, res) => {
 
     //티클링 티클을 모두 받아 종료된 상태라면 해당 티클링의 상태를 다시 티클을 받을 수 있는 상태로 변경
     //티클 환불 절차 진행
-    //줄 수 있는 상태인지 확인
   } catch (err) {
     console.error(err);
     console.log("server error: post_tikkling_refundtikkle");
