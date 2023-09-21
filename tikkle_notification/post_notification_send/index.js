@@ -89,7 +89,7 @@ exports.post_notification_send = async (req, res) => {
 
 		receive_user_id = sqlResult_tikkling[0].user_id;
 	} else if (notification_type_id === 6) {
-		message = "티끌링이 완료되어 배송이 시작되었어요.";
+		message = "티클링 상품 교환이 완료되었어요.";
 		deep_link = "deeplink_for_6";
 		link = "link_for_6";
 		source_user_id = id;
@@ -122,6 +122,12 @@ exports.post_notification_send = async (req, res) => {
 		}
 
 		receive_user_id = sqlResult_tikkling[0].user_id;
+	} else if (notification_type_id === 9) {
+		message = "티클링 환급 신청이 완료되었어요.";
+		deep_link = "deeplink_for_9";
+		link = "link_for_9";
+		source_user_id = id;
+		receive_user_id = id;
 	} else {
 	}
 
@@ -154,7 +160,8 @@ exports.post_notification_send = async (req, res) => {
 	} else if (
 		notification_type_id === 5 ||
 		notification_type_id === 6 ||
-		notification_type_id === 8
+		notification_type_id === 8 ||
+		notification_type_id === 9
 	) {
 		receiver = [];
 		const a = { friend_user_id: receive_user_id };
