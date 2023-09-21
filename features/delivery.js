@@ -1,4 +1,14 @@
 const { queryDatabase, queryDatabase_multi } = require("db.js");
+
+
+
+class ExpectedError extends Error {
+  constructor({ status, message, detail_code }) {
+    super(message);
+    this.status = status;
+    this.detail_code = detail_code;
+  }
+}
 //=========================================Model=======================================================
 class Delivery {
   constructor(delivery_info) {
@@ -15,6 +25,8 @@ class Delivery {
     this.actual_delivery_date = delivery_info.actual_delivery_date;
   }
 }
+
+
 //=========================================Repository=======================================================
 class DeliveryRepository {
   getById(id) {
@@ -64,45 +76,59 @@ class DeliveryService {
    * @returns {Delivery}
    */
   async createDeliveryById(id) {
-    const deliveryData = await this.repository.getById(id);
+    const [deliveryData] = await this.repository.getById(id);
     if (!deliveryData) {
-      throw new Error(`Delivery not found for id: ${id}`);
+      throw new ExpectedError({
+        status: "404",
+        message: `존재하지 않는 배송정보입니다.`,
+        detail_code: "00"
+      });
     }
     return new Delivery(deliveryData);
   }
+
   /**
    * check delivery can start
-   * @param {Delivery} delivery
-   * @returns {boolean}
+   * @param {Delivery} delivery - The delivery object to be checked.
+   * @returns {void}
    */
   checkDeliveryCanStart(delivery) {
     if (delivery.state_id != 1) {
-      return false;
+      throw new ExpectedError({
+        status: "400",
+        message: `이미 시작이 이루어진 배송입니다.`,
+        detail_code: "00"
+      });
     } else {
-      return true;
+      return
     }
   }
 
   /**
    * start delivery
-   * @param {Delivery} delivery
+   * @param {number} id
+   * @param {string} invoice_number
+   * @param {string} courier_company_code
+   * @param {number} delivery_period
    * @returns {Promise}
    * @throws {Error}
     */
-  async startDelivery(delivery) {
+  async startDelivery(id, invoice_number, courier_company_code, delivery_period) {
     const result = await this.repository.updateDeliveryToStart(
-      delivery.id,
-      delivery.invoice_number,
-      delivery.courier_company_code,
-      delivery.delivery_period
+      id,
+      invoice_number,
+      courier_company_code,
+      delivery_period
     );
     if (result.affectedRows === 0) {
-      throw new Error(`Delivery not found for id: ${delivery.id}`);
+      throw new ExpectedError({
+        status: "404",
+        message: `존재하지 않는 배송정보입니다.`,
+        detail_code: "00"
+      });
     }
     return;
   }
-
-
 }
 
 module.exports = { DeliveryService };

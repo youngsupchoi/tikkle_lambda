@@ -127,6 +127,7 @@ const { put_user_account } = require("./tikkle_user/put_user_account/index.js");
 const {
   put_tikkling_stop,
 } = require("./tikkle_tikkling/put_tikkling_stop/index.js");
+const { post_seller_startdelivery } = require("./tikkle_seller/post_seller_startdelivery/index.js");
 
 //-------- API's ------------------------------------------------//
 
@@ -232,7 +233,9 @@ api.put("/put_user_address", authtoken, put_user_address);
 api.put("/put_user_nick", authtoken, put_user_nick);
 
 api.put("/put_user_account", authtoken, put_user_account);
+//------- seller
 
+api.post("/post_seller_startdelivery", authtoken, post_seller_startdelivery);
 //
 
 //-------- handler ------------------------------------------------//

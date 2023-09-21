@@ -1,45 +1,33 @@
-const { queryDatabase, queryDatabase_multi } = require("db.js");
 const { DeliveryService } = require("../../features/delivery");
-// const { DeliveryService } = require("delivery.js");
+
+const deliveryService = new DeliveryService();
+
+const createResponseBody = (success, code, message, token = null) => ({
+  success,
+  detail_code: code,
+  message,
+  returnToken: token,
+});
+
 exports.post_seller_startdelivery = async (req, res) => {
-  const body = req.body;
-  const id = req.id;
-  const returnToken = req.returnToken;
+  const { body, id, returnToken } = req;
 
   //main logic------------------------------------------------------------------------------------------------------------------//
-
   try {
-    const target_delivery = DeliveryService.getById(id);
+    //delivery id로 delivery의 정보를 가져옴
+
+    const target_delivery = await deliveryService.createDeliveryById(body.delivery_id);
     //delivery의 상태를 확인
-    if (!DeliveryService.checkDeliveryCanStart(target_delivery)){
-      return res.status(400).send({
-        success: false,
-        detail_code: "01",
-        message: "이미 시작이 이루어진 배송입니다.",
-        returnToken: null,
-      });
-    }
+    await deliveryService.checkDeliveryCanStart(target_delivery);
+    //delivery를 시작
+    await deliveryService.startDelivery(body.delivery_id, body.invoice_number, body.courier_company_code, body.delivery_period);
+    return res.status(200).send(createResponseBody(true, "00", "배송 시작 성공", returnToken));
 
-    //delilvery를 시작 -> state_id = 2, start_delivery_date = now(), expected_delivery_date = now() + 3days,invoice_number = body.invoice_number, courier_company_code = body.courier_company_code
-
-
-    const return_body = {
-      success: true,
-      data: rows,
-      detail_code: "00",
-      message: "친구의 티클링 정보 조회 성공",
-      returnToken,
-    };
-    return res.status(200).send(return_body);
   } catch (err) {
-    console.error("error: ", err);
-    console.log("get_tikkling_friendinfo에서 문제가 발생했습니다.");
-    const return_body = {
-      success: false,
-      detail_code: "00",
-      message: "서버 에러",
-      returnToken: null,
+    if (err.status) {
+      return res.status(err.status).send(createResponseBody(false, err.detail_code, err.message));
     };
-    return res.status(500).send(return_body);
+    console.error("error-post_seller_startdelivery: ", err);
+    return res.status(500).send(createResponseBody(false, "00", "서버 에러"));
   }
 };
