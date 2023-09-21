@@ -20,6 +20,7 @@ exports.get_tikkling_info = async (req, res) => {
       a.funding_limit, 
       a.tikkle_quantity, 
       a.tikkle_count, 
+      a.state_id,
       a.thumbnail_image, 
       a.brand_name, 
       a.product_name, 
