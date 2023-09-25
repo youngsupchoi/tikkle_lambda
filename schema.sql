@@ -219,11 +219,11 @@ CREATE TABLE `tikkling_state` (
     `name` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`)
 );
-INSERT INTO tikkling_state (name) values ('진행중');
-INSERT INTO tikkling_state (name) values ('시작 이전 종료');
-INSERT INTO tikkling_state (name) values ('완료되기 전 종료');
-INSERT INTO tikkling_state (name) values ('조각을 모두 모은 후 종료');
-INSERT INTO tikkling_state (name) values ('기간 종료');
+INSERT INTO tikkling_state (id, name) values (1, '진행중');
+INSERT INTO tikkling_state (id, name) values (2, '시작 이전 종료');
+INSERT INTO tikkling_state (id, name) values (3, '완료되기 전 종료');
+INSERT INTO tikkling_state (id, name) values (4, '조각을 모두 모은 후 종료');
+INSERT INTO tikkling_state (id, name) values (5, '기간 종료');
 
 
 CREATE TABLE `tikkling` (
