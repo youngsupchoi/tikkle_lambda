@@ -7,8 +7,7 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"bank_name": "국민은행",
+		"bank_code": 2,
 		"account": "1234567890"
-
 	}
 }

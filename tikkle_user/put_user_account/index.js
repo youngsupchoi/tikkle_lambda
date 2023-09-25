@@ -7,16 +7,17 @@ exports.put_user_account = async (req, res) => {
 	const id = req.id;
 	const returnToken = req.returnToken;
 
-	const bank_name = body.bank_name;
+	const bank_code = body.bank_code;
 	const account = body.account;
 
 	//-------- check account --------------------------------------------------------------------------------------//
 
 	//check productId
 	if (
-		!bank_name ||
+		!bank_code ||
 		!account ||
-		typeof bank_name !== "string" ||
+		typeof bank_code !== "number" || // Check if bank_code is a number
+		!Number.isInteger(bank_code) ||
 		typeof account !== "string"
 	) {
 		console.log("put_user_account의 입력 데이터에서 에러가 발생했습니다.");
@@ -53,10 +54,10 @@ exports.put_user_account = async (req, res) => {
 	try {
 		const rows = await queryDatabase(
 			`	UPDATE users
-				SET	bank_name = ?,	account = ?
+				SET	bank_code = ?,	account = ?
 				WHERE	id = ?
 			`,
-			[bank_name, encryptedAccount, id]
+			[bank_code, encryptedAccount, id]
 		);
 
 		sqlResult = rows;
