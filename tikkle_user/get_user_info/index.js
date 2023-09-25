@@ -36,6 +36,7 @@ exports.get_user_info = async (req, res) => {
 		return res.status(500).send(return_body);
 	}
 
+	// console.log("sqlResult : ", sqlResult);
 	//-------- decode account --------------------------------------------------------------------------------------//
 	if (sqlResult[0].account !== null) {
 		const encryptedData = sqlResult[0].account;
@@ -54,6 +55,21 @@ exports.get_user_info = async (req, res) => {
 		decryptedData += decipher.final("utf-8");
 
 		sqlResult[0].account = decryptedData;
+	}
+
+	// //--------  bank_code --------------------------------------------------------------------------------------//
+
+	if (sqlResult[0].bank_code !== null) {
+		const bank_code = sqlResult[0].bank_code;
+
+		const bank_name = await queryDatabase(
+			"select * from bank where  bank_code = ?",
+			[bank_code]
+		);
+
+		sqlResult[0].bank_name = bank_name[0].bank_name;
+	} else {
+		sqlResult[0].bank_name = null;
 	}
 
 	//-------- return result --------------------------------------------------------------------------------------//
