@@ -4,6 +4,70 @@ CREATE DATABASE tikkle
 
 use tikkle;
 
+CREATE TABLE bank (
+    bank_code INT PRIMARY KEY,
+    bank_name VARCHAR(255),
+    UNIQUE (`bank_name`)
+);
+
+INSERT INTO bank (bank_code, bank_name) VALUES
+(2,'산업은행'),
+(3,'기업은행'),
+(92,'토스뱅크'),
+(4,'국민은행'),
+(5,'외환은행'),
+(7,'수협은행/수협중앙회'),
+(11,'NH농협'),
+(12,'농협중앙회'),
+(20,'우리은행'),
+(23,'SC 제일은행'),
+(27,'한국씨티은행'),
+(31,'대구은행'),
+(32,'부산은행'),
+(34,'광주은행'),
+(35,'제주은행'),
+(37,'전북은행'),
+(39,'경남은행'),
+(45,'새마을금고중앙회'),
+(48,'신협중앙회'),
+(50,'상호저축은행'),
+(54,'HSBC 은행'),
+(55,'도이치은행'),
+(57,'제이피모간체이스은행'),
+(60,'BOA은행'),
+(62,'중국공상은행'),
+(64,'산림조합중앙회'),
+(71,'우체국'),
+(81,'KEB 하나은행'),
+(88,'신한은행'),
+(89,'K뱅크'),
+(271,'토스증권'),
+(90,'카카오뱅크'),
+(209,'유안타증권'),
+(218,'KB증권'),
+(238,'미래에셋증권'),
+(240,'삼성증권'),
+(243,'한국투자증권'),
+(247,'NH 투자증권'),
+(261,'교보증권'),
+(262,'하이투자증권'),
+(263,'현대차투자증권'),
+(264,'키움증권'),
+(265,'이베스트투자증권'),
+(266,'SK 증권'),
+(267,'대신증권'),
+(269,'한화투자증권'),
+(270,'하나금융투자'),
+(278,'신한금융투자'),
+(279,'동부증권'),
+(280,'유진투자증권'),
+(287,'메리츠종합금융증권'),
+(290,'부국증권'),
+(291,'신영증권'),
+(292,'케이프투자증권'),
+(103,'SBI 저축은행');
+
+
 CREATE TABLE `users` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(30) NOT NULL,
@@ -21,8 +85,9 @@ CREATE TABLE `users` (
 	`device_token` VARCHAR(255),
 	`tikkling_ticket` INT NOT NULL DEFAULT 0,
     `account` VARCHAR(255) DEFAULT NULL,
-    `bank_name` VARCHAR(255) DEFAULT NULL,
+    `bank_code` INT,
 	PRIMARY KEY (`id`),
+    FOREIGN KEY (`bank_code`) REFERENCES `bank`(`bank_code`),
 	UNIQUE (`nick`),
 	UNIQUE (`phone`)
 );
