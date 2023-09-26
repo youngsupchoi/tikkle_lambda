@@ -46,7 +46,7 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
     ) {
       const return_body = {
         success: false,
-        detail_code: "02",
+        detail_code: "01",
         message: "이미 모든 티클을 수집한 티클링입니다.",
         returnToken,
       };
