@@ -148,7 +148,7 @@ exports.put_tikkling_end = async (req, res) => {
       return res.status(200).send(return_body);
     }
   } catch (err) {
-    console.error("Failed to connect or execute query:", err);
+    console.log("Failed to connect or execute query:", err);
     console.log("put_tikkling_end에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
