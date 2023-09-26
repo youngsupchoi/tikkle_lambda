@@ -382,7 +382,7 @@ INSERT INTO refund_state (name) values ('환불 완료');
 CREATE TABLE `refund` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `tikkling_id` INT NOT NULL,
-    `bank_name` VARCHAR(255) NOT NULL,
+    `bank_code` VARCHAR(255) NOT NULL,
     `account` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `state_id` INT NOT NULL DEFAULT 1,
@@ -391,7 +391,8 @@ CREATE TABLE `refund` (
     `refund_date` DATE NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
-    FOREIGN KEY (`state_id`) REFERENCES `refund_state`(`id`)
+    FOREIGN KEY (`state_id`) REFERENCES `refund_state`(`id`),
+    FOREIGN KEY (`bank_code`) REFERENCES `bank`(`bank_code`)
 );
 
 -- 1: 친구, 2: 친구 대기, 3: 차단
