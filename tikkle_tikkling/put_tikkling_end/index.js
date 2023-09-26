@@ -61,7 +61,7 @@ exports.put_tikkling_end = async (req, res) => {
       return res.status(403).send(return_body);
     }
     const [user_info] = await queryDatabase(
-      `select bank_name, account, address, detail_address from users where id = ?;`,
+      `select bank_code, account, address, detail_address from users where id = ?;`,
       [id]
     );
 
@@ -81,7 +81,7 @@ exports.put_tikkling_end = async (req, res) => {
         await queryDatabase_multi(
           `START TRANSACTION;
           UPDATE tikkling SET terminated_at = now() WHERE id = ?;
-          INSERT INTO refund (tikkling_id, bank_name, account, expected_refund_amount) VALUES (?, ?, ?, ?);
+          INSERT INTO refund (tikkling_id, bank_code, account, expected_refund_amount) VALUES (?, ?, ?, ?);
           COMMIT;
           `,
           [
