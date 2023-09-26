@@ -25,8 +25,7 @@ exports.get_tikkling_info = async (req, res) => {
       a.brand_name, 
       a.product_name, 
       a.category_id, 
-      a.type, 
-      a.state_id,
+      a.type,
       pc.name AS category_name 
       FROM active_tikkling_view a 
       JOIN users u ON a.user_id = u.id 
