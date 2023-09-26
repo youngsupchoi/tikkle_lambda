@@ -382,7 +382,7 @@ INSERT INTO refund_state (name) values ('환불 완료');
 CREATE TABLE `refund` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `tikkling_id` INT NOT NULL,
-    `bank_code` VARCHAR(255) NOT NULL,
+    `bank_code` INT NOT NULL,
     `account` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `state_id` INT NOT NULL DEFAULT 1,
