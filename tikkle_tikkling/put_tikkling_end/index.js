@@ -103,6 +103,30 @@ exports.put_tikkling_end = async (req, res) => {
     }
     //상품 수령--------------------------------------------------------------------------------------------------------------------------------//
     else if (type == "goods") {
+      //input주소 데이터 검증
+      if (
+        !req.body.zonecode ||
+        !req.body.address ||
+        !req.body.detail_address ||
+        typeof req.body.zonecode !== "string" ||
+        typeof req.body.address !== "string" ||
+        typeof req.body.detail_address !== "string" ||
+        req.body.zonecode.length !== 5 ||
+        req.body.address.length > 250 ||
+        req.body.detail_address.length > 250
+      ) {
+        console.log(
+          "put_tikkling_end의 주소 입력 데이터에서 에러가 발생했습니다."
+        );
+        const return_body = {
+          success: false,
+          detail_code: "05",
+          message: "address value is null or invalid",
+          returnToken: null,
+        };
+        return res.status(400).send(return_body);
+      }
+
       if (
         check_tikkling[0].sending_tikkle_count !=
         check_tikkling[0].tikkle_quantity
@@ -115,8 +139,9 @@ exports.put_tikkling_end = async (req, res) => {
         };
         return res.status(400).send(return_body);
       } else if (
-        user_info.address == null ||
-        user_info.detail_address == null
+        req.body.zonecode == null ||
+        req.body.address == null ||
+        req.body.detail_address == null
       ) {
         const return_body = {
           success: false,
@@ -128,14 +153,15 @@ exports.put_tikkling_end = async (req, res) => {
       }
       await queryDatabase_multi(
         `START TRANSACTION;
-        UPDATE tikkling SET terminated_at = now() WHERE id = ?;
-        INSERT INTO delivery_info (tikkling_id, address, detail_address) VALUES (?, ?, ?);
+        UPDATE tikkling SET terminated_at = now(), resolution_type='goods' WHERE id = ?;
+        INSERT INTO delivery_info (tikkling_id, zonecode, address, detail_address) VALUES (?, ?, ?, ?);
         COMMIT;`,
         [
           req.body.tikkling_id,
           req.body.tikkling_id,
-          user_info.address,
-          user_info.detail_address,
+          req.body.zonecode,
+          req.body.address,
+          req.body.detail_address,
         ]
       );
       //티클링 종료
