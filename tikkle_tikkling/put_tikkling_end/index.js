@@ -1,4 +1,6 @@
 const { queryDatabase, queryDatabase_multi } = require("db.js");
+const crypto = require("crypto");
+const { getSSMParameter } = require("ssm.js");
 
 exports.put_tikkling_end = async (req, res) => {
   const body = req.body;
@@ -60,15 +62,11 @@ exports.put_tikkling_end = async (req, res) => {
       };
       return res.status(403).send(return_body);
     }
-    const [user_info] = await queryDatabase(
-      `select bank_code, account, address, detail_address from users where id = ?;`,
-      [id]
-    );
 
     //환불------------------------------------------------------------------------------------------------------------------//
 
     if (type == "refund") {
-      if (user_info.bank_name == null || user_info.account == null) {
+      if (req.body.bank_code == null || req.body.account == null) {
         const return_body = {
           success: false,
           detail_code: "03",
@@ -76,30 +74,62 @@ exports.put_tikkling_end = async (req, res) => {
           returnToken,
         };
         return res.status(400).send(return_body);
-      } else {
-        //tikkling을 종료시키고 환불 요청 목록에 추가
-        await queryDatabase_multi(
-          `START TRANSACTION;
-          UPDATE tikkling SET terminated_at = now() WHERE id = ?;
-          INSERT INTO refund (tikkling_id, bank_code, account, expected_refund_amount) VALUES (?, ?, ?, ?);
-          COMMIT;
-          `,
-          [
-            req.body.tikkling_id,
-            req.body.tikkling_id,
-            user_info.bank_name,
-            user_info.account,
-            check_tikkling[0].sending_tikkle_count * 5000 * 0.9,
-          ]
-        );
-        const return_body = {
-          success: true,
-          detail_code: "01",
-          message: `티클링에 대해 성공적으로 환급을 요청하였습니다.`,
-          returnToken,
-        };
-        return res.status(200).send(return_body);
       }
+      //input은행 데이터 검증
+      if (
+        !req.body.bank_code ||
+        !req.body.account ||
+        typeof req.body.bank_code !== "number" || // Check if bank_code is a number
+        !Number.isInteger(req.body.bank_code) ||
+        typeof req.body.account !== "string"
+      ) {
+        console.log("put_tikkling_end의 입력 데이터에서 에러가 발생했습니다.");
+        const return_body = {
+          success: false,
+          detail_code: "06",
+          message: "input value is null or invalid",
+          returnToken: null,
+        };
+        return res.status(400).send(return_body);
+      }
+      //암호화
+      const algorithm = "aes-256-cbc"; // Use the same algorithm that was used for encryption
+      const accountkeyHex = await getSSMParameter("accountkeyHex");
+      const accountivHex = await getSSMParameter("accountivHex");
+
+      const key = Buffer.from(accountkeyHex, "hex");
+      const iv = Buffer.from(accountivHex, "hex");
+      const cipher = crypto.createCipheriv(algorithm, key, iv);
+
+      // console.log("key : ", key);
+      // console.log("iv : ", iv);
+
+      let encryptedAccount = cipher.update(req.body.account, "utf-8", "hex");
+      encryptedAccount += cipher.final("hex");
+
+      //tikkling을 종료시키고 환불 요청 목록에 추가
+      await queryDatabase_multi(
+        `START TRANSACTION;
+        UPDATE tikkling SET terminated_at = now(), resolution_type='refund' WHERE id = ?;
+        INSERT INTO refund (tikkling_id, user_id, bank_code, account, expected_refund_amount) VALUES (?, ?, ?, ?, ?);
+        COMMIT;
+        `,
+        [
+          req.body.tikkling_id,
+          req.body.tikkling_id,
+          id,
+          req.body.bank_code,
+          encryptedAccount,
+          check_tikkling[0].sending_tikkle_count * 5000 * 0.9,
+        ]
+      );
+      const return_body = {
+        success: true,
+        detail_code: "01",
+        message: `티클링에 대해 성공적으로 환급을 요청하였습니다.`,
+        returnToken,
+      };
+      return res.status(200).send(return_body);
     }
     //상품 수령--------------------------------------------------------------------------------------------------------------------------------//
     else if (type == "goods") {
