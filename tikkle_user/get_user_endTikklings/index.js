@@ -19,7 +19,8 @@ exports.get_user_endTikklings = async (req, res) => {
 			INNER JOIN tikkling_state ON tikkling.state_id = tikkling_state.id
 			INNER JOIN products ON tikkling.product_id = products.id
 			INNER JOIN brands ON products.brand_id = brands.id
-			WHERE user_id = ? and terminated_at IS NOT NULL`,
+			WHERE user_id = ? and terminated_at IS NOT NULL
+			ORDER BY tikkling.created_at DESC`,
 			[id]
 		);
 		sqlResult = rows;
