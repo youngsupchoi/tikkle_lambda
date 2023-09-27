@@ -235,13 +235,15 @@ CREATE TABLE `tikkling` (
     `product_id` INT NOT NULL,
     `terminated_at` TIMESTAMP NULL,
     `state_id` INT NOT NULL DEFAULT 1,
-    `type` VARCHAR(255) NOT NULL,      
+    `type` VARCHAR(255) NOT NULL,
+    `resolution_type` ENUM('goods', 'refund') NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`product_id`) REFERENCES `products`(`id`),
     FOREIGN KEY (`state_id`) REFERENCES `tikkling_state`(`id`) ON UPDATE CASCADE,
     UNIQUE (`id`)
 );
+
 
 DELIMITER //
 -- 티클링이 하나 추가될 때 해당 유저의 is_tikkling을 true로 바꿈
@@ -356,6 +358,7 @@ CREATE TABLE `delivery_info` (
     `courier_company_code` VARCHAR(10) NULL,
     `tikkling_id` INT NOT NULL,
     `state_id` INT NOT NULL DEFAULT 1,
+    `zonecode` VARCHAR(255),
     `address` VARCHAR(255) NOT NULL,
     `detail_address` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
