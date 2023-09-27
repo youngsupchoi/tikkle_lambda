@@ -58,7 +58,7 @@ exports.put_tikkling_cancel = async (req, res) => {
       //티클링 취소, 티클링 티켓 환급, 상품 수량 복구
       await Promise.all([
         queryDatabase(
-          `UPDATE tikkling SET state_id = 2, terminated_at = now() WHERE id = ?;`,
+          `UPDATE tikkling SET state_id = 2, terminated_at = now(), resolution_type = 'cancel' WHERE id = ?;`,
           [req.body.tikkling_id]
         ),
         queryDatabase(
