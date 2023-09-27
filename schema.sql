@@ -236,7 +236,7 @@ CREATE TABLE `tikkling` (
     `terminated_at` TIMESTAMP NULL,
     `state_id` INT NOT NULL DEFAULT 1,
     `type` VARCHAR(255) NOT NULL,
-    `resolution_type` ENUM('goods', 'refund') NULL,
+    `resolution_type` ENUM('goods', 'refund', `cancel`) NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`product_id`) REFERENCES `products`(`id`),
