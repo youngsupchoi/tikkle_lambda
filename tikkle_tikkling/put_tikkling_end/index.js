@@ -209,7 +209,7 @@ exports.put_tikkling_end = async (req, res) => {
     const return_body = {
       success: false,
       detail_code: "00",
-      message: "서버 에러",
+      message: err,
       returnToken: null,
     };
     return res.status(500).send(return_body);
