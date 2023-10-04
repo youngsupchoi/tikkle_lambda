@@ -120,7 +120,7 @@ exports.post_auth_registerUser = async (req, res) => {
 		nick,
 		phone,
 		gender,
-		null,
+		"https://d2da4yi19up8sp.cloudfront.net/profile/default.JPG",
 		null,
 		null,
 		false,
