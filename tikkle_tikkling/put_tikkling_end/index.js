@@ -111,13 +111,12 @@ exports.put_tikkling_end = async (req, res) => {
       await queryDatabase_multi(
         `START TRANSACTION;
         UPDATE tikkling SET terminated_at = now(), resolution_type='refund' WHERE id = ?;
-        INSERT INTO refund (tikkling_id, user_id, bank_code, account, expected_refund_amount) VALUES (?, ?, ?, ?, ?);
+        INSERT INTO refund (tikkling_id, bank_code, account, expected_refund_amount) VALUES (?, ?, ?, ?, ?);
         COMMIT;
         `,
         [
           req.body.tikkling_id,
           req.body.tikkling_id,
-          id,
           req.body.bank_code,
           encryptedAccount,
           check_tikkling[0].sending_tikkle_count * 5000 * 0.9,
@@ -209,7 +208,7 @@ exports.put_tikkling_end = async (req, res) => {
     const return_body = {
       success: false,
       detail_code: "00",
-      message: err,
+      message: "서버 에러",
       returnToken: null,
     };
     return res.status(500).send(return_body);
