@@ -434,6 +434,16 @@ VALUES
     (3, '환불'),
     (4, '환급');
 
+CREATE TABLE `payment` (
+    `merchant_uid` VARCHAR(64) NOT NULL,
+    `user_id` INT NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `amount` INT NOT NULL,
+    `state` ENUM('PAYMENT_PENDING', 'PAYMENT_FAILED', 'PAYMENT_COMPLETED','PAYMENT_CANCELLED') NULL,
+    PRIMARY KEY (`merchant_uid`),
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+);
+
 
 
 CREATE TABLE `sending_tikkle` (
@@ -443,11 +453,13 @@ CREATE TABLE `sending_tikkle` (
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `message` TEXT NULL,
     `quantity` INT NOT NULL,
-	  `state_id` INT NOT NULL DEFAULT 1,
+	`state_id` INT NOT NULL DEFAULT 1,
+    `merchant_uid` VARCHAR(64) NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-    FOREIGN KEY (`state_id`) REFERENCES `sending_tikkle_state`(`id`);
+    FOREIGN KEY (`state_id`) REFERENCES `sending_tikkle_state`(`id`),
+    FOREIGN KEY (`merchant_uid`) REFERENCES `payment`(`merchant_uid`)
 );
 
 -- tikkling_id에 index 추가
@@ -482,6 +494,8 @@ INNER JOIN products ON tikkling.product_id = products.id
 INNER JOIN brands ON products.brand_id = brands.id
 WHERE tikkling.terminated_at IS NULL
 GROUP BY tikkling.id;
+
+
 
 --tikkling의 terminated_at이 변경시 이를 user의 is_tikkling을 0으로 변경
 DELIMITER //
