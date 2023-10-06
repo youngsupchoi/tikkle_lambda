@@ -136,6 +136,11 @@ const {
 	post_seller_startdelivery,
 } = require("./tikkle_seller/post_seller_startdelivery/index.js");
 
+//payment
+const {
+	get_payment_apiToken,
+} = require("./tikkle_payment/get_payment_apiToken/index.js");
+
 //-------- API's ------------------------------------------------//
 
 //------- auth
@@ -244,9 +249,13 @@ api.put("/put_user_address", authtoken, put_user_address);
 api.put("/put_user_nick", authtoken, put_user_nick);
 
 api.put("/put_user_account", authtoken, put_user_account);
-//------- seller
 
+//------- seller
 api.post("/post_seller_startdelivery", authtoken, post_seller_startdelivery);
+
+//------- payment
+api.get("/get_payment_apiToken", authtoken, get_payment_apiToken);
+
 //
 
 //-------- handler ------------------------------------------------//
