@@ -104,7 +104,7 @@ exports.get_tikkling_info = async (req, res) => {
 			};
 			return res.status(400).send(return_body);
 		} else {
-			console.log("get_tikkling_info에서 문제가 발생했습니다.");
+			console.error(`🚨error -> ⚡️post_tikkling_info : 🐞${err}`);
 			const return_body = {
 				success: false,
 				detail_code: "00",

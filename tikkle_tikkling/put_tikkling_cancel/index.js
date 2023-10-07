@@ -80,8 +80,7 @@ exports.put_tikkling_cancel = async (req, res) => {
       return res.status(200).send(return_body);
     }
   } catch (err) {
-    console.error("Failed to connect or execute query:", err);
-    console.log("서버 에러-put_tikkling_cancel");
+    console.error(`🚨error -> ⚡️put_tikkling_end에서 : 🐞${err}`);
     const return_body = {
       success: false,
       detail_code: "00",
