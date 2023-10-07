@@ -1,29 +1,21 @@
 const { queryDatabase, queryDatabase_multi } = require("db.js");
 const { getSSMParameter } = require("ssm.js");
 const { ExpectedError} = require("./ExpectedError.js");
-class PaymentInfo {
-  constructor({ user_name, user_phone_number, amount, merchant_uid }) {
-    this.pg = getSSMParameter("pg");
-    this.pay_method = "trans";
-    this.merchant_uid = merchant_uid;
-    this.name = "티클";
-    this.buyer_name = user_name;
-    this.buyer_tel = user_phone_number;
-    //TODO: redirect url 필요한 파라미터인지 다시 체크
-    this.m_redirect_url = "https://www.naver.com/";
-    this.app_scheme = "example";
-    this.amount = amount;
-  }
-}
-class Payment {
-  constructor({ user_id, amount, state = 'PAYMENT_PENDING', created_at = null }) {
-    this.merchant_uid = this.generateMerchantUid();
-    this.user_id = user_id;
-    this.amount = amount;
-    this.state = state;
-    this.created_at = created_at;
-  }
 
+class Tikkling {
+  constructor({ id, user_id, funding_limit, created_at = null, tikkle_quantity, product_id, terminated_at, state_id, type, resolution_type}) {
+    this.id = id;
+    this.user_id = user_id;
+    this.funding_limit = funding_limit;
+    this.created_at = created_at;
+    this.tikkle_quantity = tikkle_quantity;
+    this.product_id = product_id;
+    this.terminated_at = terminated_at;
+    this.state_id = state_id;
+    this.type = type;
+    this.resolution_type = resolution_type;
+  }
+  
   /**
    * Asynchronously saves the payment info including merchant_uid, user_id, amount, and state to the database.
    * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
@@ -92,4 +84,4 @@ class Payment {
 
 
 
-module.exports = { Payment };
+module.exports = { Tikkling };
