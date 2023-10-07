@@ -33,8 +33,8 @@ class Payment {
         `INSERT INTO payment (merchant_uid, user_id, amount, state) VALUES (?, ?, ?, ?)`,
         [this.merchant_uid, this.user_id, this.amount, this.state]
       );
-    } catch (error) {
-      console.error(`🚨error -> ⚡️getUserById : 🐞${error}`);
+    } catch (err) {
+      console.error(`🚨error -> ⚡️getUserById : 🐞${err}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -70,14 +70,11 @@ class Payment {
    * const payment = new Payment({ user_id: 1, amount: 10000 });
    * payment.createPaymentInfo('홍길동', '01012345678');
   */
-  createPaymentInfo(user_name, user_phone_number) {
+  createPaymentInfo({user_name, user_phone_number}) {
     const amount = this.amount;
     const merchant_uid = this.merchant_uid;
     return new PaymentInfo({ user_name, user_phone_number, amount, merchant_uid });
   }
-
-
-
 
 }
 

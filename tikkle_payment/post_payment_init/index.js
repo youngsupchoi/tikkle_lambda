@@ -30,7 +30,7 @@ exports.post_payment_init = async (req, res) => {
     if (err.status) {
       return res.status(err.status).send(createResponseBody(false, err.detail_code, err.message));
     };
-    console.error("error-post_payment_init: ", err);
+    console.error(`🚨error -> ⚡️getUserById : 🐞${err}`);
     return res.status(500).send(createResponseBody(false, "00", "서버 에러"));
   }
 };
