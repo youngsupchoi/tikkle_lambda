@@ -9,7 +9,7 @@ const createResponseBody = (success, code, message, token = null) => ({
   returnToken: token,
 });
 
-exports.post_seller_startdelivery = async (req, res) => {
+exports.post_payment_init = async (req, res) => {
   const { body, id, returnToken } = req;
   const { amount } = body;
   //main logic------------------------------------------------------------------------------------------------------------------//
@@ -24,13 +24,13 @@ exports.post_seller_startdelivery = async (req, res) => {
     //payment를 저장 
     await payment.savePayment();
     
-    return res.status(200).send(Response(true, "00", "결제 데이터 저장 완료", payment_info, returnToken));
+    return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료", payment_info, returnToken));
 
   } catch (err) {
     if (err.status) {
       return res.status(err.status).send(createResponseBody(false, err.detail_code, err.message));
     };
-    console.error("error-post_seller_startdelivery: ", err);
+    console.error("error-post_payment_init: ", err);
     return res.status(500).send(createResponseBody(false, "00", "서버 에러"));
   }
 };

@@ -30,14 +30,14 @@ class Payment {
   async savePayment() {
     try {
       return await queryDatabase(
-        `INSERT INTO payment_info (merchant_uid, user_id, amount, state) VALUES (?, ?, ?, ?)`,
+        `INSERT INTO payment (merchant_uid, user_id, amount, state) VALUES (?, ?, ?, ?)`,
         [this.merchant_uid, this.user_id, this.amount, this.state]
       );
     } catch (error) {
-      console.error("결제정보를 저장하는데에 실패했습니다.");
+      console.error(`🚨error -> ⚡️getUserById : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
-        message: `서버에러, 결제 정보를 저장하는데 실패했습니다.`,
+        message: `서버에러`,
         detail_code: "00",
       });
     }
