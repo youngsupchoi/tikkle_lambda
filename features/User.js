@@ -41,14 +41,27 @@ class User {
     this.bank_code = bank_code;
   }
 
-  createById = async (id) => {
+  
+  /**
+   * Asynchronously creates a new user with the given ID.
+   * @param {number} id - User ID
+   * @returns {Promise<User>} - A promise that resolves with a new User instance.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @memberof User
+   * @static
+   * @async
+   * @example
+   * const user = await User.createById(1);
+   * // => User { id: 1, name: '홍길동', ... }
+   */
+  static createById = async (id) => {
     try{
-      const query = `INSERT INTO users (id) VALUES (?);`;
+      const query = `SELECT * FROM users WHERE id = ?`;
       const [user] = await queryDatabase(query, [id]);
       return new User(user);
 
     }catch(error){
-      console.error("error -> getUserById ");
+      console.error(`🚨error -> ⚡️getUserById : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -57,3 +70,5 @@ class User {
     }
   }
 }
+
+module.exports = { User };
