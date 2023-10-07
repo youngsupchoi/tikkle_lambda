@@ -1,21 +1,15 @@
 const { queryDatabase, queryDatabase_multi } = require("db.js");
 const { getSSMParameter } = require("ssm.js");
+const { ExpectedError} = require("./ExpectedError.js");
 
-class ExpectedError extends Error {
-  constructor({ status, message, detail_code }) {
-    super(message);
-    this.status = status;
-    this.detail_code = detail_code;
-  }
-}
 //=========================================Model=======================================================
 class Payment {
-  constructor({ user_id, amount, state, created_at }) {
+  constructor({ user_id, amount, state = 'PAYMENT_PENDING', created_at = null }) {
     this.merchant_uid = this.generateMerchantUid();
     this.user_id = user_id;
     this.amount = amount;
-    this.state = state || 'PAYMENT_PENDING';
-    this.created_at = created_at || null;
+    this.state = state;
+    this.created_at = created_at;
   }
 
   /**
@@ -82,7 +76,7 @@ class Payment {
     return new PaymentInfo({ user_name, user_phone_number, amount, merchant_uid });
   }
 
-  
+
 
 
 }
@@ -211,4 +205,4 @@ class PaymentService {
   }
 }
 
-module.exports = { DeliveryService };
+module.exports = { Payment };
