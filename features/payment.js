@@ -1,4 +1,5 @@
 const { queryDatabase, queryDatabase_multi } = require("db.js");
+const { getSSMParameter } = require("ssm.js");
 
 class ExpectedError extends Error {
   constructor({ status, message, detail_code }) {
@@ -9,18 +10,95 @@ class ExpectedError extends Error {
 }
 //=========================================Model=======================================================
 class Payment {
-  constructor(delivery_info) {
-    this.id = delivery_info.id;
-    this.invoice_number = delivery_info.invoice_number;
-    this.courier_company_code = delivery_info.courier_company_code;
-    this.tikkling_id = delivery_info.tikkling_id;
-    this.state_id = delivery_info.state_id;
-    this.address = delivery_info.address;
-    this.detail_address = delivery_info.detail_address;
-    this.created_at = delivery_info.created_at;
-    this.start_delivery_date = delivery_info.start_delivery_date;
-    this.expected_delivery_date = delivery_info.expected_delivery_date;
-    this.actual_delivery_date = delivery_info.actual_delivery_date;
+  constructor({ user_id, amount, state, created_at }) {
+    this.merchant_uid = this.generateMerchantUid();
+    this.user_id = user_id;
+    this.amount = amount;
+    this.state = state || 'PAYMENT_PENDING';
+    this.created_at = created_at || null;
+  }
+
+  /**
+   * Asynchronously saves the payment info including merchant_uid, user_id, amount, and state to the database.
+   * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @memberof Payment
+   * @instance
+   * @async
+   * @example
+   * const payment = new Payment({ user_id: 1, amount: 10000 });
+   * await payment.savePayment();
+   * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
+   * // => payment.id = 1
+   * // => payment.created_at = 2020-01-01 00:00:00
+   * // => payment.state = 'PAYMENT_PENDING'
+   */
+  async savePayment() {
+    try {
+      return await queryDatabase(
+        `INSERT INTO payment_info (merchant_uid, user_id, amount, state) VALUES (?, ?, ?, ?)`,
+        [this.merchant_uid, this.user_id, this.amount, this.state]
+      );
+    } catch (error) {
+      console.error("결제정보를 저장하는데에 실패했습니다.");
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러, 결제 정보를 저장하는데 실패했습니다.`,
+        detail_code: "00",
+      });
+    }
+  }
+
+  /**
+   * generate merchant_uid
+   * @returns {string} - merchant_uid
+   * @memberof Payment
+   * @instance
+   * @example
+   * const payment = new Payment({ user_id: 1, amount: 10000 });
+   * payment.generateMerchantUid();
+   * // => 'tikkling_1581234567890'
+   */
+  generateMerchantUid() {
+    return (
+      "tikkling_" + new Date().getTime() + Math.floor(Math.random() * 1000000)
+    );
+  }
+
+  /**
+   * create payment info
+   * @param {string} user_name
+   * @param {string} user_phone_number
+   * @returns {PaymentInfo}
+   * @memberof Payment
+   * @instance
+   * @example
+   * const payment = new Payment({ user_id: 1, amount: 10000 });
+   * payment.createPaymentInfo('홍길동', '01012345678');
+  */
+  createPaymentInfo(user_name, user_phone_number) {
+    const amount = this.amount;
+    const merchant_uid = this.merchant_uid;
+    return new PaymentInfo({ user_name, user_phone_number, amount, merchant_uid });
+  }
+
+  
+
+
+}
+
+class PaymentInfo {
+  constructor({ user_name, user_phone_number, amount, merchant_uid }) {
+    this.pg = getSSMParameter("pg");
+    this.pay_method = "trans";
+    this.merchant_uid = merchant_uid;
+    this.name = "티클";
+    this.buyer_name = user_name;
+    this.buyer_tel = user_phone_number;
+    //TODO: redirect url 필요한 파라미터인지 다시 체크
+    this.m_redirect_url = "https://www.naver.com/";
+    this.app_scheme = "example";
+    this.amount = amount;
   }
 }
 
