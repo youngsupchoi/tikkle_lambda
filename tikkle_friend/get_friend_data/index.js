@@ -56,8 +56,7 @@ exports.get_friend_data = async (req, res) => {
     };
     return res.status(200).send(return_body);
   } catch (err) {
-    console.error("error:", err);
-    console.log("서버 에러-get_friend_data");
+    console.error(`🚨error -> ⚡️post_friend_data : 🐞${err}`);
     const return_body = {
       success: false,
       detail_code: "00",
