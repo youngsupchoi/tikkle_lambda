@@ -63,6 +63,43 @@ class Payment {
     }
   }
 
+  /**
+   * Asynchronously updates the payment state to 'PAYMENT_FAILED' in the database.
+   * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @memberof Payment
+   * @instance
+   * @async
+   * @example
+   * const payment = new Payment({ user_id: 1, amount: 10000 });
+   * await payment.updatePaymentToFail();
+   * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
+   * // => payment.state = 'PAYMENT_FAILED'
+    */
+  async updatePaymentToFail() {
+    try {
+      const result = await queryDatabase(
+        `UPDATE payment SET state = 'PAYMENT_FAILED' WHERE merchant_uid = ?`,[this.merchant_uid]
+      );
+      if (result.affectedRows == 0){
+        throw new ExpectedError({
+          status: "500",
+          message: `서버에러`,
+          detail_code: "00",
+        });
+      }else{
+        this.state = 'PAYMENT_FAILED';
+      }
+    } catch (err) {
+      console.error(`🚨 error -> ⚡️ updatePaymentToFail : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러`,
+        detail_code: "00",
+      });
+    }
+  }
+
   async finlizePayment() {
     try {
       const result = await queryDatabase(
@@ -156,7 +193,7 @@ class Payment {
 
   /**
    * Compare stored payment info and request payment info.
-   * @param {string} merchant_uid - The merchant UID to compare.
+   * @param {string} user_id - The merchant UID to compare.
    * @param {string} amount - The amount to compare.
    * 
    * @returns {void}

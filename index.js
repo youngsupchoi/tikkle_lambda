@@ -141,6 +141,7 @@ const {
 	get_payment_apiToken,
 } = require("./tikkle_payment/get_payment_apiToken/index.js");
 const { post_payment_init } = require("./tikkle_payment/post_payment_init/index.js");
+const { put_payment_fail } = require("./tikkle_payment/put_payment_fail/index.js");
 
 //-------- API's ------------------------------------------------//
 
@@ -259,6 +260,7 @@ api.get("/get_payment_apiToken", authtoken, get_payment_apiToken);
 
 api.post("/post_payment_init", authtoken, post_payment_init);
 
+api.put("/put_payment_fail", authtoken, put_payment_fail);
 //
 
 //-------- handler ------------------------------------------------//
