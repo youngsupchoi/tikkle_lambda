@@ -88,6 +88,25 @@ class Payment {
     return new PaymentInfo({ user_name, user_phone_number, amount, merchant_uid });
   }
 
+  compareStoredPaymentInfo({merchant_uid, amount}) {
+    if (this.merchant_uid !== merchant_uid) {
+      console.error(`🚨error -> ⚡️compareStoredPaymentInfo : 🐞거래번호가 일치하지 않습니다.`);
+      throw new ExpectedError({
+        status: "401",
+        message: `비정상적 접근`,
+        detail_code: "00",
+      });
+    }
+    if (this.amount !== amount) {
+      console.error(`🚨error -> ⚡️compareStoredPaymentInfo : 🐞거래 금액이 일치하지 않습니다.`);
+      throw new ExpectedError({
+        status: "401",
+        message: `비정상적 접근`,
+        detail_code: "00",
+      });
+    }
+  }
+
 }
 
 
