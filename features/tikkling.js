@@ -24,48 +24,35 @@ class Tikkling {
       }
     });
   }
-
-  async loadActiveTikklingView(){
-    try{
-      const [row] = await queryDatabase(
-        `SELECT * FROM active_tikkling_view WHERE id = ?`,
-        [this.id]
-      );
-      this.updateFromDatabaseResult(row);
-    } catch(err){
-      console.error(`🚨error -> ⚡️loadActiveTikklingView : 🐞${err}`);
-      throw new ExpectedError({
-        status: "500",
-        message: `서버에러`,
-        detail_code: "00",
-      });
-    
-  };
-  
-  
   /**
-   * Asynchronously saves the payment info including merchant_uid, user_id, amount, and state to the database.
-   * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
-   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
-   * @memberof Payment
-   * @instance
-   * @async
-   * @example
-   * const payment = new Payment({ user_id: 1, amount: 10000 });
-   * await payment.savePayment();
-   * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
-   * // => payment.id = 1
-   * // => payment.created_at = 2020-01-01 00:00:00
-   * // => payment.state = 'PAYMENT_PENDING'
-   */
-  async savePayment() {
-    try {
-      return await queryDatabase(
-        `INSERT INTO payment (merchant_uid, user_id, amount, state) VALUES (?, ?, ?, ?)`,
-        [this.merchant_uid, this.user_id, this.amount, this.state]
+ * Asynchronously loads the active tikkling view info from the database by Tikkling ID.
+ * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
+ * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+ * @memberof Tikkling
+ * @instance
+ * @async
+ * @example
+ * const tikkling = new Tikkling({ id: 1 });
+ * await tikkling.loadActiveTikklingViewByTikkling_id();
+ */
+  async loadActiveTikklingViewByUserId(){
+    try{
+      const rows = await queryDatabase(
+        `SELECT * FROM active_tikkling_view WHERE user_id = ?`,
+        [this.user_id]
       );
-    } catch (err) {
-      console.error(`🚨error -> ⚡️getUserById : 🐞${err}`);
+      if(!Tikkling.checkRowExists(rows)) {
+        throw new ExpectedError({
+          status: "404",
+          message: `비정상적 요청, 티클링이 존재하지 않습니다.`,
+          detail_code: "00",
+        });
+      }
+      let active_tikkling = rows[0];
+      active_tikkling.id = active_tikkling.tikkling_id;
+      this.updateFromDatabaseResult(active_tikkling);
+    } catch(err){
+      console.error(`🚨 error -> ⚡️ loadActiveTikklingViewByUserId : 🐞 ${err}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -74,41 +61,78 @@ class Tikkling {
     }
   }
 
-  /**
-   * generate merchant_uid
-   * @returns {string} - merchant_uid
-   * @memberof Payment
-   * @instance
-   * @example
-   * const payment = new Payment({ user_id: 1, amount: 10000 });
-   * payment.generateMerchantUid();
-   * // => 'tikkling_1581234567890'
-   */
-  generateMerchantUid() {
-    return (
-      "tikkling_" + new Date().getTime() + Math.floor(Math.random() * 1000000)
-    );
+  static checkRowExists(rows) {
+    if (rows.length == 0){
+      console.error(`🚨 error -> ⚡️ checkRowExists : 🐞 쿼리의 결과가 존재하지 않음`);
+      return false;
+    }
+    return true;
   }
 
   /**
-   * create payment info
-   * @param {string} user_name
-   * @param {string} user_phone_number
-   * @returns {PaymentInfo}
-   * @memberof Payment
+   * check if the request is valid
+   * @returns {void}
+   * @throws {ExpectedError} Throws an ExpectedError with status 403 if the request is invalid.
+   * @memberof Tikkling
    * @instance
    * @example
-   * const payment = new Payment({ user_id: 1, amount: 10000 });
-   * payment.createPaymentInfo('홍길동', '01012345678');
-  */
-  createPaymentInfo({user_name, user_phone_number}) {
-    const amount = this.amount;
-    const merchant_uid = this.merchant_uid;
-    return new PaymentInfo({ user_name, user_phone_number, amount, merchant_uid });
+   * const tikkling = new Tikkling({ id: 1 });
+   * await tikkling.loadActiveTikklingViewByTikkling_id();
+   * tikkling.validateBuyMyTikkleRequest();
+   * // => throw ExpectedError with status 403 if the request is invalid.
+   */
+  validateBuyMyTikkleRequest() {
+    if (this.tikkle_quantity == this.tikkle_count){
+      throw new ExpectedError({
+        status: "403",
+        message: `이미 모든 티클을 수집한 티클링입니다.`,
+        detail_code: "01",
+      });
+    }
+    else if (this.state_id !== 3 && this.state_id != 5){{
+      throw new ExpectedError({
+        status: "403",
+        message: `비정상적 요청, 아직 티클링이 종료되지 않았거나 이미 종료되었습니다.`,
+        detail_code: "02",
+      });
+    }}
+    }
+  
+
+
+  
+
+  async buyMyTikkle({merchant_uid}){
+    try{
+      const results = await queryDatabase(
+        `INSERT INTO sending_tikkle (tikkling_id, user_id, quantity, merchant_uid) VALUES (?, ?, ?, ?); `,
+        [
+          this.id,
+          this.user_id,
+          this.tikkle_quantity -this.tikkle_count,
+          merchant_uid
+        ]
+      );
+      if (results.affectedRows == 0){
+        console.error(`🚨 error -> ⚡️ buyMyTikkle : 🐞 티클의 구매가 이루어지지않음`);
+        throw new ExpectedError({
+          status: "500",
+          message: `서버에러`,
+          detail_code: "00",
+        });
+      }
+    } catch(err){
+      console.error(`🚨 error -> ⚡️ buyMyTikkle : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러`,
+        detail_code: "00",
+      });
+    }
   }
+
+  
 
 }
-
-
 
 module.exports = { Tikkling };

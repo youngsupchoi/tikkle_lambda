@@ -7,6 +7,7 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"tikkling_id": 13
+		"merchant_uid": "tikkling_1696690656907664566",
+		"amount": 500
 	}
 }
