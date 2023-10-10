@@ -19,7 +19,7 @@ exports.post_payment_init = async (req, res) => {
     //payment를 생성
     const payment = new Payment({ user_id: id, amount: amount });
     //payment info를 생성
-    const payment_info = payment.createPaymentInfo({ user_name: user.name, user_phone: user.phone});
+    const payment_info = payment.createPaymentParam({ user_name: user.name, user_phone: user.phone});
     //payment를 저장 
     await payment.savePayment();
     

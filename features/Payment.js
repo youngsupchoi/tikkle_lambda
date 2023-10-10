@@ -4,7 +4,7 @@ const axios = require("axios");
 const { ExpectedError} = require("./ExpectedError.js");
 
 //TODO: 매일 밤 12시에 결제 되지 않았고 12시간이 지났으면 해당 결제 실패 처리
-class PaymentInfo {
+class PaymentParam {
   constructor({ user_name, user_phone_number, amount, merchant_uid }) {
     this.pg = getSSMParameter("pg");
     this.pay_method = "trans";
@@ -178,17 +178,17 @@ class Payment {
    * create payment info
    * @param {string} user_name
    * @param {string} user_phone_number
-   * @returns {PaymentInfo}
+   * @returns {PaymentParam}
    * @memberof Payment
    * @instance
    * @example
    * const payment = new Payment({ user_id: 1, amount: 10000 });
-   * payment.createPaymentInfo('홍길동', '01012345678');
+   * payment.createPaymentParam('홍길동', '01012345678');
   */
-  createPaymentInfo({user_name, user_phone_number}) {
+  createPaymentParam({user_name, user_phone_number}) {
     const amount = this.amount;
     const merchant_uid = this.merchant_uid;
-    return new PaymentInfo({ user_name, user_phone_number, amount, merchant_uid });
+    return new PaymentParam({ user_name, user_phone_number, amount, merchant_uid });
   }
 
 
@@ -203,12 +203,12 @@ class Payment {
    * @instance
    * @example
    * const payment = new Payment({ user_id: 1, amount: 10000 });
-   * payment.compareStoredPaymentInfo({merchant_uid, amount});
+   * payment.compareStoredPaymentData({merchant_uid, amount});
    * // => throw ExpectedError with status 401 if the request is invalid.
   */
-  compareStoredPaymentInfo({amount, user_id}) {
+  compareStoredPaymentData({amount, user_id}) {
     if (this.amount !== amount) {
-      console.error(`🚨error -> ⚡️ compareStoredPaymentInfo : 🐞거래 금액이 일치하지 않습니다.`);
+      console.error(`🚨error -> ⚡️ compareStoredPaymentData : 🐞거래 금액이 일치하지 않습니다.`);
       throw new ExpectedError({
         status: "401",
         message: `비정상적 접근`,
@@ -216,7 +216,7 @@ class Payment {
       });
     }
     if (this.user_id !== user_id){
-      console.error(`🚨error -> ⚡️ compareStoredPaymentInfo : 🐞사용자가 일치하지 않습니다.`);
+      console.error(`🚨error -> ⚡️ compareStoredPaymentData : 🐞사용자가 일치하지 않습니다.`);
       throw new ExpectedError({
         status: "401",
         message: `비정상적 접근`,
