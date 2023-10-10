@@ -1,4 +1,4 @@
-const { Payment } = require("../../features/payment");
+const { Payment } = require("../../features/Payment");
 const { User } = require("../../features/User");
 const { Response } = require("../../features/Response");
 
@@ -17,10 +17,10 @@ exports.put_payment_fail = async (req, res) => {
     await payment.updatePaymentToFail()
     return res.status(200).send(Response.create(true, "00", "결제 실패 처리 완료", null, returnToken));
   } catch (err) {
+    console.error(`🚨 error -> ⚡️ put_payment_fail : 🐞 ${err}`);
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     };
-    console.error(`🚨 error -> ⚡️ getUserById : 🐞 ${err}`);
     return res.status(500).send(Response.create(false, "00", "서버 에러"));
   }
 };

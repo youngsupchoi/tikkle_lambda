@@ -1,6 +1,6 @@
 const { queryDatabase } = require("db.js");
 const { Tikkling } = require("../../features/tikkling");
-const { Payment } = require("../../features/payment");
+const { Payment } = require("../../features/Payment");
 const { Response } = require("../../features/Response");
 const { ExpectedError } = require("../../features/ExpectedError");
 //남은 티클 개수만 충족되면 티클 줄 수 있음
@@ -31,16 +31,14 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
     return res.status(200).send(Response.create(true, "00", "나의 모든 티클 구매 성공", {buy_tikkle_quantity}, returnToken));
 
   } catch (err) {
-
     //TODO: 환불 api로직 추가해야함
     //Payment.fail({merchant_uid});
     //TODO: 롤백 로직 추가해야함
     //Payment.rollback({merchant_uid});
+    console.error(`🚨 error -> ⚡️ post_tikkling_buymytikkle : 🐞 ${err}`);
     if (err instanceof ExpectedError) {
-      console.error(`🚨 error -> ⚡️ post_tikkling_buymytikkle : 🐞 ${err}`);
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     };
-    console.error(`🚨 error -> ⚡️ post_tikkling_buymytikkle : 🐞 ${err}`);
     const return_body = {
       success: false,
       detail_code: "00",

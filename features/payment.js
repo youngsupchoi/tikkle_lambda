@@ -1,5 +1,6 @@
 const { queryDatabase, queryDatabase_multi } = require("db.js");
 const { getSSMParameter } = require("ssm.js");
+const axios = require("axios");
 const { ExpectedError} = require("./ExpectedError.js");
 
 //TODO: 매일 밤 12시에 결제 되지 않았고 12시간이 지났으면 해당 결제 실패 처리
@@ -50,7 +51,7 @@ class Payment {
   async savePayment() {
     try {
       return await queryDatabase(
-        `INSERT INTO payment (merchant_uid, user_id, amount, state) VALUES (?, ?, ?, ?)`,
+        `INSERT INTO payment (merchant_uid, userd_id, amount, state) VALUES (?, ?, ?, ?)`,
         [this.merchant_uid, this.user_id, this.amount, this.state]
       );
     } catch (err) {
@@ -224,8 +225,75 @@ class Payment {
     }
   }
 
+  /**
+   * Asynchronously gets the payment api token from iamport.
+   * @returns {Promise<string>} - A promise that resolves with the access_token.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @memberof Payment
+   * @instance
+   * @async
+   * @example
+   * const token = await Payment.getPaymentApiToken();
+   */
+  static async getPaymentApiToken() {
+    const imp_key = await getSSMParameter("imp_key");
+    const imp_secret = await getSSMParameter("imp_secret");
+    try {
+      const response = await axios({
+        url: "https://api.iamport.kr/users/getToken",
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          imp_key: imp_key,
+          imp_secret: imp_secret,
+        },
+      });
+      if (response.data === 0){
+        console.error(`🚨error -> ⚡️ getPaymentApiToken : 🐞import token get error`);
+        throw new ExpectedError({
+          status: "500",
+          message: `서버에러`,
+          detail_code: "00",
+        });
+      }
   
-
+      return response.data.access_token;
+    } catch (error) {
+      // Handle errors here
+      console.error("Error:", error);
+      return 0;
+    }
+  }
+  //port one의 특정 결제 취소 api를 호출
+  static async callPortOneCancelPaymentAPI({merchant_uid, amount}) {
+    try {
+      const response = await axios({
+        url: "https://api.iamport.kr/payments/cancel",
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          merchant_uid,
+          checksum,
+          reason,
+        },
+      });
+      if (response.data === 0){
+        console.error(`🚨error -> ⚡️ callPortOneCancelPaymentAPI : 🐞import token get error`);
+        throw new ExpectedError({
+          status: "500",
+          message: `서버에러`,
+          detail_code: "00",
+        });
+      }
+    } catch(err){
+      console.error(`🚨 error -> ⚡️ callPortOneCancelPaymentAPI : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러`,
+        detail_code: "00",
+      });
+    }
+  }
 }
 
 

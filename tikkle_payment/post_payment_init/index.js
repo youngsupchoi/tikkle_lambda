@@ -1,4 +1,4 @@
-const { Payment } = require("../../features/payment");
+const { Payment } = require("../../features/Payment");
 const { User } = require("../../features/User");
 const { Response } = require("../../features/Response");
 
@@ -14,7 +14,6 @@ exports.post_payment_init = async (req, res) => {
   const { amount } = body;
   //main logic------------------------------------------------------------------------------------------------------------------//
   try {
-    //
     //user정보 가져옴
     const user = await User.createById(id);
     //payment를 생성
@@ -27,10 +26,11 @@ exports.post_payment_init = async (req, res) => {
     return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료", payment_info, returnToken));
 
   } catch (err) {
+    console.error(`🚨error -> ⚡️ post_payment_init : 🐞${err}`);
     if (err.status) {
       return res.status(err.status).send(createResponseBody(false, err.detail_code, err.message));
     };
-    console.error(`🚨error -> ⚡️getUserById : 🐞${err}`);
+    
     return res.status(500).send(createResponseBody(false, "00", "서버 에러"));
   }
 };
