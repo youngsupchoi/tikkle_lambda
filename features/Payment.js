@@ -206,15 +206,8 @@ class Payment {
    * payment.compareStoredPaymentData({merchant_uid, amount});
    * // => throw ExpectedError with status 401 if the request is invalid.
   */
-  compareStoredPaymentData({amount, user_id}) {
-    if (this.amount !== amount) {
-      console.error(`🚨error -> ⚡️ compareStoredPaymentData : 🐞거래 금액이 일치하지 않습니다.`);
-      throw new ExpectedError({
-        status: "401",
-        message: `비정상적 접근`,
-        detail_code: "00",
-      });
-    }
+  compareStoredPaymentData({user_id}) {
+
     if (this.user_id !== user_id){
       console.error(`🚨error -> ⚡️ compareStoredPaymentData : 🐞사용자가 일치하지 않습니다.`);
       throw new ExpectedError({
@@ -235,7 +228,7 @@ class Payment {
    * @example
    * const token = await Payment.getPaymentApiToken();
    */
-  static async getPaymentApiToken() {
+  static async getPortOneApiToken() {
     const imp_key = await getSSMParameter("imp_key");
     const imp_secret = await getSSMParameter("imp_secret");
     try {
@@ -265,15 +258,18 @@ class Payment {
     }
   }
   //port one의 특정 결제 취소 api를 호출
-  static async callPortOneCancelPaymentAPI({merchant_uid, amount}) {
+  static async callPortOneCancelPaymentAPI({merchant_uid, amount, port_one_token, reason}) {
     try {
       const response = await axios({
         url: "https://api.iamport.kr/payments/cancel",
         method: "post",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json", 
+          "Authorization": port_one_token 
+        },
         data: {
           merchant_uid,
-          checksum,
+          checksum: amount,
           reason,
         },
       });
