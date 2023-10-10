@@ -1,30 +1,4 @@
-const { queryDatabase } = require("db.js");
-const { getSSMParameter } = require("ssm.js");
-const axios = require("axios");
-
-async function getToken() {
-	//
-	const imp_key = await getSSMParameter("imp_key");
-	const imp_secret = await getSSMParameter("imp_secret");
-
-	try {
-		const response = await axios({
-			url: "https://api.iamport.kr/users/getToken",
-			method: "post",
-			headers: { "Content-Type": "application/json" },
-			data: {
-				imp_key: imp_key,
-				imp_secret: imp_secret,
-			},
-		});
-
-		return response.data;
-	} catch (error) {
-		// Handle errors here
-		console.error("Error:", error);
-		return 0;
-	}
-}
+const { Payment } = require("../../features/Payment");
 
 //
 exports.get_payment_apiToken = async (req, res) => {
@@ -34,10 +8,20 @@ exports.get_payment_apiToken = async (req, res) => {
 
 	//-------- get token --------------------------------------------------------------------------------------//
 	// console.log("#####################################");
+	try {
+		const token = await Payment.getPaymentApiToken();
 
-	const response = await getToken();
+		//-------- return result --------------------------------------------------------------------------------------//
 
-	if (response === 0) {
+		const return_body = {
+			success: true,
+			data: token,
+			detail_code: "00",
+			message: "success get token info",
+			//returnToken: returnToken,
+		};
+		return res.status(200).send(return_body);
+	} catch (err) {
 		console.log("get_payment_apiToken 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
@@ -47,18 +31,4 @@ exports.get_payment_apiToken = async (req, res) => {
 		};
 		return res.status(500).send(return_body);
 	}
-
-	const token = response.response.access_token;
-	// console.log("RES : ", token);
-
-	//-------- return result --------------------------------------------------------------------------------------//
-
-	const return_body = {
-		success: true,
-		data: token,
-		detail_code: "00",
-		message: "success get token info",
-		//returnToken: returnToken,
-	};
-	return res.status(200).send(return_body);
 };
