@@ -367,10 +367,7 @@ class Payment {
 	}
 
 	//port one의 특정 결제 취소 api를 호출
-	async callPortOneCancelPaymentAPI({
-		port_one_token,
-		reason,
-	}) {
+	async callPortOneCancelPaymentAPI({ port_one_token, reason }) {
 		try {
 			const response = await axios({
 				url: "https://api.iamport.kr/payments/cancel",
@@ -393,7 +390,7 @@ class Payment {
 				throw new ExpectedError({
 					status: "500",
 					message: `서버에러`,
-					detail_code: "00",
+					detail_code: "07",
 				});
 			}
 		} catch (err) {
@@ -401,7 +398,7 @@ class Payment {
 			throw new ExpectedError({
 				status: "500",
 				message: `서버에러`,
-				detail_code: "00",
+				detail_code: "07",
 			});
 		}
 	}
