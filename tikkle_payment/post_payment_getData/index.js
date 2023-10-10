@@ -10,8 +10,7 @@ exports.post_payment_getData = async (req, res) => {
 	//-------- get portone token 2 --------------------------------------------------------------------------------------//
 	let Authorization = null;
 	try {
-		const token = await Payment.getPaymentApiToken();
-		Authorization = "Bearer " + token;
+		Authorization = await Payment.getPaymentApiToken();
 	} catch (err) {
 		console.error(`🚨error -> ⚡️ post_payment_getData : 🐞${err}`);
 		if (err.status) {
