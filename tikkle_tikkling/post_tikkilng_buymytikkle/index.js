@@ -1,5 +1,5 @@
 const { queryDatabase } = require("db.js");
-const { Tikkling } = require("../../features/tikkling");
+const { Tikkling } = require("../../features/Tikkling");
 const { Payment } = require("../../features/Payment");
 const { Response } = require("../../features/Response");
 const { ExpectedError } = require("../../features/ExpectedError");
