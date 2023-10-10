@@ -28,7 +28,7 @@ exports.post_payment_getData = async (req, res) => {
 
 	try {
 		const axios_result = await axios({
-			url: "https://api.iamport.kr/payments/" + merchant_uid,
+			url: "https://api.iamport.kr/payments/find/" + merchant_uid,
 			method: "get",
 			headers: {
 				"Content-Type": "application/json",
