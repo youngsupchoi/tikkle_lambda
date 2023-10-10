@@ -16,7 +16,7 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
     //payment 객체 생성
     const payment = new Payment(paymnet_info);
     //DB상의 결제정보와 비교
-    payment.compareStoredPaymentInfo({amount, user_id :id});
+    payment.compareStoredPaymentData({amount, user_id :id});
     //줄 수 있는 상태인지 확인
     const tikkling = new Tikkling({ user_id: id });
     //티클링 정보 가져오기
