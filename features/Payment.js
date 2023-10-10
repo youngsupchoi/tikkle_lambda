@@ -226,47 +226,6 @@ class Payment {
 		}
 	}
 
-	//port one의 특정 결제 취소 api를 호출
-	static async callPortOneCancelPaymentAPI({
-		merchant_uid,
-		amount,
-		port_one_token,
-		reason,
-	}) {
-		try {
-			const response = await axios({
-				url: "https://api.iamport.kr/payments/cancel",
-				method: "post",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: port_one_token,
-				},
-				data: {
-					merchant_uid,
-					checksum: amount,
-					reason,
-				},
-			});
-			if (response.data === 0) {
-				console.error(
-					`🚨error -> ⚡️ callPortOneCancelPaymentAPI : 🐞import token get error`
-				);
-				throw new ExpectedError({
-					status: "500",
-					message: `서버에러`,
-					detail_code: "00",
-				});
-			}
-		} catch (err) {
-			console.error(`🚨 error -> ⚡️ callPortOneCancelPaymentAPI : 🐞 ${err}`);
-			throw new ExpectedError({
-				status: "500",
-				message: `서버에러`,
-				detail_code: "00",
-			});
-		}
-	}
-
 	//
 	static async getPaymentByMerchantUid({ merchant_uid }) {
 		try {
