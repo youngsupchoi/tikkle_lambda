@@ -46,7 +46,7 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 		//TODO: 환불 api로직 추가해야함
 		//Payment.fail({merchant_uid});
 		if (payment) {
-			const port_one_token = Payment.getPortOneApiToken();
+			const port_one_token = Payment.getPaymentApiToken();
 			Payment.callPortOneCancelPaymentAPI();
 		}
 		//TODO: 롤백 로직 추가해야함
