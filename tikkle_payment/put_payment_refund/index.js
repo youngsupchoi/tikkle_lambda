@@ -4,7 +4,7 @@ const { Response } = require("../../features/Response");
 
 exports.put_payment_refund = async (req, res) => {
 	const { body, id, returnToken } = req;
-	const { merchant_uid } = body;
+	const { merchant_uid, amount, reason } = body;
 
 	//main logic------------------------------------------------------------------------------------------------------------------//
 	try {
@@ -16,13 +16,39 @@ exports.put_payment_refund = async (req, res) => {
 		//payment 객체 생성
 		const payment = new Payment(paymnet_info);
 
-		//결제 실패 처리
-		await payment.updatePaymentToFail();
+		//DB상의 결제정보와 비교
+		payment.compareStoredPaymentInfo({ user_id: id });
+
+		//완료된 결제인지 확인
+		await payment.checkComplete();
+
+		//아직 사용하지 않은 티클인지 확인
+		await payment.checkUnusedTikkle();
+
+		//포트원 토큰 가져오기
+		const port_one_token = await Payment.getPaymentApiToken();
+
+		// 아이엠 포트 결제 취소
+		await Payment.callPortOneCancelPaymentAPI({
+			merchant_uid: merchant_uid,
+			amount: amount,
+			port_one_token: port_one_token,
+			reason: reason,
+		});
+
+		//결제 환불 처리 in Tikkle DB (sendingTikkle state = 3, payment state = PAYMENT_CANCELLED)
+		await payment.updatePaymentToCancle();
 
 		return res
 			.status(200)
 			.send(
-				Response.create(true, "00", "결제 실패 처리 완료", null, returnToken)
+				Response.create(
+					true,
+					"00",
+					"결제 환불 처리 완료",
+					port_one_token,
+					returnToken
+				)
 			);
 	} catch (err) {
 		console.error(`🚨 error -> ⚡️ put_payment_refund : 🐞 ${err}`);

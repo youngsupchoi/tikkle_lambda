@@ -33,6 +33,7 @@ class Payment {
 		this.state = state;
 		this.created_at = created_at;
 	}
+
 	updateFromDatabaseResult(dbResult) {
 		Object.keys(this).forEach((key) => {
 			if (dbResult.hasOwnProperty(key)) {
@@ -40,6 +41,7 @@ class Payment {
 			}
 		});
 	}
+
 	/**
 	 * Asynchronously saves the payment info including merchant_uid, user_id, amount, and state to the database.
 	 * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
@@ -109,6 +111,47 @@ class Payment {
 		}
 	}
 
+	/**
+	 * Asynchronously updates the payment state to 'PAYMENT_CANCELLED' in the database and change sendingTikkle state = 3.
+	 * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
+	 * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+	 * @memberof Payment
+	 * @instance
+	 * @async
+	 * @example
+	 * const payment = new Payment({ user_id: 1, amount: 10000 });
+	 * await payment.updatePaymentToCancle();
+	 * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
+	 * // => payment.state = 'PAYMENT_CANCELLED'
+	 */
+	async updatePaymentToCancle() {
+		try {
+			const [result1, result2] = await queryDatabase_multi(
+				`UPDATE payment SET state = 'PAYMENT_CANCELLED' WHERE merchant_uid = ?;
+				UPDATE sending_tikkle SET state_id = 3 WHERE merchant_uid = ?`,
+				[this.merchant_uid, this.merchant_uid]
+			);
+
+			if (result1.affectedRows == 0 || result2.affectedRows == 0) {
+				throw new ExpectedError({
+					status: "500",
+					message: `서버에러`,
+					detail_code: "00",
+				});
+			} else {
+				this.state = "PAYMENT_CANCELLED";
+			}
+		} catch (err) {
+			console.error(`🚨 error -> ⚡️ updatePaymentToCancle : 🐞 ${err}`);
+			throw new ExpectedError({
+				status: "500",
+				message: `서버에러`,
+				detail_code: "00",
+			});
+		}
+	}
+
+	//
 	async finlizePayment() {
 		try {
 			const result = await queryDatabase(
@@ -134,6 +177,7 @@ class Payment {
 		}
 	}
 
+	//
 	static async getPaymentByMerchantUid({ merchant_uid }) {
 		try {
 			const rows = await queryDatabase(
@@ -167,6 +211,7 @@ class Payment {
 		}
 		return true;
 	}
+
 	/**
 	 * generate merchant_uid
 	 * @returns {string} - merchant_uid
@@ -219,17 +264,7 @@ class Payment {
 	 * payment.compareStoredPaymentInfo({merchant_uid, amount});
 	 * // => throw ExpectedError with status 401 if the request is invalid.
 	 */
-	compareStoredPaymentInfo({ amount, user_id }) {
-		if (this.amount !== amount) {
-			console.error(
-				`🚨error -> ⚡️ compareStoredPaymentInfo : 🐞거래 금액이 일치하지 않습니다.`
-			);
-			throw new ExpectedError({
-				status: "401",
-				message: `비정상적 접근`,
-				detail_code: "00",
-			});
-		}
+	compareStoredPaymentInfo({ user_id }) {
 		if (this.user_id !== user_id) {
 			console.error(
 				`🚨error -> ⚡️ compareStoredPaymentInfo : 🐞사용자가 일치하지 않습니다.`
@@ -241,7 +276,6 @@ class Payment {
 			});
 		}
 	}
-
 
 	/**
 	 * Asynchronously gets the payment api token from iamport.
@@ -257,7 +291,7 @@ class Payment {
 		try {
 			const response = await getToken();
 
-			return response.response.access_token;
+			return "Bearer " + response.response.access_token;
 		} catch (error) {
 			// Handle errors here
 			console.error("Error:", error);
@@ -266,15 +300,23 @@ class Payment {
 	}
 
 	//port one의 특정 결제 취소 api를 호출
-	static async callPortOneCancelPaymentAPI({ merchant_uid, amount }) {
+	static async callPortOneCancelPaymentAPI({
+		merchant_uid,
+		amount,
+		port_one_token,
+		reason,
+	}) {
 		try {
 			const response = await axios({
 				url: "https://api.iamport.kr/payments/cancel",
 				method: "post",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: port_one_token,
+				},
 				data: {
 					merchant_uid,
-					checksum,
+					checksum: amount,
 					reason,
 				},
 			});
@@ -297,6 +339,85 @@ class Payment {
 			});
 		}
 	}
+
+	/**
+	 * 결제 환불 전에 완료된 결제인지 확인
+	 * @throws {ExpectedError} Throws an ExpectedError with status 500 if payment state is not "PAYMENT_COMPLETED".
+	 * @memberof Payment
+	 * @instance
+	 * @async
+	 * @example
+	 * const token = await Payment.getPaymentApiToken();
+	 */
+	async checkComplete() {
+		try {
+			if (this.state !== "PAYMENT_COMPLETED") {
+				console.error(
+					`🚨error -> ⚡️ checkComplete : 🐞payment state is not PAYMENT_COMPLETED`
+				);
+				throw new ExpectedError({
+					status: "403",
+					message: `미완료된 결제에 대한 환불 신청`,
+					detail_code: "01",
+				});
+			}
+		} catch (err) {
+			console.error(`🚨 error -> ⚡️ checkComplete : 🐞 ${err}`);
+			throw new ExpectedError({
+				status: "500",
+				message: `서버에러`,
+				detail_code: "00",
+			});
+		}
+	}
+
+	/**
+	 *
+	 * @returns
+	 */
+	async checkUnusedTikkle() {
+		try {
+			const rows = await queryDatabase(
+				`SELECT * FROM sending_tikkle WHERE merchant_uid = ?`,
+				[this.merchant_uid]
+			);
+
+			//결제 정보가 없으면
+			if (rows.length == 0) {
+				console.error(
+					`🚨error -> ⚡️ checkUnusedTikkle : 🐞There is no data with that merchant_uid`
+				);
+				throw new ExpectedError({
+					status: "404",
+					message: `존재하지 않는 결제 정보`,
+					detail_code: "01",
+				});
+			}
+
+			const data = rows[0];
+
+			//결제 정보가 있지만 미상용 티클이 아닐때
+			if (data.state_id !== 1) {
+				console.error(
+					`🚨error -> ⚡️ checkUnusedTikkle : 🐞The Tikkle is already used or refunded`
+				);
+				throw new ExpectedError({
+					status: "404",
+					message: `이미 사용되었거나 환불된 티클`,
+					detail_code: "02",
+				});
+			}
+		} catch (err) {
+			console.error(`🚨 error -> ⚡️ checkUnusedTikkle : 🐞 ${err}`);
+			throw new ExpectedError({
+				status: "500",
+				message: `서버에러`,
+				detail_code: "00",
+			});
+		}
+	}
+
+	/////
 }
 
 module.exports = { Payment };
