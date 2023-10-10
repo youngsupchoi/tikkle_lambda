@@ -266,7 +266,7 @@ api.post("/post_payment_init", authtoken, post_payment_init);
 
 api.put("/put_payment_fail", authtoken, put_payment_fail);
 
-api.post("/post_payment_finalize", authtoken, post_payment_finalize);
+api.post("/post_payment_finalize", post_payment_finalize);
 //
 
 //-------- handler ------------------------------------------------//
