@@ -29,15 +29,15 @@ exports.put_payment_refund = async (req, res) => {
 		const port_one_token = await Payment.getPaymentApiToken();
 
 		// 아이엠 포트 결제 취소
-		await Payment.callPortOneCancelPaymentAPI({
-			merchant_uid: merchant_uid,
-			amount: amount,
-			port_one_token: port_one_token,
-			reason: reason,
-		});
+		// await Payment.callPortOneCancelPaymentAPI({
+		// 	merchant_uid: merchant_uid,
+		// 	amount: amount,
+		// 	port_one_token: port_one_token,
+		// 	reason: reason,
+		// });
 
-		//결제 환불 처리 in Tikkle DB (sendingTikkle state = 3, payment state = PAYMENT_CANCELLED)
-		await payment.updatePaymentToCancle();
+		// //결제 환불 처리 in Tikkle DB (sendingTikkle state = 3, payment state = PAYMENT_CANCELLED)
+		// await payment.updatePaymentToCancle();
 
 		return res
 			.status(200)
