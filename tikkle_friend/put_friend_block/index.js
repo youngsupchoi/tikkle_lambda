@@ -53,8 +53,7 @@ exports.put_friend_block = async (req, res) => {
 		};
 		return res.status(200).send(return_body);
 	} catch (err) {
-		console.error("error:", err);
-		console.log("서버 에러-put_friend_block");
+		console.error(`🚨error -> ⚡️post_friend_block : 🐞${err}`);
 		const return_body = {
 			success: false,
 			detail_code: "00",

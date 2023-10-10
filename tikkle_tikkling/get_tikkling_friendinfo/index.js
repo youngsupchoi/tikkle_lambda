@@ -39,8 +39,7 @@ exports.get_tikkling_friendinfo = async (req, res) => {
     };
     return res.status(200).send(return_body);
   } catch (err) {
-    console.error("error: ", err);
-    console.log("get_tikkling_friendinfo에서 문제가 발생했습니다.");
+    console.error(`🚨error -> ⚡️post_tikkling_friendinfo : 🐞${err}`);
     const return_body = {
       success: false,
       detail_code: "00",

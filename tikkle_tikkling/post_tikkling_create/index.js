@@ -148,9 +148,7 @@ exports.post_tikkling_create = async (req, res) => {
 			return res.status(200).send(return_body);
 		}
 	} catch (err) {
-		console.log(err);
-		console.log("post_tikkling_create에서 문제가 발생했습니다.");
-
+		console.error(`🚨error -> ⚡️post_tikkling_create : 🐞${err}`);
 		const return_body = {
 			success: false,
 			detail_code: "00",
