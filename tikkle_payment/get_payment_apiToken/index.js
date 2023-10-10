@@ -33,7 +33,7 @@ exports.get_payment_apiToken = async (req, res) => {
 	const returnToken = req.returnToken;
 
 	//-------- get token --------------------------------------------------------------------------------------//
-	console.log("#####################################");
+	// console.log("#####################################");
 
 	const response = await getToken();
 
@@ -48,16 +48,17 @@ exports.get_payment_apiToken = async (req, res) => {
 		return res.status(500).send(return_body);
 	}
 
-	// console.log("RES : ", response);
+	const token = response.response.access_token;
+	// console.log("RES : ", token);
 
 	//-------- return result --------------------------------------------------------------------------------------//
 
 	const return_body = {
 		success: true,
-		data: response.access_token,
+		data: token,
 		detail_code: "00",
 		message: "success get token info",
-		returnToken: returnToken,
+		//returnToken: returnToken,
 	};
 	return res.status(200).send(return_body);
 };

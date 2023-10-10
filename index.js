@@ -141,11 +141,27 @@ const {
 	get_payment_apiToken,
 } = require("./tikkle_payment/get_payment_apiToken/index.js");
 
-const { post_payment_init } = require("./tikkle_payment/post_payment_init/index.js");
+const {
+	post_payment_init,
+} = require("./tikkle_payment/post_payment_init/index.js");
 
-const { put_payment_fail } = require("./tikkle_payment/put_payment_fail/index.js");
-const { post_payment_finalize } = require("./tikkle_payment/post_payment_finalize/index.js");
+const {
+	put_payment_fail,
+} = require("./tikkle_payment/put_payment_fail/index.js");
 
+const {
+	post_payment_finalize,
+} = require("./tikkle_payment/post_payment_finalize/index.js");
+
+const {
+	post_payment_getData,
+} = require("./tikkle_payment/post_payment_getData/index.js");
+
+const {
+	put_payment_refund,
+} = require("./tikkle_payment/put_payment_refund/index.js");
+
+//
 
 //-------- API's ------------------------------------------------//
 
@@ -184,6 +200,8 @@ api.get("/get_image_profileSaveUrl", authtoken, get_image_profileSaveUrl);
 
 api.post("/post_image_profileUrl", authtoken, post_image_profileUrl);
 
+//
+
 //------- notification
 
 api.get("/get_notification_list", authtoken, get_notification_list);
@@ -191,6 +209,8 @@ api.get("/get_notification_list", authtoken, get_notification_list);
 api.post("/post_notification_send", authtoken, post_notification_send);
 
 api.put("/put_notification_delete", authtoken, put_notification_delete);
+
+//
 
 //------- product
 api.post("/post_product_images", authtoken, post_product_images);
@@ -225,6 +245,7 @@ api.post("/post_tikkling_buymytikkle", authtoken, post_tikkling_buymytikkle);
 api.put("/put_tikkling_cancel", authtoken, put_tikkling_cancel);
 
 api.put("/put_tikkling_stop", authtoken, put_tikkling_stop);
+
 //
 
 //------- user
@@ -256,8 +277,12 @@ api.put("/put_user_nick", authtoken, put_user_nick);
 
 api.put("/put_user_account", authtoken, put_user_account);
 
+//
+
 //------- seller
 api.post("/post_seller_startdelivery", authtoken, post_seller_startdelivery);
+
+//
 
 //------- payment
 api.get("/get_payment_apiToken", authtoken, get_payment_apiToken);
@@ -266,7 +291,12 @@ api.post("/post_payment_init", authtoken, post_payment_init);
 
 api.put("/put_payment_fail", put_payment_fail);
 
+api.post("/post_payment_getData", authtoken, post_payment_getData);
+
 api.post("/post_payment_finalize", post_payment_finalize);
+
+api.put("/put_payment_refund", authtoken, put_payment_refund);
+
 //
 
 //-------- handler ------------------------------------------------//
