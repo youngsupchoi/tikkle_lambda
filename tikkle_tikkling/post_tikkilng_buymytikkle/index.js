@@ -11,7 +11,6 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 	//main logic------------------------------------------------------------------------------------------------------------------//
 
 	try {
-		throw error;
 		//결제정보 가져오기
 		const paymnet_info = await Payment.getPaymentByMerchantUid({
 			merchant_uid,
