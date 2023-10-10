@@ -12,7 +12,7 @@ exports.put_payment_fail = async (req, res) => {
     //payment 객체 생성
     const payment = new Payment(paymnet_info);
     //DB상의 결제정보와 비교
-    payment.compareStoredPaymentInfo({amount, user_id :id});
+    payment.compareStoredPaymentData({amount, user_id :id});
     //결제 실패 처리
     await payment.updatePaymentToFail()
     return res.status(200).send(Response.create(true, "00", "결제 실패 처리 완료", null, returnToken));
