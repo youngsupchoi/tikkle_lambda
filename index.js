@@ -289,7 +289,7 @@ api.get("/get_payment_apiToken", authtoken, get_payment_apiToken);
 
 api.post("/post_payment_init", authtoken, post_payment_init);
 
-api.put("/put_payment_fail", authtoken, put_payment_fail);
+api.put("/put_payment_fail", put_payment_fail);
 
 api.post("/post_payment_getData", authtoken, post_payment_getData);
 

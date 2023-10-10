@@ -4,19 +4,21 @@ const axios = require("axios");
 const { ExpectedError } = require("./ExpectedError.js");
 
 //TODO: 매일 밤 12시에 결제 되지 않았고 12시간이 지났으면 해당 결제 실패 처리
-class PaymentInfo {
-	constructor({ user_name, user_phone_number, amount, merchant_uid }) {
-		this.pg = getSSMParameter("pg");
-		this.pay_method = "trans";
-		this.merchant_uid = merchant_uid;
-		this.name = "티클";
-		this.buyer_name = user_name;
-		this.buyer_tel = user_phone_number;
-		//TODO: redirect url 필요한 파라미터인지 다시 체크
-		this.m_redirect_url = "https://www.naver.com/";
-		this.app_scheme = "example";
-		this.amount = amount;
-	}
+
+class PaymentParam {
+  constructor({ user_name, user_phone_number, amount, merchant_uid }) {
+    this.pg = getSSMParameter("pg");
+    this.pay_method = "trans";
+    this.merchant_uid = merchant_uid;
+    this.name = "티클";
+    this.buyer_name = user_name;
+    this.buyer_tel = user_phone_number;
+    //TODO: redirect url 필요한 파라미터인지 다시 체크
+    this.m_redirect_url = "https://www.naver.com/";
+    this.app_scheme = "example";
+    this.amount = amount;
+  }
+
 }
 
 class Payment {
@@ -131,8 +133,7 @@ class Payment {
 				UPDATE sending_tikkle SET state_id = 3 WHERE merchant_uid = ?`,
 				[this.merchant_uid, this.merchant_uid]
 			);
-
-			if (result1.affectedRows == 0 || result2.affectedRows == 0) {
+  if (result1.affectedRows == 0 || result2.affectedRows == 0) {
 				throw new ExpectedError({
 					status: "500",
 					message: `서버에러`,
@@ -150,6 +151,24 @@ class Payment {
 			});
 		}
 	}
+
+  /**
+   * create payment info
+   * @param {string} user_name
+   * @param {string} user_phone_number
+   * @returns {PaymentParam}
+   * @memberof Payment
+   * @instance
+   * @example
+   * const payment = new Payment({ user_id: 1, amount: 10000 });
+   * payment.createPaymentParam('홍길동', '01012345678');
+  */
+  createPaymentParam({user_name, user_phone_number}) {
+    const amount = this.amount;
+    const merchant_uid = this.merchant_uid;
+    return new PaymentParam({ user_name, user_phone_number, amount, merchant_uid });
+  }
+
 
 	//
 	async finlizePayment() {
@@ -176,6 +195,107 @@ class Payment {
 			});
 		}
 	}
+
+
+  /**
+   * Compare stored payment info and request payment info.
+   * @param {string} user_id - The merchant UID to compare.
+   * @param {string} amount - The amount to compare.
+   * 
+   * @returns {void}
+   * @throws {ExpectedError} Throws an ExpectedError with status 401 if the request is invalid.
+   * @memberof Payment
+   * @instance
+   * @example
+   * const payment = new Payment({ user_id: 1, amount: 10000 });
+   * payment.compareStoredPaymentData({merchant_uid, amount});
+   * // => throw ExpectedError with status 401 if the request is invalid.
+  */
+  compareStoredPaymentData({user_id}) {
+
+    if (this.user_id !== user_id){
+      console.error(`🚨error -> ⚡️ compareStoredPaymentData : 🐞사용자가 일치하지 않습니다.`);
+      throw new ExpectedError({
+        status: "401",
+        message: `비정상적 접근`,
+        detail_code: "00",
+      });
+    }
+  }
+
+  /**
+   * Asynchronously gets the payment api token from iamport.
+   * @returns {Promise<string>} - A promise that resolves with the access_token.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @memberof Payment
+   * @instance
+   * @async
+   * @example
+   * const token = await Payment.getPaymentApiToken();
+   */
+  static async getPortOneApiToken() {
+    const imp_key = await getSSMParameter("imp_key");
+    const imp_secret = await getSSMParameter("imp_secret");
+    try {
+      const response = await axios({
+        url: "https://api.iamport.kr/users/getToken",
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          imp_key: imp_key,
+          imp_secret: imp_secret,
+        },
+      });
+      if (response.data === 0){
+        console.error(`🚨error -> ⚡️ getPaymentApiToken : 🐞import token get error`);
+        throw new ExpectedError({
+          status: "500",
+          message: `서버에러`,
+          detail_code: "00",
+        });
+      }
+  
+      return response.data.access_token;
+    } catch (error) {
+      // Handle errors here
+      console.error("Error:", error);
+      return 0;
+    }
+  }
+  //port one의 특정 결제 취소 api를 호출
+  static async callPortOneCancelPaymentAPI({merchant_uid, amount, port_one_token, reason}) {
+    try {
+      const response = await axios({
+        url: "https://api.iamport.kr/payments/cancel",
+        method: "post",
+        headers: {
+          "Content-Type": "application/json", 
+          "Authorization": port_one_token 
+        },
+        data: {
+          merchant_uid,
+          checksum: amount,
+          reason,
+        },
+      });
+      if (response.data === 0){
+        console.error(`🚨error -> ⚡️ callPortOneCancelPaymentAPI : 🐞import token get error`);
+        throw new ExpectedError({
+          status: "500",
+          message: `서버에러`,
+          detail_code: "00",
+        });
+      }
+    } catch(err){
+      console.error(`🚨 error -> ⚡️ callPortOneCancelPaymentAPI : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러`,
+        detail_code: "00",
+      });
+    }
+  }
+}
 
 	//
 	static async getPaymentByMerchantUid({ merchant_uid }) {
@@ -370,6 +490,7 @@ class Payment {
 			});
 		}
 	}
+
 
 	/**
 	 *
