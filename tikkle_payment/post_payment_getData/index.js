@@ -7,7 +7,7 @@ exports.post_payment_getData = async (req, res) => {
 	const { body, id, returnToken } = req;
 	const { merchant_uid } = body;
 	try {
-		//-------- get portone token --------------------------------------------------------------------------------------//
+		//-------- get portone token 2 --------------------------------------------------------------------------------------//
 
 		const token = await Payment.getPaymentApiToken();
 		const Authorization = "Bearer " + token;
