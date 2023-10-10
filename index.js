@@ -145,9 +145,12 @@ const {
 	post_payment_init,
 } = require("./tikkle_payment/post_payment_init/index.js");
 
+
 const {
 	put_payment_fail,
 } = require("./tikkle_payment/put_payment_fail/index.js");
+
+const { post_payment_finalize } = require("./tikkle_payment/post_payment_finalize/index.js");
 
 const {
 	post_payment_getData,
@@ -273,6 +276,9 @@ api.post("/post_payment_init", authtoken, post_payment_init);
 api.put("/put_payment_fail", authtoken, put_payment_fail);
 
 api.post("/post_payment_getData", authtoken, post_payment_getData);
+
+api.post("/post_payment_finalize", post_payment_finalize);
+
 //
 
 //-------- handler ------------------------------------------------//

@@ -242,50 +242,7 @@ class Payment {
 		}
 	}
 
-	// /**
-	//  * Asynchronously gets the payment api token from iamport.
-	//  * @returns {Promise<string>} - A promise that resolves with the access_token.
-	//  * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
-	//  * @memberof Payment
-	//  * @instance
-	//  * @async
-	//  * @example
-	//  * const token = await Payment.getPaymentApiToken();
-	//  */
-	// static async getPaymentApiToken() {
-	// 	const imp_key = await getSSMParameter("imp_key");
-	// 	const imp_secret = await getSSMParameter("imp_secret");
-	// 	try {
-	// 		const response = await axios({
-	// 			url: "https://api.iamport.kr/users/getToken",
-	// 			method: "post",
-	// 			headers: { "Content-Type": "application/json" },
-	// 			data: {
-	// 				imp_key: imp_key,
-	// 				imp_secret: imp_secret,
-	// 			},
-	// 		});
 
-	// 		// if (response.data === 0) {
-	// 		// 	console.error(
-	// 		// 		`🚨error -> ⚡️ getPaymentApiToken : 🐞import token get error`
-	// 		// 	);
-	// 		// 	throw new ExpectedError({
-	// 		// 		status: "500",
-	// 		// 		message: `서버에러`,
-	// 		// 		detail_code: "00",
-	// 		// 	});
-	// 		// }
-
-	// 		console.log("RES : ", response);
-
-	// 		return response;
-	// 	} catch (error) {
-	// 		// Handle errors here
-	// 		console.error("Error:", error);
-	// 		return 0;
-	// 	}
-	// }
 	/**
 	 * Asynchronously gets the payment api token from iamport.
 	 * @returns {Promise<string>} - A promise that resolves with the access_token.
