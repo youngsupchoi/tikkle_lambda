@@ -4,7 +4,7 @@ const { Response } = require("../../features/Response");
 
 exports.put_payment_refund = async (req, res) => {
 	const { body, id, returnToken } = req;
-	const { merchant_uid, amount, reason } = body;
+	const { merchant_uid, reason } = body;
 
 	//main logic------------------------------------------------------------------------------------------------------------------//
 	try {
@@ -29,9 +29,7 @@ exports.put_payment_refund = async (req, res) => {
 		const port_one_token = await Payment.getPaymentApiToken();
 
 		//아이엠 포트 결제 취소
-		await Payment.callPortOneCancelPaymentAPI({
-			merchant_uid: merchant_uid,
-			amount: amount,
+		await payment.callPortOneCancelPaymentAPI({
 			port_one_token: port_one_token,
 			reason: reason,
 		});

@@ -367,9 +367,7 @@ class Payment {
 	}
 
 	//port one의 특정 결제 취소 api를 호출
-	static async callPortOneCancelPaymentAPI({
-		merchant_uid,
-		amount,
+	async callPortOneCancelPaymentAPI({
 		port_one_token,
 		reason,
 	}) {
@@ -382,12 +380,13 @@ class Payment {
 					Authorization: port_one_token,
 				},
 				data: {
-					merchant_uid,
-					checksum: amount,
+					merchant_uid: this.merchant_uid,
+					checksum: this.amount,
 					reason,
 				},
 			});
-			if (response.data === 0) {
+			//FIXME: 조건 수정 요함
+			if (!response.data) {
 				console.error(
 					`🚨error -> ⚡️ callPortOneCancelPaymentAPI : 🐞import token get error`
 				);
