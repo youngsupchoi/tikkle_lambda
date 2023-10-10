@@ -9,14 +9,14 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 	const { body, id, returnToken } = req;
 	const { merchant_uid, imp_uid, status } = body;
 	//main logic------------------------------------------------------------------------------------------------------------------//
-	let payment;
+
 	try {
 		//결제정보 가져오기
 		const paymnet_info = await Payment.getPaymentByMerchantUid({
 			merchant_uid,
 		});
 		//payment 객체 생성
-		payment = new Payment(paymnet_info);
+		const payment = new Payment(paymnet_info);
 		//DB상의 결제정보와 비교
 		payment.compareStoredPaymentData({ user_id: id });
 		//줄 수 있는 상태인지 확인
@@ -43,18 +43,17 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 				)
 			);
 	} catch (err) {
-		//TODO: 환불 api로직 추가해야함
-		//Payment.fail({merchant_uid});
-		if (payment) {
-			const paymnet_info = await Payment.getPaymentByMerchantUid({
-				merchant_uid,
-			});
-			const payment = new Payment(paymnet_info);
-			const port_one_token = Payment.getPaymentApiToken();
-			payment.callPortOneCancelPaymentAPI({reason, port_one_token});
-		}
-		//TODO: 롤백 로직 추가해야함
-		//Payment.rollback({merchant_uid});
+
+			console.log(merchant_uid)
+			const payment_info = await Payment.getPaymentByMerchantUid({merchant_uid});
+			const payment = new Payment(payment_info);
+			const port_one_token = await Payment.getPaymentApiToken();
+			//포트원 환불 api 호출
+			await payment.callPortOneCancelPaymentAPI({reason: "buymytikkle 처리중 에러", port_one_token});
+			//결제 처리 롤백
+			await payment.updatePaymentToCancle();
+
+	
 		console.error(`🚨 error -> ⚡️ post_tikkling_buymytikkle : 🐞 ${err}`);
 		if (err instanceof ExpectedError) {
 			return res
@@ -69,4 +68,5 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 		};
 		return res.status(500).send(return_body);
 	}
-};
+	};
+
