@@ -1,4 +1,4 @@
-const { Payment } = require("../../features/Payment");
+const { Tikkle } = require("../../features/Tikkle");
 const { User } = require("../../features/User");
 const { Response } = require("../../features/Response");
 
@@ -9,33 +9,30 @@ exports.put_payment_refund = async (req, res) => {
 	//main logic------------------------------------------------------------------------------------------------------------------//
 	try {
 		//payment를 생성
-		const paymnet_info = await Payment.getPaymentByMerchantUid({
+		const tikkle_info = await Tikkle.getTikkleByMerchantUid({
 			merchant_uid,
 		});
 
 		//payment 객체 생성
-		const payment = new Payment(paymnet_info);
+		const tikkle = new Tikkle(tikkle_info);
 
 		//DB상의 결제정보와 비교
-		payment.compareStoredPaymentInfo({ user_id: id });
+		tikkle.compareStoredTikkleData({ user_id: id });
 
-		//완료된 결제인지 확인
-		await payment.checkComplete();
-
-		//아직 사용하지 않은 티클인지 확인
-		await payment.checkUnusedTikkle();
+		//환불 가능한 티클인지 확인
+		await tikkle.checkTikkleCanRefund();
 
 		//포트원 토큰 가져오기
-		const port_one_token = await Payment.getPaymentApiToken();
+		const port_one_token = await Tikkle.getPortOneApiToken();
 
 		//아이엠 포트 결제 취소
-		await payment.callPortOneCancelPaymentAPI({
+		await tikkle.callPortOneCancelPaymentAPI({
 			port_one_token: port_one_token,
 			reason: reason,
 		});
 
 		//결제 환불 처리 in Tikkle DB (sendingTikkle state = 3, payment state = PAYMENT_CANCELLED)
-		await payment.updatePaymentToCancle();
+		await tikkle.updateTikkleToRefund();
 
 		return res
 			.status(200)

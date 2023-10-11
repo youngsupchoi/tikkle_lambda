@@ -1,4 +1,4 @@
-const { Payment } = require("../../features/Payment");
+const { Tikkle } = require("../../features/Tikkle");
 const { User } = require("../../features/User");
 const { Response } = require("../../features/Response");
 

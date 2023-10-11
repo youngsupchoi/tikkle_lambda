@@ -2,7 +2,7 @@ const { queryDatabase, queryDatabase_multi } = require("db.js");
 const { Response } = require("../../features/Response");
 const { ExpectedError } = require("../../features/ExpectedError");
 const { Tikkling } = require("../../features/Tikkling");
-const { Payment } = require("../../features/Payment");
+const { Tikkle } = require("../../features/Tikkle");
 const { DBManager } = require("../../db");
 
 exports.post_tikkling_sendtikkle = async (req, res) => {
@@ -14,14 +14,14 @@ exports.post_tikkling_sendtikkle = async (req, res) => {
 	try {
 
 		//결제정보 가져오기
-		const paymnet_info = await Payment.getPaymentByMerchantUid({
+		const tikkle_info = await Tikkle.getTikkleByMerchantUid({
 			merchant_uid,
 			db
 		});
 		//payment 객체 생성
-		const payment = new Payment({...paymnet_info, db});
+		const tikkle = new Tikkle({...tikkle_info, db});
 		//DB상의 결제정보와 비교
-		payment.compareStoredPaymentData({ user_id: id });
+		tikkle.compareStoredTikkleData({ user_id: id });
 		//tikkling 객체 생성
 		const tikkling = new Tikkling({ user_id: id });
 		//티클링 정보 가져오기

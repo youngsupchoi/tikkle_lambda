@@ -1,4 +1,4 @@
-const { Payment } = require("../../features/Payment");
+const { Tikkle } = require("../../features/Tikkle");
 const { User } = require("../../features/User");
 const { Response } = require("../../features/Response");
 const axios = require("axios");
@@ -10,7 +10,7 @@ exports.post_payment_getData = async (req, res) => {
 	//-------- get portone token 2 --------------------------------------------------------------------------------------//
 	let Authorization = null;
 	try {
-		Authorization = await Payment.getPaymentApiToken();
+		Authorization = await Tikkle.getPortOneApiToken();
 	} catch (err) {
 		console.error(`🚨error -> ⚡️ post_payment_getData : 🐞${err}`);
 		if (err.status) {
