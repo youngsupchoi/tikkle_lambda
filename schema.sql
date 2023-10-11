@@ -434,6 +434,7 @@ VALUES
     (3, '환불'),
     (4, '환급'),
     (5, '결제 대기');
+    (6, '결제 실패');
 
 CREATE TABLE `payment` (
     `merchant_uid` VARCHAR(64) NOT NULL,
