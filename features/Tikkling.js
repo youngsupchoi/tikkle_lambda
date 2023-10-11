@@ -3,7 +3,7 @@ const { getSSMParameter } = require("ssm.js");
 const { ExpectedError} = require("./ExpectedError.js");
 
 class Tikkling {
-  constructor({ id, user_id, funding_limit, created_at = null, tikkle_quantity, product_id, terminated_at, state_id, type, resolution_type, tikkle_count}) {
+  constructor({ id, user_id, funding_limit, created_at = null, tikkle_quantity, product_id, terminated_at, state_id, type, resolution_type, tikkle_count, db}) {
     this.id = id || null;
     this.user_id = user_id || null;
     this.funding_limit = funding_limit || null;
@@ -15,6 +15,7 @@ class Tikkling {
     this.type = type || null;
     this.resolution_type = resolution_type || null;
     this.tikkle_count = tikkle_count || null;
+    this.db = db;
   }
 
   updateFromDatabaseResult(dbResult) {
@@ -37,7 +38,7 @@ class Tikkling {
  */
   async loadActiveTikklingViewByUserId(){
     try{
-      const rows = await queryDatabase(
+      const rows = await this.db.executeQuery(
         `SELECT * FROM active_tikkling_view WHERE user_id = ?`,
         [this.user_id]
       );
@@ -104,7 +105,7 @@ class Tikkling {
 
   async buyMyTikkle({merchant_uid}){
     try{
-      const results = await queryDatabase(
+      const results = await this.db.executeQuery(
         `INSERT INTO sending_tikkle (tikkling_id, user_id, quantity, merchant_uid) VALUES (?, ?, ?, ?); `,
         [
           this.id,

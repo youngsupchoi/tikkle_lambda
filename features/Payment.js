@@ -178,7 +178,7 @@ class Payment {
 	//
 	async finlizePayment() {
 		try {
-			const result = await queryDatabase(
+			const result = await this.db.executeQuery(
 				`UPDATE payment SET state = 'PAYMENT_COMPLETED' WHERE merchant_uid = ?`,
 				[this.merchant_uid]
 			);

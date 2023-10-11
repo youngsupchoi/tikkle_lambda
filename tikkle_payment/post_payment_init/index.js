@@ -16,7 +16,6 @@ exports.post_payment_init = async (req, res) => {
   //main logic------------------------------------------------------------------------------------------------------------------//
   const db = new DBManager();
 	await db.openTransaction();
-  console.log("hihi:", test[0]);
   try {
     //user정보 가져옴
     const user = await User.createById({id, db});
