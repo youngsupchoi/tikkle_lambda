@@ -50,6 +50,8 @@ exports.put_payment_refund = async (req, res) => {
 				.status(err.status)
 				.send(Response.create(false, err.detail_code, err.message));
 		}
-		return res.status(500).send(Response.create(false, "00", "서버 에러"));
+		return res
+			.status(500)
+			.send(Response.create(false, "00", "서버 : 결제 환불 처리 실패"));
 	}
 };
