@@ -11,7 +11,7 @@ exports.put_payment_refund = async (req, res) => {
 	try {
 		//payment를 생성
 		const paymnet_info = await Payment.getPaymentByMerchantUid({
-			merchant_uid,
+			merchant_uid: merchant_uid,
 		});
 
 		//payment 객체 생성
