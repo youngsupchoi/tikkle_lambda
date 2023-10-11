@@ -1,4 +1,3 @@
-const { queryDatabase, queryDatabase_multi } = require("db.js");
 const { getSSMParameter } = require("ssm.js");
 const axios = require("axios");
 const { ExpectedError } = require("./ExpectedError.js");
@@ -109,7 +108,7 @@ class Tikkle {
 	 */
 	async updateTikkleToFail() {
 		try {
-			const [result] = await queryDatabase(
+			const [result] = await this.db.executeQuery(
 				`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`,
 				[this.merchant_uid]
 			);
@@ -148,17 +147,19 @@ class Tikkle {
 	 */
 	async updateTikkleToRefund() {
 		try {
-			const [result] = await queryDatabase(
+			const result = await this.db.executeQuery(
 				`UPDATE sending_tikkle SET state_id = 3 WHERE merchant_uid = ?`,
 				[this.merchant_uid]
 			);
+
+			// console.log("&&&&&&&&&&&&& : ", result);
 			if (result.affectedRows == 0) {
 				console.error(
 					`🚨 error -> ⚡️ updateTikkleToRefund : 🐞 ${"데이터가 DB상에 반영되지 않음"}`
 				);
 				throw new ExpectedError({
 					status: "500",
-					message: `서버에러`,
+					message: `서버에러 : updateTikkleToRefund 쿼리결과`,
 					detail_code: "00",
 				});
 			} else {
@@ -168,7 +169,7 @@ class Tikkle {
 			console.error(`🚨 error -> ⚡️ updateTikkleToRefund : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러`,
+				message: `서버에러: updateTikkleToRefund 쿼리`,
 				detail_code: "00",
 			});
 		}
@@ -408,7 +409,7 @@ class Tikkle {
 		try {
 			if (this.state_id !== 1) {
 				console.error(
-					`🚨error -> ⚡️ checkTikkleCanRefund : 🐞payment state is not PAYMENT_COMPLETED`
+					`🚨error -> ⚡️ checkTikkleCanRefund : 🐞payment state is not 1`
 				);
 				throw new ExpectedError({
 					status: "403",
