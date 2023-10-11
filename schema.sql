@@ -196,6 +196,7 @@ INSERT INTO notification_type (name) values ('티클 도착');
 INSERT INTO notification_type (name) values ('티클링 완료');
 INSERT INTO notification_type (name) values ('티클링 종료');
 INSERT INTO notification_type (name) values ('받은 티클 환불');
+INSERT INTO notification_type (name) values ('결제 취소');
 
 CREATE TABLE `notification` ( 
     `id` INT NOT NULL AUTO_INCREMENT,

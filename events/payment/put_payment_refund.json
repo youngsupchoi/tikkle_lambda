@@ -7,7 +7,7 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"merchant_uid": "mid_1696556775916",
+		"merchant_uid": "mid_1696556149823",
 		"amount": 200,
 		"reason": "단순 변심"
 	}

@@ -20,6 +20,7 @@ class PaymentParam {
 	}
 }
 
+
 class Tikkle {
 	constructor({
 		id, 
@@ -40,6 +41,7 @@ class Tikkle {
 		this.state_id = state_id || null;
 		this.merchant_uid = merchant_uid || this.generateMerchantUid();
 		this.amount = quantity * 5000;
+
 		this.created_at = created_at;
 		this.db = db;
 	}
@@ -84,6 +86,7 @@ class Tikkle {
 	}
 
 
+
 	/**
 	 * Asynchronously updates the sending_tikkle state_id to 6, "결제 실패" in the database.
 	 * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
@@ -93,6 +96,7 @@ class Tikkle {
 	 * @async
 	 * @example
 	 * const payment = new Payment({ user_id: 1, amount: 10000 });
+
 	 * await payment.updateTikkleToFail();
 	 * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
 	 * // => sending_tikkle.state_id = 6
@@ -110,10 +114,12 @@ class Tikkle {
 					detail_code: "00",
 				});
 			} else {
+
 				this.state_id = 6;
 			}
 		} catch (err) {
 			console.error(`🚨 error -> ⚡️ updatePaymentToCancle : 🐞 ${err}`);
+
 			throw new ExpectedError({
 				status: "500",
 				message: `서버에러`,
@@ -121,6 +127,7 @@ class Tikkle {
 			});
 		}
 	}
+
 	/**
 	 * Asynchronously updates the sending_tikkle state_id to 3, "환불" in the database.
 	 * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
@@ -159,7 +166,7 @@ class Tikkle {
 			});
 		}
 	}
-	
+
 
 	/**
 	 * create payment info
@@ -232,6 +239,7 @@ class Tikkle {
 	 * @instance
 	 * @example
 	 * const payment = new Payment({ user_id: 1, amount: 10000 });
+
 	 * payment.compareStoredTikkleData({merchant_uid, amount});
 	 * // => throw ExpectedError with status 401 if the request is invalid.
 	 */
@@ -249,6 +257,7 @@ class Tikkle {
 	}
 
 	//
+
 	static async getTikkleByMerchantUid({ merchant_uid, db }) {
 		try {
 			const rows = await db.executeQuery(
@@ -265,6 +274,7 @@ class Tikkle {
 			}
 			return rows[0];
 		} catch (err) {
+
 			console.error(`🚨 error -> ⚡️ getTikkleByMerchantUid : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
@@ -300,7 +310,6 @@ class Tikkle {
 		);
 	}
 
-
 	/**
 	 * Asynchronously gets the payment api token from iamport.
 	 * @returns {Promise<string>} - A promise that resolves with the access_token.
@@ -309,9 +318,11 @@ class Tikkle {
 	 * @instance
 	 * @async
 	 * @example
+
 	 * const token = await Payment.getPortOneApiToken();
 	 */
 	static async getPortOneApiToken() {
+
 		try {
 			const imp_key = await getSSMParameter("imp_key");
 			const imp_secret = await getSSMParameter("imp_secret");
@@ -331,21 +342,18 @@ class Tikkle {
 			return "Bearer " + response.response.access_token;
 		} catch (error) {
 			console.error(
-				`🚨error -> ⚡️ getPortOneApiToken : 🐞import token get error`
+				`🚨error -> ⚡️ getPaymentApiToken : 🐞import token get error`
 			);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러`,
+				message: `서버에러: 아임포트 토큰 가져오기 실패`,
 				detail_code: "00",
 			});
 		}
 	}
 
 	//port one의 특정 결제 취소 api를 호출
-	async callPortOneCancelPaymentAPI({
-		port_one_token,
-		reason,
-	}) {
+	async callPortOneCancelPaymentAPI({ port_one_token, reason }) {
 		try {
 			const response = await axios({
 				url: "https://api.iamport.kr/payments/cancel",
@@ -367,22 +375,22 @@ class Tikkle {
 				);
 				throw new ExpectedError({
 					status: "500",
-					message: `서버에러`,
-					detail_code: "00",
+					message: `서버에러 : 아임포트 결제 취소 실패`,
+					detail_code: "07",
 				});
 			}
 		} catch (err) {
 			console.error(`🚨 error -> ⚡️ callPortOneCancelPaymentAPI : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러`,
-				detail_code: "00",
+				message: `서버에러 아임포트 결제 취소 실패`,
+				detail_code: "07",
 			});
 		}
 	}
 
 	/**
-	 * 해당 티클이 환불 가능한지 확인
+	 * 결제 환불 전에 완료된 결제인지 확인
 	 * @throws {ExpectedError} Throws an ExpectedError with status 500 if payment state is not "PAYMENT_COMPLETED".
 	 * @memberof Payment
 	 * @instance
@@ -407,11 +415,12 @@ class Tikkle {
 			throw new ExpectedError({
 				status: "500",
 				message: `서버에러`,
+
 				detail_code: "00",
 			});
 		}
 	}
-
 }
 
 module.exports = { Tikkle };
+

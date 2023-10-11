@@ -39,7 +39,7 @@ exports.post_payment_getData = async (req, res) => {
 		result = axios_result.data.response;
 	} catch (error) {
 		console.error("Error:", error);
-		return res.status(500).send(createResponseBody(false, "00", "서버 에러"));
+		return res.status(500).send(createResponseBody(false, "01", "서버 에러"));
 	}
 
 	//-------- return result --------------------------------------------------------------------------------------//
