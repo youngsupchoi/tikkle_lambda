@@ -20,7 +20,7 @@ exports.put_payment_refund = async (req, res) => {
 		});
 
 		//payment 객체 생성
-		const tikkle = new Tikkle(tikkle_info);
+		const tikkle = new Tikkle({ ...tikkle_info, db });
 
 		//DB상의 결제정보와 비교
 		tikkle.compareStoredTikkleData({ user_id: id });

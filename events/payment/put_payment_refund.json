@@ -7,8 +7,8 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"merchant_uid": "mid_1696556149823",
-		"amount": 200,
+		"tikkling_id": 6,
+		"merchant_uid": "test_lncj36r7",
 		"reason": "단순 변심"
 	}
 }
