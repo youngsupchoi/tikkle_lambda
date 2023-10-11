@@ -20,19 +20,28 @@ class PaymentParam {
 	}
 }
 
-class Payment {
+
+class Tikkle {
 	constructor({
-		merchant_uid,
+		id, 
+		tikkling_id, 
 		user_id,
-		amount,
-		state = "PAYMENT_PENDING",
+		message,
+		quantity,
+		state_id,
+		merchant_uid,
 		created_at = null,
 		db
 	}) {
-		this.merchant_uid = merchant_uid || this.generateMerchantUid();
+		this.id = id || null;
+		this.tikkling_id = tikkling_id || null;
 		this.user_id = user_id || null;
-		this.amount = amount || null;
-		this.state = state;
+		this.message = message || null;
+		this.quantity = quantity || null;
+		this.state_id = state_id || null;
+		this.merchant_uid = merchant_uid || this.generateMerchantUid();
+		this.amount = quantity * 5000;
+
 		this.created_at = created_at;
 		this.db = db;
 	}
@@ -46,25 +55,25 @@ class Payment {
 	}
 
 	/**
-	 * Asynchronously saves the payment info including merchant_uid, user_id, amount, and state to the database.
+	 * 티클 결제정보를 결제 대기 상태로 DB에 저장
 	 * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
 	 * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
-	 * @memberof Payment
+	 * @memberof Tikkle
 	 * @instance
 	 * @async
 	 * @example
-	 * const payment = new Payment({ user_id: 1, amount: 10000 });
-	 * await payment.savePayment();
-	 * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
-	 * // => payment.id = 1
-	 * // => payment.created_at = 2020-01-01 00:00:00
-	 * // => payment.state = 'PAYMENT_PENDING'
+	 * const tikkle = new Tikkle({ tikkling_id: 1, user_id: 1, message: '티클 메시지', quantity: 1, state_id: 5 });
+	 * await tikkle.initTikklePayment();
 	 */
-	async savePayment() {
+	async initTikklePayment() {
 		try {
+			if (this.state_id != 5){
+				console.error(`🚨 error -> ⚡️ getUserById : 🐞 ${'미결제 상태의 티클만 해당 함수를 호출가능'}`);
+				throw new Error("서버에러");
+			}
 			return await this.db.executeQuery(
-				`INSERT INTO payment (merchant_uid, user_id, amount, state) VALUES (?, ?, ?, ?)`,
-				[this.merchant_uid, this.user_id, this.amount, this.state]
+				`INSERT INTO sending_tikkle (tikkling_id, user_id, message, quantity, state_id,  merchant_uid) VALUES (?, ?, ?, ?, ?, ?)`,
+				[this.tikkling_id, this.user_id, this.message, this.quantity, this.state_id, this.merchant_uid]
 			);
 		} catch (err) {
 			console.error(`🚨 error -> ⚡️ getUserById : 🐞 ${err}`);
@@ -76,8 +85,10 @@ class Payment {
 		}
 	}
 
+
+
 	/**
-	 * Asynchronously updates the payment state to 'PAYMENT_FAILED' in the database.
+	 * Asynchronously updates the sending_tikkle state_id to 6, "결제 실패" in the database.
 	 * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
 	 * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
 	 * @memberof Payment
@@ -85,14 +96,15 @@ class Payment {
 	 * @async
 	 * @example
 	 * const payment = new Payment({ user_id: 1, amount: 10000 });
-	 * await payment.updatePaymentToFail();
+
+	 * await payment.updateTikkleToFail();
 	 * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
-	 * // => payment.state = 'PAYMENT_FAILED'
+	 * // => sending_tikkle.state_id = 6
 	 */
-	async updatePaymentToFail() {
+	async updateTikkleToFail() {
 		try {
-			const result = await queryDatabase(
-				`UPDATE payment SET state = 'PAYMENT_FAILED' WHERE merchant_uid = ?`,
+			const [result] = await queryDatabase(
+				`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`,
 				[this.merchant_uid]
 			);
 			if (result.affectedRows == 0) {
@@ -102,10 +114,12 @@ class Payment {
 					detail_code: "00",
 				});
 			} else {
-				this.state = "PAYMENT_FAILED";
+
+				this.state_id = 6;
 			}
 		} catch (err) {
-			console.error(`🚨 error -> ⚡️ updatePaymentToFail : 🐞 ${err}`);
+			console.error(`🚨 error -> ⚡️ updatePaymentToCancle : 🐞 ${err}`);
+
 			throw new ExpectedError({
 				status: "500",
 				message: `서버에러`,
@@ -115,7 +129,7 @@ class Payment {
 	}
 
 	/**
-	 * Asynchronously updates the payment state to 'PAYMENT_CANCELLED' in the database and change sendingTikkle state = 3.
+	 * Asynchronously updates the sending_tikkle state_id to 3, "환불" in the database.
 	 * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
 	 * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
 	 * @memberof Payment
@@ -123,35 +137,36 @@ class Payment {
 	 * @async
 	 * @example
 	 * const payment = new Payment({ user_id: 1, amount: 10000 });
-	 * await payment.updatePaymentToCancle();
+	 * await payment.updateTikkleToRefund();
 	 * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
-	 * // => payment.state = 'PAYMENT_CANCELLED'
+	 * // => sending_tikkle.state_id = 3
 	 */
-	async updatePaymentToCancle() {
+	async updateTikkleToRefund() {
 		try {
-			const [result1, result2] = await queryDatabase_multi(
-				`UPDATE payment SET state = 'PAYMENT_CANCELLED' WHERE merchant_uid = ?;
-				UPDATE sending_tikkle SET state_id = 3 WHERE merchant_uid = ?`,
-				[this.merchant_uid, this.merchant_uid]
+			const [result] = await queryDatabase(
+				`UPDATE sending_tikkle SET state_id = 3 WHERE merchant_uid = ?`,
+				[this.merchant_uid]
 			);
-			if (result1.affectedRows == 0 || result2.affectedRows == 0) {
+			if (result.affectedRows == 0) {
+				console.error(`🚨 error -> ⚡️ updateTikkleToRefund : 🐞 ${'데이터가 DB상에 반영되지 않음'}`);
 				throw new ExpectedError({
 					status: "500",
-					message: `서버에러: tikkle DB update 실패`,
+					message: `서버에러`,
 					detail_code: "00",
 				});
 			} else {
-				this.state = "PAYMENT_CANCELLED";
+				this.state_id = 3;
 			}
 		} catch (err) {
-			console.error(`🚨 error -> ⚡️ updatePaymentToCancle : 🐞 ${err}`);
+			console.error(`🚨 error -> ⚡️ updateTikkleToRefund : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러 : updatePaymentToCancle`,
+				message: `서버에러`,
 				detail_code: "00",
 			});
 		}
 	}
+
 
 	/**
 	 * create payment info
@@ -175,11 +190,23 @@ class Payment {
 		});
 	}
 
-	//
-	async finlizePayment() {
+	/**
+	 * Asynchronously update sending_tikkle state_id to 1, "미사용" in the database.
+	 * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
+	 * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+	 * @memberof Payment
+	 * @instance
+	 * @async
+	 * @example
+	 * const payment = new Payment({ user_id: 1, amount: 10000 });
+	 * await payment.completeTikklePayment();
+	 * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
+	 * // => sending_tikkle.state_id = 1
+	 */
+	async completeTikklePayment() {
 		try {
 			const result = await this.db.executeQuery(
-				`UPDATE payment SET state = 'PAYMENT_COMPLETED' WHERE merchant_uid = ?`,
+				`UPDATE sending_tikkle SET state_id = 1 WHERE merchant_uid = ?`,
 				[this.merchant_uid]
 			);
 			if (result.affectedRows == 0) {
@@ -189,10 +216,10 @@ class Payment {
 					detail_code: "00",
 				});
 			} else {
-				this.state = "PAYMENT_COMPLETED";
+				this.state_id = 1;
 			}
 		} catch (err) {
-			console.error(`🚨 error -> ⚡️ getUserById : 🐞 ${err}`);
+			console.error(`🚨 error -> ⚡️ completeTikklePayment : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
 				message: `서버에러`,
@@ -212,13 +239,14 @@ class Payment {
 	 * @instance
 	 * @example
 	 * const payment = new Payment({ user_id: 1, amount: 10000 });
-	 * payment.compareStoredPaymentData({merchant_uid, amount});
+
+	 * payment.compareStoredTikkleData({merchant_uid, amount});
 	 * // => throw ExpectedError with status 401 if the request is invalid.
 	 */
-	compareStoredPaymentData({ user_id }) {
+	compareStoredTikkleData({ user_id }) {
 		if (this.user_id !== user_id) {
 			console.error(
-				`🚨error -> ⚡️ compareStoredPaymentData : 🐞사용자가 일치하지 않습니다.`
+				`🚨error -> ⚡️ compareStoredTikkleData : 🐞사용자가 일치하지 않습니다.`
 			);
 			throw new ExpectedError({
 				status: "401",
@@ -229,13 +257,15 @@ class Payment {
 	}
 
 	//
-	static async getPaymentByMerchantUid({ merchant_uid, db }) {
+
+	static async getTikkleByMerchantUid({ merchant_uid, db }) {
 		try {
 			const rows = await db.executeQuery(
-				`SELECT * FROM payment WHERE merchant_uid = ?`,
+				`SELECT * FROM sending_tikkle WHERE merchant_uid = ?`,
 				[merchant_uid]
 			);
 			if (!Payment.checkRowExists(rows)) {
+				console.error(`🚨 error -> ⚡️ getTikkleByMerchantUid : 🐞 ${'사용자가 존재하지 않는 티클을 검색하였습니다.'}`);
 				throw new ExpectedError({
 					status: "403",
 					message: `비정상적 접근`,
@@ -244,10 +274,11 @@ class Payment {
 			}
 			return rows[0];
 		} catch (err) {
-			console.error(`🚨 error -> ⚡️ getPaymentByMerchantUid : 🐞 ${err}`);
+
+			console.error(`🚨 error -> ⚡️ getTikkleByMerchantUid : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러 getPaymentByMerchantUid`,
+				message: `서버에러`,
 				detail_code: "00",
 			});
 		}
@@ -280,55 +311,6 @@ class Payment {
 	}
 
 	/**
-	 * create payment info
-	 * @param {string} user_name
-	 * @param {string} user_phone_number
-	 * @returns {PaymentInfo}
-	 * @memberof Payment
-	 * @instance
-	 * @example
-	 * const payment = new Payment({ user_id: 1, amount: 10000 });
-	 * payment.createPaymentInfo('홍길동', '01012345678');
-	 */
-	createPaymentInfo({ user_name, user_phone_number }) {
-		const amount = this.amount;
-		const merchant_uid = this.merchant_uid;
-		return new PaymentInfo({
-			user_name,
-			user_phone_number,
-			amount,
-			merchant_uid,
-		});
-	}
-
-	/**
-	 * Compare stored payment info and request payment info.
-	 * @param {string} user_id - The merchant UID to compare.
-	 * @param {string} amount - The amount to compare.
-	 *
-	 * @returns {void}
-	 * @throws {ExpectedError} Throws an ExpectedError with status 401 if the request is invalid.
-	 * @memberof Payment
-	 * @instance
-	 * @example
-	 * const payment = new Payment({ user_id: 1, amount: 10000 });
-	 * payment.compareStoredPaymentInfo({merchant_uid, amount});
-	 * // => throw ExpectedError with status 401 if the request is invalid.
-	 */
-	compareStoredPaymentInfo({ user_id }) {
-		if (this.user_id !== user_id) {
-			console.error(
-				`🚨error -> ⚡️ compareStoredPaymentInfo : 🐞사용자가 일치하지 않습니다.`
-			);
-			throw new ExpectedError({
-				status: "401",
-				message: `비정상적 접근, 사용자 불일치`,
-				detail_code: "00",
-			});
-		}
-	}
-
-	/**
 	 * Asynchronously gets the payment api token from iamport.
 	 * @returns {Promise<string>} - A promise that resolves with the access_token.
 	 * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
@@ -336,9 +318,11 @@ class Payment {
 	 * @instance
 	 * @async
 	 * @example
-	 * const token = await Payment.getPaymentApiToken();
+
+	 * const token = await Payment.getPortOneApiToken();
 	 */
-	static async getPaymentApiToken() {
+	static async getPortOneApiToken() {
+
 		try {
 			const imp_key = await getSSMParameter("imp_key");
 			const imp_secret = await getSSMParameter("imp_secret");
@@ -412,77 +396,31 @@ class Payment {
 	 * @instance
 	 * @async
 	 * @example
-	 * const token = await Payment.getPaymentApiToken();
+	 * await tikkle.checkTikkleCanRefund();
 	 */
-	async checkComplete() {
+	async checkTikkleCanRefund() {
 		try {
-			if (this.state !== "PAYMENT_COMPLETED") {
+			if (this.state_id !== 1) {
 				console.error(
-					`🚨error -> ⚡️ checkComplete : 🐞payment state is not PAYMENT_COMPLETED`
+					`🚨error -> ⚡️ checkTikkleCanRefund : 🐞payment state is not PAYMENT_COMPLETED`
 				);
 				throw new ExpectedError({
 					status: "403",
-					message: `미완료된 결제에 대한 환불 신청`,
+					message: `사용 혹은 결제되지 않은 티클에 대한 환불 신청`,
 					detail_code: "01",
 				});
 			}
 		} catch (err) {
-			console.error(`🚨 error -> ⚡️ checkComplete : 🐞 ${err}`);
+			console.error(`🚨 error -> ⚡️ checkTikkleCanRefund : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러 : checkComplete`,
+				message: `서버에러`,
+
 				detail_code: "00",
 			});
 		}
 	}
-
-	/**
-	 *
-	 * @returns
-	 */
-	async checkUnusedTikkle() {
-		try {
-			const rows = await queryDatabase(
-				`SELECT * FROM sending_tikkle WHERE merchant_uid = ?`,
-				[this.merchant_uid]
-			);
-
-			//결제 정보가 없으면
-			if (rows.length == 0) {
-				console.error(
-					`🚨error -> ⚡️ checkUnusedTikkle : 🐞There is no data with that merchant_uid`
-				);
-				throw new ExpectedError({
-					status: "404",
-					message: `존재하지 않는 결제 정보`,
-					detail_code: "01",
-				});
-			}
-
-			const data = rows[0];
-
-			//결제 정보가 있지만 미상용 티클이 아닐때
-			if (data.state_id !== 1) {
-				console.error(
-					`🚨error -> ⚡️ checkUnusedTikkle : 🐞The Tikkle is already used or refunded`
-				);
-				throw new ExpectedError({
-					status: "404",
-					message: `이미 사용되었거나 환불된 티클`,
-					detail_code: "02",
-				});
-			}
-		} catch (err) {
-			console.error(`🚨 error -> ⚡️ checkUnusedTikkle : 🐞 ${err}`);
-			throw new ExpectedError({
-				status: "500",
-				message: `서버에러 : checkUnusedTikkle`,
-				detail_code: "00",
-			});
-		}
-	}
-
-	/////
 }
 
-module.exports = { Payment };
+module.exports = { Tikkle };
+

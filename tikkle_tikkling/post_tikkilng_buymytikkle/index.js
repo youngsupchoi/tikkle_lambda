@@ -1,6 +1,6 @@
 const { queryDatabase } = require("db.js");
 const { Tikkling } = require("../../features/Tikkling");
-const { Payment } = require("../../features/Payment");
+const { Tikkle } = require("../../features/Tikkle");
 const { Response } = require("../../features/Response");
 const { ExpectedError } = require("../../features/ExpectedError");
 const { DBManager } = require("../../db");
@@ -16,14 +16,14 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 	
 	try {
 		//결제정보 가져오기
-		const paymnet_info = await Payment.getPaymentByMerchantUid({
+		const tikkle_info = await Tikkle.getTikkleByMerchantUid({
 			merchant_uid,
 			db
 		});
 		//payment 객체 생성
-		const payment = new Payment({...paymnet_info, db});
+		const tikkle = new Tikkle({...tikkle_info, db});
 		//DB상의 결제정보와 비교
-		payment.compareStoredPaymentData({ user_id: id });
+		tikkle.compareStoredTikkleData({ user_id: id });
 		//줄 수 있는 상태인지 확인
 		const tikkling = new Tikkling({ user_id: id , db});
 		//티클링 정보 가져오기
@@ -33,7 +33,7 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 		//나의 남은 티클 구매
 		await tikkling.buyMyTikkle({ merchant_uid });
 		//결제 완료 처리
-		await payment.finlizePayment();
+		await tikkle.completeTikklePayment();
 		const buy_tikkle_quantity =
 			tikkling.tikkle_quantity - tikkling.tikkle_count;
 		// 트랜잭션 커밋
@@ -51,11 +51,11 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 			);
 	} catch (err) {
 		
-			const payment_info = await Payment.getPaymentByMerchantUid({merchant_uid, db});
-			const payment = new Payment(payment_info);
-			const port_one_token = await Payment.getPaymentApiToken();
+			const tikkle_info = await Tikkle.getTikkleByMerchantUid({merchant_uid, db});
+			const tikkle = new Tikkle(tikkle_info);
+			const port_one_token = await Tikkle.getPortOneApiToken();
 			//포트원 환불 api 호출
-			await payment.callPortOneCancelPaymentAPI({reason: "buymytikkle 처리중 에러", port_one_token});
+			await tikkle.callPortOneCancelPaymentAPI({reason: "buymytikkle 처리중 에러", port_one_token});
 			//트랜잭션 롤백
 			await db.rollbackTransaction();
 	

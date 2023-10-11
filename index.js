@@ -287,7 +287,7 @@ api.post("/post_seller_startdelivery", authtoken, post_seller_startdelivery);
 //------- payment
 api.get("/get_payment_apiToken", authtoken, get_payment_apiToken);
 
-api.post("/post_payment_init", authtoken, post_payment_init);
+api.post("/post_payment_init/:tikkleAction", authtoken, post_payment_init);
 
 api.put("/put_payment_fail", put_payment_fail);
 

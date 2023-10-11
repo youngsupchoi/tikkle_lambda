@@ -1,40 +1,86 @@
-const { Payment } = require("../../features/Payment");
+const { Tikkle } = require("../../features/Tikkle");
 const { User } = require("../../features/User");
 const { Response } = require("../../features/Response");
 const { DBManager } = require("../../db");
-
-const createResponseBody = (success, code, message, token = null) => ({
-  success,
-  detail_code: code,
-  message,
-  returnToken: token,
-});
+const { Tikkling } = require("../../features/Tikkling");
+const { ExpectedError } = require("../../features/ExpectedError");
 
 exports.post_payment_init = async (req, res) => {
-  const { body, id, returnToken } = req;
-  const { amount } = body;
+  const { body, id, returnToken, params } = req;
+  const { tikkleAction } = params;
+  const { amount, tikkling_id, tikkle_quantity, message } = body;
   //main logic------------------------------------------------------------------------------------------------------------------//
   const db = new DBManager();
 	await db.openTransaction();
   try {
     //user정보 가져옴
     const user = await User.createById({id, db});
-    //payment를 생성
-    const payment = new Payment({ user_id: id, amount: amount, db });
-    //payment info를 생성
-    const payment_info = payment.createPaymentParam({ user_name: user.name, user_phone: user.phone});
-    //payment를 저장 
-    await payment.savePayment();
-    
-    await db.commitTransaction();
-    return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료", payment_info, returnToken));
 
+    if (tikkleAction == "sendtikkle") {
+      //티클링 객체 생성
+      const tikkling = new Tikkling({ id: tikkling_id, db });
+
+      //해당 티클링 락
+      await tikkling.lockTikklingForInsertTikkle();
+
+      //티클링 정보 가져오기
+      await tikkling.loadActiveTikklingViewByTikklingId();
+
+      //티클링이 정보를 받을 수 있는 상태인지 검사
+      await tikkling.validateSendTikkleRequest({tikkle_quantity});
+      
+      //티클링이 정보를 받을 수 있는 상태라면 티클 객체 생성
+      const tikkle = new Tikkle({ tikkling_id, user_id: id, message, quantity: tikkle_quantity, state_id:5, db });
+
+      //해당 티클정보를 db에 저장
+      await tikkle.initTikklePayment();
+
+      //payment param 객체 생성
+      const payment_param = tikkle.createPaymentParam({ user_name: user.name, user_phone: user.phone });
+
+      //transaction commit
+      await db.commitTransaction();
+
+      return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료", payment_param, returnToken));
+    }
+    else if (tikkleAction == "buymytikkle") {
+      //티클링 객체 생성
+      const tikkling = new Tikkling({ id: tikkling_id, db });
+      
+		  //티클링 정보 가져오기
+		  await tikkling.loadActiveTikklingViewByUserId();
+
+      //구매 가능한 상태인지 확인
+      tikkling.validateBuyMyTikkleRequest();
+
+      //티클링이 정보를 받을 수 있는 상태라면 티클 객체 생성
+      const tikkle = new Tikkle({ tikkling_id, user_id: id, message, quantity: tikkle_quantity, state_id:5, db });
+
+      //티클링이 정보를 받을 수 있는 상태라면 결제 전의 티클 정보를 저장
+      tikkle.initTikklePayment();
+
+      //payment param 객체 생성
+      const payment_param = tikkle.createPaymentParam({ user_name: user.name, user_phone: user.phone });
+
+      //transaction commit
+      await db.commitTransaction();
+
+      return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료", payment_param, returnToken));
+    }
+
+    else {
+      throw new ExpectedError({
+        status: "403",
+        message: `잘못된 요청, 해당 기능을 찾을 수 없습니다.`,
+        detail_code: "00",
+      });
+    }
   } catch (err) {
     await db.rollbackTransaction();
-    console.error(`🚨error -> ⚡️ post_payment_init : 🐞${err}`);
+    console.error(`🚨error -> ⚡️ post_payment_init/${tikkleAction} : 🐞${err}`);
     if (err.status) {
-      return res.status(err.status).send(createResponseBody(false, err.detail_code, err.message));
+      return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     };
-    return res.status(500).send(createResponseBody(false, "00", "서버 에러"));
+    return res.status(500).send(Response.create(false, "00", "서버 에러"));
   }
 };

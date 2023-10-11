@@ -1,4 +1,4 @@
-const { Payment } = require("../../features/Payment");
+const { Tikkle } = require("../../features/Tikkle");
 const { User } = require("../../features/User");
 const { Response } = require("../../features/Response");
 
@@ -8,13 +8,13 @@ exports.put_payment_fail = async (req, res) => {
   //main logic------------------------------------------------------------------------------------------------------------------//
   try {
     //payment를 생성
-    const paymnet_info = await Payment.getPaymentByMerchantUid({merchant_uid});
+    const tikkle_info = await Tikkle.getTikkleByMerchantUid({merchant_uid});
     //payment 객체 생성
-    const payment = new Payment(paymnet_info);
+    const tikkle = new Tikkle(tikkle_info);
     //DB상의 결제정보와 비교
-    payment.compareStoredPaymentData({user_id :id});
+    tikkle.compareStoredTikkleData({user_id :id});
     //결제 실패 처리
-    await payment.updatePaymentToFail()
+    await tikkle.updateTikkleToRefund()
     return res.status(200).send(Response.create(true, "00", "결제 실패 처리 완료", null, returnToken));
   } catch (err) {
     console.error(`🚨 error -> ⚡️ put_payment_fail : 🐞 ${err}`);

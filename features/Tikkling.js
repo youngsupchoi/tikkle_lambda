@@ -62,6 +62,32 @@ class Tikkling {
     }
   }
 
+  async loadActiveTikklingViewByTikklingId(){
+    try{
+      const rows = await this.db.executeQuery(
+        `SELECT * FROM active_tikkling_view WHERE tikkling_id = ?`,
+        [this.id]
+      );
+      if(!Tikkling.checkRowExists(rows)) {
+        throw new ExpectedError({
+          status: "404",
+          message: `비정상적 요청, 티클링이 존재하지 않습니다.`,
+          detail_code: "00",
+        });
+      }
+      let active_tikkling = rows[0];
+      active_tikkling.id = active_tikkling.tikkling_id;
+      this.updateFromDatabaseResult(active_tikkling);
+    } catch(err){
+      console.error(`🚨 error -> ⚡️ loadActiveTikklingViewByTikklingId : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러`,
+        detail_code: "00",
+      });
+    }
+  }
+
   static checkRowExists(rows) {
     if (rows.length == 0){
       console.error(`🚨 error -> ⚡️ checkRowExists : 🐞 쿼리의 결과가 존재하지 않음`);
@@ -100,8 +126,52 @@ class Tikkling {
     }
   
 
+  async validateSendTikkleRequest({tikkle_quantity}){
+    try{
+      //티클링이 현재 진행중인지 확인
+      if(this.state_id !== 1){
+        throw new ExpectedError({
+          status: "403",
+          message: `티클링이 진행중이 아닙니다.`,
+          detail_code: "01",
+        });
+      }
+      //보내려는 티클 수량을 받을 수 있는지 확인
+      if(this.tikkle_quantity < this.tikkle_count + tikkle_quantity){
+        throw new ExpectedError({
+          status: "403",
+          message: `티클을 받을 수 있는 수량을 초과하였습니다.`,
+          detail_code: "02",
+        });
+      }
+    } catch(err){
+      console.error(`🚨 error -> ⚡️ validateSendTikkleRequest : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러`,
+        detail_code: "00",
+      });
+    }
+  }
 
-  
+  /**
+   * Asynchronously lock tikkling row for insert tikkle
+  */
+  async lockTikklingForInsertTikkle(){
+    try{
+      this.db.executeQuery(
+        `SELECT * FROM tikkling WHERE id = ? FOR UPDATE;`,
+        [this.id]
+      );
+    } catch(err){
+      console.error(`🚨 error -> ⚡️ lockTikklingForInsertTikkle : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러`,
+        detail_code: "00",
+      });
+    }
+  }
 
   async buyMyTikkle({merchant_uid}){
     try{

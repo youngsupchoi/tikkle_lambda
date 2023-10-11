@@ -1,4 +1,4 @@
-const { Payment } = require("../../features/Payment");
+const { Tikkle } = require("../../features/Tikkle");
 
 //
 exports.get_payment_apiToken = async (req, res) => {
@@ -9,7 +9,7 @@ exports.get_payment_apiToken = async (req, res) => {
 	//-------- get token --------------------------------------------------------------------------------------//
 	// console.log("#####################################");
 	try {
-		const token = await Payment.getPaymentApiToken();
+		const token = await Tikkle.getPortOneApiToken();
 
 		//-------- return result --------------------------------------------------------------------------------------//
 

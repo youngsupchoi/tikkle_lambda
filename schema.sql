@@ -435,17 +435,7 @@ VALUES
     (3, '환불'),
     (4, '환급'),
     (5, '결제 대기');
-
-CREATE TABLE `payment` (
-    `merchant_uid` VARCHAR(64) NOT NULL,
-    `user_id` INT NOT NULL,
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `amount` INT NOT NULL,
-    `state` ENUM('PAYMENT_PENDING', 'PAYMENT_FAILED', 'PAYMENT_COMPLETED','PAYMENT_CANCELLED') NULL,
-    PRIMARY KEY (`merchant_uid`),
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
-);
-
+    (6, '결제 실패');
 
 
 CREATE TABLE `sending_tikkle` (
@@ -461,7 +451,6 @@ CREATE TABLE `sending_tikkle` (
     FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`state_id`) REFERENCES `sending_tikkle_state`(`id`),
-    FOREIGN KEY (`merchant_uid`) REFERENCES `payment`(`merchant_uid`)
 );
 
 -- tikkling_id에 index 추가
