@@ -135,7 +135,7 @@ class Payment {
 			if (result1.affectedRows == 0 || result2.affectedRows == 0) {
 				throw new ExpectedError({
 					status: "500",
-					message: `서버에러`,
+					message: `서버에러: tikkle DB update 실패`,
 					detail_code: "00",
 				});
 			} else {
@@ -145,7 +145,7 @@ class Payment {
 			console.error(`🚨 error -> ⚡️ updatePaymentToCancle : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러`,
+				message: `서버에러 : updatePaymentToCancle`,
 				detail_code: "00",
 			});
 		}
@@ -245,7 +245,7 @@ class Payment {
 			console.error(`🚨 error -> ⚡️ getPaymentByMerchantUid : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러`,
+				message: `서버에러 getPaymentByMerchantUid`,
 				detail_code: "00",
 			});
 		}
@@ -320,7 +320,7 @@ class Payment {
 			);
 			throw new ExpectedError({
 				status: "401",
-				message: `비정상적 접근`,
+				message: `비정상적 접근, 사용자 불일치`,
 				detail_code: "00",
 			});
 		}
@@ -360,17 +360,14 @@ class Payment {
 			);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러`,
+				message: `서버에러: 아임포트 토큰 가져오기 실패`,
 				detail_code: "00",
 			});
 		}
 	}
 
 	//port one의 특정 결제 취소 api를 호출
-	async callPortOneCancelPaymentAPI({
-		port_one_token,
-		reason,
-	}) {
+	async callPortOneCancelPaymentAPI({ port_one_token, reason }) {
 		try {
 			const response = await axios({
 				url: "https://api.iamport.kr/payments/cancel",
@@ -392,16 +389,16 @@ class Payment {
 				);
 				throw new ExpectedError({
 					status: "500",
-					message: `서버에러`,
-					detail_code: "00",
+					message: `서버에러 : 아임포트 결제 취소 실패`,
+					detail_code: "07",
 				});
 			}
 		} catch (err) {
 			console.error(`🚨 error -> ⚡️ callPortOneCancelPaymentAPI : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러`,
-				detail_code: "00",
+				message: `서버에러 아임포트 결제 취소 실패`,
+				detail_code: "07",
 			});
 		}
 	}
@@ -431,7 +428,7 @@ class Payment {
 			console.error(`🚨 error -> ⚡️ checkComplete : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러`,
+				message: `서버에러 : checkComplete`,
 				detail_code: "00",
 			});
 		}
@@ -477,7 +474,7 @@ class Payment {
 			console.error(`🚨 error -> ⚡️ checkUnusedTikkle : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
-				message: `서버에러`,
+				message: `서버에러 : checkUnusedTikkle`,
 				detail_code: "00",
 			});
 		}

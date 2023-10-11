@@ -28,14 +28,14 @@ exports.put_payment_refund = async (req, res) => {
 		//포트원 토큰 가져오기
 		const port_one_token = await Payment.getPaymentApiToken();
 
+		//결제 환불 처리 in Tikkle DB (sendingTikkle state = 3, payment state = PAYMENT_CANCELLED)
+		await payment.updatePaymentToCancle();
+
 		//아이엠 포트 결제 취소
 		await payment.callPortOneCancelPaymentAPI({
 			port_one_token: port_one_token,
 			reason: reason,
 		});
-
-		//결제 환불 처리 in Tikkle DB (sendingTikkle state = 3, payment state = PAYMENT_CANCELLED)
-		await payment.updatePaymentToCancle();
 
 		return res
 			.status(200)
@@ -43,12 +43,15 @@ exports.put_payment_refund = async (req, res) => {
 				Response.create(true, "00", "결제 환불 처리 완료", null, returnToken)
 			);
 	} catch (err) {
+		//TODO: 에러시 DB 롤백
 		console.error(`🚨 error -> ⚡️ put_payment_refund : 🐞 ${err}`);
 		if (err.status) {
 			return res
 				.status(err.status)
 				.send(Response.create(false, err.detail_code, err.message));
 		}
-		return res.status(500).send(Response.create(false, "00", "서버 에러"));
+		return res
+			.status(500)
+			.send(Response.create(false, "00", "서버 : 결제 환불 처리 실패"));
 	}
 };
