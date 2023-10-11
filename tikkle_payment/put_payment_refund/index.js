@@ -2,17 +2,21 @@ const { Tikkle } = require("../../features/Tikkle");
 const { User } = require("../../features/User");
 const { Response } = require("../../features/Response");
 const { Notice } = require("../../features/Notice");
+const { DBManager } = require("../../db");
 
 exports.put_payment_refund = async (req, res) => {
 	const { body, id, returnToken } = req;
 	const { merchant_uid, reason } = body;
 
+	const db = new DBManager();
+	await db.openTransaction();
+
 	//main logic------------------------------------------------------------------------------------------------------------------//
 	try {
-		//payment를 생성
-
+		//Tikkle 생성
 		const tikkle_info = await Tikkle.getTikkleByMerchantUid({
 			merchant_uid,
+			db,
 		});
 
 		//payment 객체 생성
@@ -36,13 +40,16 @@ exports.put_payment_refund = async (req, res) => {
 			reason: reason,
 		});
 
+		await db.commitTransaction();
+
 		return res
 			.status(200)
 			.send(
 				Response.create(true, "00", "결제 환불 처리 완료", null, returnToken)
 			);
 	} catch (err) {
-		//TODO: 에러시 DB 롤백
+		await db.rollbackTransaction();
+
 		console.error(`🚨 error -> ⚡️ put_payment_refund : 🐞 ${err}`);
 		if (err.status) {
 			return res
