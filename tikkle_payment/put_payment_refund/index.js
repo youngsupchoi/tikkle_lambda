@@ -36,9 +36,6 @@ exports.put_payment_refund = async (req, res) => {
 			reason: reason,
 		});
 
-		//결제 환불 처리 in Tikkle DB (sendingTikkle state = 3, payment state = PAYMENT_CANCELLED)
-		await tikkle.updateTikkleToRefund();
-
 		return res
 			.status(200)
 			.send(
