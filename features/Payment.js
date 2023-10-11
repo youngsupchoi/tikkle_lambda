@@ -27,12 +27,14 @@ class Payment {
 		amount,
 		state = "PAYMENT_PENDING",
 		created_at = null,
+		db
 	}) {
 		this.merchant_uid = merchant_uid || this.generateMerchantUid();
 		this.user_id = user_id || null;
 		this.amount = amount || null;
 		this.state = state;
 		this.created_at = created_at;
+		this.db = db;
 	}
 
 	updateFromDatabaseResult(dbResult) {
@@ -60,12 +62,12 @@ class Payment {
 	 */
 	async savePayment() {
 		try {
-			return await queryDatabase(
-				`INSERT INTO payment (merchant_uid, userd_id, amount, state) VALUES (?, ?, ?, ?)`,
+			return await this.db.executeQuery(
+				`INSERT INTO payment (merchant_uid, user_id, amount, state) VALUES (?, ?, ?, ?)`,
 				[this.merchant_uid, this.user_id, this.amount, this.state]
 			);
 		} catch (err) {
-			console.error(`🚨error -> ⚡️getUserById : 🐞${err}`);
+			console.error(`🚨 error -> ⚡️ getUserById : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
 				message: `서버에러`,
@@ -176,7 +178,7 @@ class Payment {
 	//
 	async finlizePayment() {
 		try {
-			const result = await queryDatabase(
+			const result = await this.db.executeQuery(
 				`UPDATE payment SET state = 'PAYMENT_COMPLETED' WHERE merchant_uid = ?`,
 				[this.merchant_uid]
 			);
@@ -227,13 +229,13 @@ class Payment {
 	}
 
 	//
-	static async getPaymentByMerchantUid({ merchant_uid }) {
+	static async getPaymentByMerchantUid({ merchant_uid, db }) {
 		try {
-			const rows = await queryDatabase(
+			const rows = await db.executeQuery(
 				`SELECT * FROM payment WHERE merchant_uid = ?`,
 				[merchant_uid]
 			);
-			if (!this.checkRowExists(rows)) {
+			if (!Payment.checkRowExists(rows)) {
 				throw new ExpectedError({
 					status: "403",
 					message: `비정상적 접근`,
