@@ -38,14 +38,6 @@ exports.put_payment_refund = async (req, res) => {
 			reason: reason,
 		});
 
-		const notice = new Notice({
-			type_id: 9,
-			receive_user_id: id,
-			send_user_id: id,
-		});
-
-		await notice.sendPayCancleNoti(merchant_uid);
-
 		return res
 			.status(200)
 			.send(

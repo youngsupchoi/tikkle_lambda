@@ -17,6 +17,14 @@ class Notice {
 
 	/**
 	 * 결제 취소 알림 정보 세팅 & 알림 보냄
+	 * @example
+	 * 		const notice = new Notice({
+					type_id: 9,
+					receive_user_id: id,
+					send_user_id: id,
+				});
+
+				await notice.sendPayCancleNoti(merchant_uid);
 	 */
 	async sendPayCancleNoti(merchant_uid) {
 		//----------- set data ----------------------------------------------------------------------//
