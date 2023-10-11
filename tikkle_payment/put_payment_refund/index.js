@@ -28,7 +28,7 @@ exports.put_payment_refund = async (req, res) => {
 		const port_one_token = await Tikkle.getPortOneApiToken();
 
 		//결제 환불 처리 in Tikkle DB (sendingTikkle state = 3, payment state = PAYMENT_CANCELLED)
-		await payment.updatePaymentToCancle();
+		await tikkle.updateTikkleToRefund();
 
 		//아이엠 포트 결제 취소
 		await tikkle.callPortOneCancelPaymentAPI({

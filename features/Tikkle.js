@@ -20,18 +20,17 @@ class PaymentParam {
 	}
 }
 
-
 class Tikkle {
 	constructor({
-		id, 
-		tikkling_id, 
+		id,
+		tikkling_id,
 		user_id,
 		message,
 		quantity,
 		state_id,
 		merchant_uid,
 		created_at = null,
-		db
+		db,
 	}) {
 		this.id = id || null;
 		this.tikkling_id = tikkling_id || null;
@@ -67,13 +66,22 @@ class Tikkle {
 	 */
 	async initTikklePayment() {
 		try {
-			if (this.state_id != 5){
-				console.error(`🚨 error -> ⚡️ getUserById : 🐞 ${'미결제 상태의 티클만 해당 함수를 호출가능'}`);
+			if (this.state_id != 5) {
+				console.error(
+					`🚨 error -> ⚡️ getUserById : 🐞 ${"미결제 상태의 티클만 해당 함수를 호출가능"}`
+				);
 				throw new Error("서버에러");
 			}
 			return await this.db.executeQuery(
 				`INSERT INTO sending_tikkle (tikkling_id, user_id, message, quantity, state_id,  merchant_uid) VALUES (?, ?, ?, ?, ?, ?)`,
-				[this.tikkling_id, this.user_id, this.message, this.quantity, this.state_id, this.merchant_uid]
+				[
+					this.tikkling_id,
+					this.user_id,
+					this.message,
+					this.quantity,
+					this.state_id,
+					this.merchant_uid,
+				]
 			);
 		} catch (err) {
 			console.error(`🚨 error -> ⚡️ getUserById : 🐞 ${err}`);
@@ -84,8 +92,6 @@ class Tikkle {
 			});
 		}
 	}
-
-
 
 	/**
 	 * Asynchronously updates the sending_tikkle state_id to 6, "결제 실패" in the database.
@@ -114,7 +120,6 @@ class Tikkle {
 					detail_code: "00",
 				});
 			} else {
-
 				this.state_id = 6;
 			}
 		} catch (err) {
@@ -148,7 +153,9 @@ class Tikkle {
 				[this.merchant_uid]
 			);
 			if (result.affectedRows == 0) {
-				console.error(`🚨 error -> ⚡️ updateTikkleToRefund : 🐞 ${'데이터가 DB상에 반영되지 않음'}`);
+				console.error(
+					`🚨 error -> ⚡️ updateTikkleToRefund : 🐞 ${"데이터가 DB상에 반영되지 않음"}`
+				);
 				throw new ExpectedError({
 					status: "500",
 					message: `서버에러`,
@@ -166,7 +173,6 @@ class Tikkle {
 			});
 		}
 	}
-
 
 	/**
 	 * create payment info
@@ -264,8 +270,10 @@ class Tikkle {
 				`SELECT * FROM sending_tikkle WHERE merchant_uid = ?`,
 				[merchant_uid]
 			);
-			if (!Payment.checkRowExists(rows)) {
-				console.error(`🚨 error -> ⚡️ getTikkleByMerchantUid : 🐞 ${'사용자가 존재하지 않는 티클을 검색하였습니다.'}`);
+			if (!Tikkle.checkRowExists(rows)) {
+				console.error(
+					`🚨 error -> ⚡️ getTikkleByMerchantUid : 🐞 ${"사용자가 존재하지 않는 티클을 검색하였습니다."}`
+				);
 				throw new ExpectedError({
 					status: "403",
 					message: `비정상적 접근`,
@@ -274,7 +282,6 @@ class Tikkle {
 			}
 			return rows[0];
 		} catch (err) {
-
 			console.error(`🚨 error -> ⚡️ getTikkleByMerchantUid : 🐞 ${err}`);
 			throw new ExpectedError({
 				status: "500",
@@ -322,7 +329,6 @@ class Tikkle {
 	 * const token = await Payment.getPortOneApiToken();
 	 */
 	static async getPortOneApiToken() {
-
 		try {
 			const imp_key = await getSSMParameter("imp_key");
 			const imp_secret = await getSSMParameter("imp_secret");
@@ -342,7 +348,7 @@ class Tikkle {
 			return "Bearer " + response.response.access_token;
 		} catch (error) {
 			console.error(
-				`🚨error -> ⚡️ getPaymentApiToken : 🐞import token get error`
+				`🚨error -> ⚡️ getPortOneApiToken : 🐞import token get error`
 			);
 			throw new ExpectedError({
 				status: "500",
@@ -423,4 +429,3 @@ class Tikkle {
 }
 
 module.exports = { Tikkle };
-

@@ -34,7 +34,7 @@ class Notice {
 		let sqlResult;
 		try {
 			const rows = await queryDatabase(
-				"select * from payment where merchant_uid = ?",
+				"select * from sending_tikkle where merchant_uid = ?",
 				[merchant_uid]
 			);
 			sqlResult = rows;
@@ -54,7 +54,7 @@ class Notice {
 				message: `서버에러: class Notice sendPayCancleNoti 본인의 결제가 아님`,
 				detail_code: "01",
 			});
-		} else if (sqlResult[0].state !== "PAYMENT_CANCELLED") {
+		} else if (sqlResult[0].state_id !== 3) {
 			console.error(`🚨error -> ⚡️getUserById : 🐞환불된 결제가 아님`);
 			throw new ExpectedError({
 				status: "500",
