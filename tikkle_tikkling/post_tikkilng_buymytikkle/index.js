@@ -3,6 +3,7 @@ const { Tikkling } = require("../../features/Tikkling");
 const { Payment } = require("../../features/Payment");
 const { Response } = require("../../features/Response");
 const { ExpectedError } = require("../../features/ExpectedError");
+const { DBManager } = require("../../db");
 //남은 티클 개수만 충족되면 티클 줄 수 있음
 //TODO: 결제 실패 api
 exports.post_tikkling_buymytikkle = async (req, res) => {
@@ -10,10 +11,14 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 	const { merchant_uid, imp_uid, status } = body;
 	//main logic------------------------------------------------------------------------------------------------------------------//
 
+	const db = new DBManager();
+	await db.openTransaction();
+
 	try {
 		//결제정보 가져오기
 		const paymnet_info = await Payment.getPaymentByMerchantUid({
 			merchant_uid,
+			db
 		});
 		//payment 객체 생성
 		const payment = new Payment(paymnet_info);
@@ -31,6 +36,7 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 		await payment.finlizePayment();
 		const buy_tikkle_quantity =
 			tikkling.tikkle_quantity - tikkling.tikkle_count;
+		await db.commitTransaction();
 		return res
 			.status(200)
 			.send(
@@ -43,9 +49,8 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 				)
 			);
 	} catch (err) {
-
-			console.log(merchant_uid)
-			const payment_info = await Payment.getPaymentByMerchantUid({merchant_uid});
+		await db.rollbackTransaction();
+			const payment_info = await Payment.getPaymentByMerchantUid({merchant_uid, db});
 			const payment = new Payment(payment_info);
 			const port_one_token = await Payment.getPaymentApiToken();
 			//포트원 환불 api 호출
