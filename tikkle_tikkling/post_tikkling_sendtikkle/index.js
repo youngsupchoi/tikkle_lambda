@@ -1,31 +1,12 @@
 const { queryDatabase, queryDatabase_multi } = require("db.js");
-const { Response } = require("../../features/Response");
-const { ExpectedError } = require("../../features/ExpectedError");
-const { Tikkling } = require("../../features/Tikkling");
-const { Payment } = require("../../features/Payment");
-const { DBManager } = require("../../db");
 
 exports.post_tikkling_sendtikkle = async (req, res) => {
-	const { body, id, returnToken } = req;
-	const { merchant_uid, imp_uid, status } = body;
+	const body = req.body;
+	const id = req.id;
+	const returnToken = req.returnToken;
 	//main logic------------------------------------------------------------------------------------------------------------------//
-	const db = new DBManager();
-	await db.openTransaction();
-	try {
 
-		//결제정보 가져오기
-		const paymnet_info = await Payment.getPaymentByMerchantUid({
-			merchant_uid,
-			db
-		});
-		//payment 객체 생성
-		const payment = new Payment({...paymnet_info, db});
-		//DB상의 결제정보와 비교
-		payment.compareStoredPaymentData({ user_id: id });
-		//tikkling 객체 생성
-		const tikkling = new Tikkling({ user_id: id });
-		//티클링 정보 가져오기
-		await tikkling.loadActiveTikklingViewByUserId();
+	try {
 		//줄 수 있는 상태인지 확인
 		const check_tikkling = await queryDatabase(
 			`SELECT t.id AS tikkling_id, t.user_id AS user_id, t.tikkle_quantity AS total_tikkle_quantity, IFNULL((SELECT SUM(s.quantity) FROM sending_tikkle s WHERE s.tikkling_id = ?), 0) AS received_tikkle_quantity, t.state_id 

@@ -17,8 +17,8 @@ exports.put_friend_block = async (req, res) => {
 		let result;
 		if (blocked) {
 			result = await queryDatabase(
-				`UPDATE friends_relation
-         SET relation_state_id = 1
+				`UPDATE friends_relation 
+         SET relation_state_id = 1 
          WHERE central_user_id = ? and friend_user_id = ?`,
 				[id, target_friend_id]
 			);

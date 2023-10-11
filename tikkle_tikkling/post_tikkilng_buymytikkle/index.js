@@ -9,12 +9,11 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 	const { body, id, returnToken } = req;
 	const { merchant_uid, imp_uid, status } = body;
 	//main logic------------------------------------------------------------------------------------------------------------------//
-	
+
 	try {
 		//결제정보 가져오기
 		const paymnet_info = await Payment.getPaymentByMerchantUid({
 			merchant_uid,
-			db
 		});
 		//payment 객체 생성
 		const payment = new Payment(paymnet_info);
@@ -44,7 +43,9 @@ exports.post_tikkling_buymytikkle = async (req, res) => {
 				)
 			);
 	} catch (err) {
-			const payment_info = await Payment.getPaymentByMerchantUid({merchant_uid, db});
+
+			console.log(merchant_uid)
+			const payment_info = await Payment.getPaymentByMerchantUid({merchant_uid});
 			const payment = new Payment(payment_info);
 			const port_one_token = await Payment.getPaymentApiToken();
 			//포트원 환불 api 호출

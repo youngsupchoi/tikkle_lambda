@@ -21,7 +21,6 @@ class User {
     tikkling_ticket = 2,
     account = null,
     bank_code = null,
-    db
   }) {
     this.id = id;
     this.name = name;
@@ -40,7 +39,6 @@ class User {
     this.tikkling_ticket = tikkling_ticket;
     this.account = account;
     this.bank_code = bank_code;
-    this.db = db;
   }
 
   
@@ -56,14 +54,14 @@ class User {
    * const user = await User.createById(1);
    * // => User { id: 1, name: '홍길동', ... }
    */
-  static createById = async ({id, db}) => {
+  static createById = async (id) => {
     try{
       const query = `SELECT * FROM users WHERE id = ?`;
-      const [user] = await db.executeQuery(query, [id]);
-      return new User({...user, db});
+      const [user] = await queryDatabase(query, [id]);
+      return new User(user);
 
     }catch(error){
-      console.error(`🚨error -> createById : 🐞${error}`);
+      console.error(`🚨error -> ⚡️getUserById : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
