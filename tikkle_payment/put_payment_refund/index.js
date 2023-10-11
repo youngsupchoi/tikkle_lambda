@@ -1,6 +1,7 @@
 const { Payment } = require("../../features/Payment");
 const { User } = require("../../features/User");
 const { Response } = require("../../features/Response");
+const { Notice } = require("../../features/Notice");
 
 exports.put_payment_refund = async (req, res) => {
 	const { body, id, returnToken } = req;
@@ -36,6 +37,14 @@ exports.put_payment_refund = async (req, res) => {
 			port_one_token: port_one_token,
 			reason: reason,
 		});
+
+		const notice = new Notice({
+			type_id: 9,
+			receive_user_id: id,
+			send_user_id: id,
+		});
+
+		await notice.sendPayCancleNoti(merchant_uid);
 
 		return res
 			.status(200)
