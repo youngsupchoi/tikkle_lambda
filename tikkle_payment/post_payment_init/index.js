@@ -45,7 +45,7 @@ exports.post_payment_init = async (req, res) => {
     }
     else if (tikkleAction == "buymytikkle") {
       //티클링 객체 생성
-      const tikkling = new Tikkling({ id: tikkling_id, db });
+      const tikkling = new Tikkling({ user_id: id, db });
       
 		  //티클링 정보 가져오기
 		  await tikkling.loadActiveTikklingViewByUserId();
