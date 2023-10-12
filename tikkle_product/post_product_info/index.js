@@ -12,9 +12,16 @@ exports.post_product_info = async (req, res) => {
 	let sqlResult;
 
 	try {
-		const rows = await queryDatabase("select * from products where id = ?", [
-			productId,
-		]);
+		const rows = await queryDatabase(
+			` SELECT p.*, b.brand_name, pc.name AS cat_name, uwl.product_id AS wishlisted
+				FROM products p
+				INNER JOIN brands b ON p.brand_id = b.id
+				INNER JOIN product_category pc ON p.category_id = pc.id
+				LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id AND uwl.user_id = ?
+				WHERE p.id = ? ;
+		`,
+			[id, productId]
+		);
 		sqlResult = rows;
 		//console.log("SQL result : ", sqlResult);
 	} catch (err) {

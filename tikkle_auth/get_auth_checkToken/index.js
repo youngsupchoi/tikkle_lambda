@@ -23,7 +23,7 @@ exports.get_auth_checkToken = async (req, res) => {
 		refreshToken.length > maxLength
 	) {
 		//return invalid
-		console.log("get_auth_checkToken 에서 에러가 발생했습니다.", err);
+		console.log("get_auth_checkToken 에서 에러가 발생했습니다.");
 		const return_body = {
 			success: false,
 			detail_code: "99",

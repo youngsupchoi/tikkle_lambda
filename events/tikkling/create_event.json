@@ -3,15 +3,13 @@
 	"path": "/post_tikkling_create",
 	"httpMethod": "POST",
 	"headers": {
-		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsImlhdCI6MTY5MzE5NTkxOSwiZXhwIjoxNjkzMTk2ODE5LCJpc3MiOiJMaUZvbGkifQ.7SY5b5eC-SRqLEreAVUE8QzWcs3esjyD7dE8yO_0umM,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsImlhdCI6MTY5MzE5NTkxOSwiZXhwIjoxNjk1Nzg3OTE5LCJpc3MiOiJMaUZvbGkifQ.O7pUQUSGVM-x54ox-p_M4-F7tm2CDKST8tJLTUrnGjc"
+		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjE2OTMzNjI5OTAsImlzcyI6IkxpRm9saSJ9.2q1rnumRYD5G6ZajAdHkU3HibgTRDbzhgGNFoPAw2qY,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjQyODUzNjIwOTAsImlzcyI6IkxpRm9saSJ9.3lO5YCgVXXzrz5LrodPQoccq11ZHvHdwKAflg22RXXc"
 	},
 	"queryStringParameters": null,
 	"body": {
-
-		"funding_limit": "2023-08-30",
-		"tikkle_quantity": 100,
-
+		"funding_limit": "2023-09-20",
+		"tikkle_quantity": 3,
 		"product_id": 5,
-		"type": "생일"
+		"type": "none"
 	}
 }

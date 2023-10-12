@@ -1,4 +1,6 @@
 const { queryDatabase } = require("db.js");
+const crypto = require("crypto");
+const { getSSMParameter } = require("ssm.js");
 
 exports.get_user_info = async (req, res) => {
 	const body = req.body;
@@ -32,6 +34,42 @@ exports.get_user_info = async (req, res) => {
 			returnToken: null,
 		};
 		return res.status(500).send(return_body);
+	}
+
+	// console.log("sqlResult : ", sqlResult);
+	//-------- decode account --------------------------------------------------------------------------------------//
+	if (sqlResult[0].account !== null) {
+		const encryptedData = sqlResult[0].account;
+		const algorithm = "aes-256-cbc"; // Use the same algorithm that was used for encryption
+
+		const accountkeyHex = await getSSMParameter("accountkeyHex");
+		const accountivHex = await getSSMParameter("accountivHex");
+
+		const iv = Buffer.from(accountivHex, "hex");
+		const key = Buffer.from(accountkeyHex, "hex");
+
+		// Decryption
+		const decipher = crypto.createDecipheriv(algorithm, key, iv);
+
+		let decryptedData = decipher.update(encryptedData, "hex", "utf-8");
+		decryptedData += decipher.final("utf-8");
+
+		sqlResult[0].account = decryptedData;
+	}
+
+	// //--------  bank_code --------------------------------------------------------------------------------------//
+
+	if (sqlResult[0].bank_code !== null) {
+		const bank_code = sqlResult[0].bank_code;
+
+		const bank_name = await queryDatabase(
+			"select * from bank where  bank_code = ?",
+			[bank_code]
+		);
+
+		sqlResult[0].bank_name = bank_name[0].bank_name;
+	} else {
+		sqlResult[0].bank_name = null;
 	}
 
 	//-------- return result --------------------------------------------------------------------------------------//
