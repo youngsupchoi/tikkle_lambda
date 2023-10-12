@@ -13,13 +13,7 @@ exports.put_tikkling_end = async (req, res) => {
   //TODO: 조각이 모두 모인 후 티클의 환불이 일어날시에 해당 티클링의 상태를 다시 1로 변환해야함
   try {
     //티클링이 상태가 이미 변화했는지 확인
-    const check_tikkling = await queryDatabase(
-      `select tikkling.*, sum(sending_tikkle.quantity) as sending_tikkle_count 
-    from tikkling left join sending_tikkle on tikkling.id = sending_tikkle.tikkling_id 
-    where tikkling.id = ? group by tikkling.id;`,
-      [req.body.tikkling_id]
-    );
-
+    const check_tikkling = await queryDatabase(`select * from active_tikkling_view where tikkling_id = ?`, [req.body.tikkling_id]);
     //유효한 요청인지 검사-----------------------------------------------------------------------------------------------------------------//
     //티클링이 없는 경우
     if (check_tikkling.length == 0) {
@@ -111,14 +105,7 @@ exports.put_tikkling_end = async (req, res) => {
         INSERT INTO refund (tikkling_id, bank_code, account, expected_refund_amount) VALUES (?, ?, ?, ?);
         COMMIT;
         `,
-        [
-          req.body.tikkling_id,
-          req.body.tikkling_id,
-          req.body.bank_code,
-          encryptedAccount,
-          check_tikkling[0].sending_tikkle_count * 5000 * 0.9,
-          console.log("🚀 ~ file: index.js:123 ~ exports.put_tikkling_end= ~ check_tikkling[0].sending_tikkle_count:", check_tikkling[0].sending_tikkle_count),
-        ]
+        [req.body.tikkling_id, req.body.tikkling_id, req.body.bank_code, encryptedAccount, check_tikkling[0].tikkle_count * 5000 * 0.9]
       );
       const return_body = {
         success: true,
@@ -152,12 +139,7 @@ exports.put_tikkling_end = async (req, res) => {
         return res.status(400).send(return_body);
       }
 
-      if (check_tikkling[0].sending_tikkle_count != check_tikkling[0].tikkle_quantity) {
-        console.error("🚀 ~ file: index.js:164 ~ exports.put_tikkling_end= ~ check_tikkling[0].tikkle_quantity:", check_tikkling[0].tikkle_quantity);
-        console.error("🚀 ~ file: index.js:163 ~ exports.put_tikkling_end= ~ check_tikkling[0].sending_tikkle_count:", check_tikkling[0].sending_tikkle_count);
-        console.error("🚀 ~ file: index.js:164 ~ exports.put_tikkling_end= ~ check_tikkling[0].tikkle_quantity:", typeof check_tikkling[0].tikkle_quantity);
-        console.error("🚀 ~ file: index.js:163 ~ exports.put_tikkling_end= ~ check_tikkling[0].sending_tikkle_count:", typeof check_tikkling[0].sending_tikkle_count);
-
+      if (check_tikkling[0].tikkle_count != check_tikkling[0].tikkle_quantity) {
         const return_body = {
           success: false,
           detail_code: "01",
