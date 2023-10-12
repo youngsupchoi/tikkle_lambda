@@ -73,7 +73,7 @@ class Tikkle {
       console.error(`🚨 error -> ⚡️ getUserById : 🐞 ${err}`);
       throw new ExpectedError({
         status: "500",
-        message: `서버에러`,
+        message: `서버에러 :getUserById`,
         detail_code: "00",
       });
     }
@@ -99,7 +99,7 @@ class Tikkle {
       if (result.affectedRows == 0) {
         throw new ExpectedError({
           status: "500",
-          message: `서버에러`,
+          message: `서버에러 : updateTikkleToFail`,
           detail_code: "00",
         });
       } else {
@@ -109,7 +109,7 @@ class Tikkle {
       console.error(`🚨 error -> ⚡️ updatePaymentToCancle : 🐞 ${err}`);
       throw new ExpectedError({
         status: "500",
-        message: `서버에러`,
+        message: `서버에러 : updateTikkleToFail`,
         detail_code: "00",
       });
     }
@@ -243,7 +243,7 @@ class Tikkle {
       console.error(`🚨 error -> ⚡️ completeTikklePayment : 🐞 ${err}`);
       throw new ExpectedError({
         status: "500",
-        message: `서버에러`,
+        message: `서버에러:completeTikklePayment`,
         detail_code: "00",
       });
     }
@@ -293,7 +293,7 @@ class Tikkle {
       console.error(`🚨 error -> ⚡️ getTikkleByMerchantUid : 🐞 ${err}`);
       throw new ExpectedError({
         status: "500",
-        message: `서버에러`,
+        message: `서버에러: getTikkleByMerchantUid`,
         detail_code: "00",
       });
     }
@@ -428,7 +428,7 @@ class Tikkle {
       console.error(`🚨 error -> ⚡️ checkTikkleCanRefund : 🐞 ${err}`);
       throw new ExpectedError({
         status: "500",
-        message: `서버에러`,
+        message: `서버에러 : checkTikkleCanRefund`,
 
         detail_code: "00",
       });
