@@ -7,7 +7,6 @@
   },
   "queryStringParameters": null,
   "body": {
-    "merchant_uid": "tikkling_1696690845142912458",
-    "amount": 500
+    "merchant_uid": "test_lncj36r7"
   }
 }
