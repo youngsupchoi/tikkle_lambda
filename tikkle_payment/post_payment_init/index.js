@@ -24,9 +24,6 @@ exports.post_payment_init = async (req, res) => {
 
     //티클링 정보 가져오기
     await tikkling.loadActiveTikklingViewByTikklingId();
-    console.error("🚀 ~ file: Tikkling.js:148 ~ Tikkling ~ validateSendTikkleRequest ~ tikkle_quantity:", tikkling.tikkle_quantity);
-    console.error("🚀 ~ file: Tikkling.js:148 ~ Tikkling ~ validateSendTikkleRequest ~ this.tikkle_count:", tikkling.tikkle_count);
-    console.error("🚀 ~ file: Tikkling.js:148 ~ Tikkling ~ validateSendTikkleRequest ~ this.tikkle_quantity:", tikkle_quantity);
 
     if (tikkleAction == "sendtikkle") {
       //요청의 유효성 겅사

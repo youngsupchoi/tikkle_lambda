@@ -144,7 +144,7 @@ class Tikkling {
         });
       }
       //보내려는 티클 수량을 받을 수 있는지 확인
-      if (this.tikkle_quantity < this.tikkle_count + tikkle_quantity) {
+      if (parseInt(this.tikkle_quantity) < parseInt(this.tikkle_count) + parseInt(tikkle_quantity)) {
         throw new ExpectedError({
           status: "403",
           message: `티클을 받을 수 있는 수량을 초과하였습니다.${typeof this.tikkle_quantity} ${typeof this.tikkle_count} ${typeof tikkle_quantity}`,
