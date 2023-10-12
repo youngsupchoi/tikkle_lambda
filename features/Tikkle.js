@@ -1,6 +1,7 @@
 const { getSSMParameter } = require("ssm.js");
 const axios = require("axios");
 const { ExpectedError } = require("./ExpectedError.js");
+const crypto = require("crypto");
 
 //TODO: 매일 밤 12시에 결제 되지 않았고 12시간이 지났으면 해당 결제 실패 처리
 
@@ -278,8 +279,18 @@ class Tikkle {
    * payment.generateMerchantUid();
    * // => 'tikkling_1581234567890'
    */
-  generateMerchantUid() {
-    return "tikkling_" + new Date().getTime() + Math.floor(Math.random() * 1000000);
+  generateMerchantUid(userID, productID) {
+    // 입력 파라미터를 하나의 문자열로 합칩니다.
+    const timestamp = new Date().getTime();
+    const data = `${userID}${productID}${timestamp}`;
+
+    // SHA-256 해시를 생성합니다.
+    const hashBuffer = crypto.createHash("sha256").update(data).digest();
+
+    // Base64로 인코딩합니다.
+    const base64Hash = hashBuffer.toString("base64");
+    console.log(base64Hash);
+    return base64Hash;
   }
 
   /**
