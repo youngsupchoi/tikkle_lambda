@@ -8,7 +8,7 @@ const { ExpectedError } = require("../../features/ExpectedError");
 exports.post_payment_init = async (req, res) => {
   const { body, id, returnToken, params } = req;
   const { tikkleAction } = params;
-  const { amount, tikkling_id, tikkle_quantity, message } = body;
+  const { tikkling_id, tikkle_quantity, message } = body;
   //main logic------------------------------------------------------------------------------------------------------------------//
   const db = new DBManager();
   await db.openTransaction();
