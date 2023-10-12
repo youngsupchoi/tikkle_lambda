@@ -109,7 +109,7 @@ class Tikkle {
 	 */
 	async updateTikkleToFail() {
 		try {
-			const [result] = await queryDatabase(
+			const result = await queryDatabase(
 				`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`,
 				[this.merchant_uid]
 			);
@@ -124,7 +124,6 @@ class Tikkle {
 			}
 		} catch (err) {
 			console.error(`🚨 error -> ⚡️ updatePaymentToCancle : 🐞 ${err}`);
-
 			throw new ExpectedError({
 				status: "500",
 				message: `서버에러`,
@@ -174,6 +173,7 @@ class Tikkle {
 		}
 	}
 
+
 	/**
 	 * create payment info
 	 * @param {string} user_name
@@ -185,7 +185,7 @@ class Tikkle {
 	 * const payment = new Payment({ user_id: 1, amount: 10000 });
 	 * payment.createPaymentParam('홍길동', '01012345678');
 	 */
-	createPaymentParam({ user_name, user_phone_number }) {
+	createPaymentParam({ user_name, user_phone_number, notice_url }) {
 		const amount = this.amount;
 		const merchant_uid = this.merchant_uid;
 		return new PaymentParam({
@@ -193,6 +193,7 @@ class Tikkle {
 			user_phone_number,
 			amount,
 			merchant_uid,
+			notice_url
 		});
 	}
 
