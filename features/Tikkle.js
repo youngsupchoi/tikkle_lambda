@@ -5,13 +5,13 @@ const { ExpectedError } = require("./ExpectedError.js");
 //TODO: 매일 밤 12시에 결제 되지 않았고 12시간이 지났으면 해당 결제 실패 처리
 
 class PaymentParam {
-  constructor({ user_name, user_phone_number, amount, merchant_uid, notice_url }) {
+  constructor({ user_name, user_phone, amount, merchant_uid, notice_url }) {
     this.pg = getSSMParameter("pg");
     this.pay_method = "trans";
     this.merchant_uid = merchant_uid;
     this.name = "티클";
     this.buyer_name = user_name;
-    this.buyer_tel = user_phone_number;
+    this.buyer_tel = user_phone;
     //TODO: redirect url 필요한 파라미터인지 다시 체크
     this.m_redirect_url = "https://www.naver.com/";
     this.app_scheme = "example";
@@ -163,12 +163,12 @@ class Tikkle {
    * const payment = new Payment({ user_id: 1, amount: 10000 });
    * payment.createPaymentParam('홍길동', '01012345678');
    */
-  createPaymentParam({ user_name, user_phone_number, notice_url }) {
+  createPaymentParam({ user_name, user_phone, notice_url }) {
     const amount = this.amount;
     const merchant_uid = this.merchant_uid;
     return new PaymentParam({
       user_name,
-      user_phone_number,
+      user_phone,
       amount,
       merchant_uid,
       notice_url,
