@@ -145,10 +145,6 @@ class Tikkling {
       }
       //보내려는 티클 수량을 받을 수 있는지 확인
       if (this.tikkle_quantity < this.tikkle_count + tikkle_quantity) {
-        console.error("🚀 ~ file: Tikkling.js:148 ~ Tikkling ~ validateSendTikkleRequest ~ tikkle_quantity:", tikkle_quantity);
-        console.error("🚀 ~ file: Tikkling.js:148 ~ Tikkling ~ validateSendTikkleRequest ~ this.tikkle_count:", this.tikkle_count);
-        console.error("🚀 ~ file: Tikkling.js:148 ~ Tikkling ~ validateSendTikkleRequest ~ this.tikkle_quantity:", this.tikkle_quantity);
-
         throw new ExpectedError({
           status: "403",
           message: `티클을 받을 수 있는 수량을 초과하였습니다.`,
