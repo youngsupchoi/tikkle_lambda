@@ -28,6 +28,7 @@ exports.post_payment_finalize = async (req, res) => {
     //티클링이 티클을 받을 수 있는 상태인지 검사
     if (tikkleAction == "sendtikkle") {
       await tikkling.validateSendTikkleRequest({ tikkle_quantity: tikkle.quantity });
+      await tikkling.checkAndUpdateTikklingStateToEnd({ tikkle_quantity: tikkle.quantity });
     } else if (tikkleAction == "buymytikkle") {
       tikkling.validateBuyMyTikkleRequest({ user_id: tikkle.user_id, tikkle_quantity: tikkle.quantity });
     }

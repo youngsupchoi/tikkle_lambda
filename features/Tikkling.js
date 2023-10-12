@@ -177,6 +177,21 @@ class Tikkling {
     }
   }
 
+  async checkAndUpdateTikklingStateToEnd({ tikkle_quantity }) {
+    try {
+      if (parseInt(this.tikkle_quantity) == parseInt(this.tikkle_count) + parseInt(tikkle_quantity)) {
+        await this.db.executeQuery(`UPDATE tikkling SET state_id = 4 WHERE id = ?;`, [this.id]);
+      }
+    } catch (err) {
+      console.error(`🚨 error -> ⚡️ checkAndUpdateTikklingStateToEnd : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러`,
+        detail_code: "00",
+      });
+    }
+  }
+
   async buyMyTikkle({ merchant_uid }) {
     try {
       const results = await this.db.executeQuery(`INSERT INTO sending_tikkle (tikkling_id, user_id, quantity, merchant_uid) VALUES (?, ?, ?, ?); `, [
