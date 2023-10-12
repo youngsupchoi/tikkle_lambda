@@ -30,7 +30,7 @@ exports.post_payment_init = async (req, res) => {
       await tikkling.validateSendTikkleRequest({ tikkle_quantity });
     } else if (tikkleAction == "buymytikkle") {
       //요청의 유효성 겅사
-      tikkling.validateBuyMyTikkleRequest({ user_id: id });
+      tikkling.validateBuyMyTikkleRequest({ user_id: id, tikkle_quantity });
     } else {
       throw new ExpectedError({
         status: "403",

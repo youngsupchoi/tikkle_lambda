@@ -102,7 +102,15 @@ class Tikkling {
    * tikkling.validateBuyMyTikkleRequest();
    * // => throw ExpectedError with status 403 if the request is invalid.
    */
-  validateBuyMyTikkleRequest({ user_id }) {
+  validateBuyMyTikkleRequest({ user_id, tikkle_quantity }) {
+    console.log(this.tikkle_quantity, this.tikkle_count, tikkle_quantity);
+    if (this.tikkle_quantity != this.tikkle_count + tikkle_quantity) {
+      throw new ExpectedError({
+        status: "403",
+        message: `남은 티클의 구매 수량이 정확하지 않습니다.`,
+        detail_code: "03",
+      });
+    }
     if (this.user_id !== user_id) {
       throw new ExpectedError({
         status: "403",
