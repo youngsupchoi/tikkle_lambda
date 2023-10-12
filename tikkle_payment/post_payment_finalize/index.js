@@ -29,7 +29,7 @@ exports.post_payment_finalize = async (req, res) => {
     if (tikkleAction == "sendtikkle") {
       await tikkling.validateSendTikkleRequest({ tikkle_quantity: tikkle.quantity });
     } else if (tikkleAction == "buymytikkle") {
-      tikkling.validateBuyMyTikkleRequest();
+      tikkling.validateBuyMyTikkleRequest({ user_id: tikkle.user_id, tikkle_quantity: tikkle.quantity });
     }
 
     //DB상 결제 완료 처리
