@@ -1,25 +1,23 @@
 const mysql = require("mysql2/promise");
 const { getSSMParameter } = require("ssm.js");
 
-const dev = true;
+const dev = false;
 
 class DBManager {
   async getDatabaseCredentials() {
     let host, user, password, database;
-    if (!dev){
+    if (!dev) {
       host = await getSSMParameter("MYSQL_HOST");
       user = await getSSMParameter("MYSQL_USER");
       password = await getSSMParameter("MYSQL_PASSWORD");
       database = await getSSMParameter("MYSQL_DATABASE");
-    }
-    else {
+    } else {
       host = "host.docker.internal";
       user = "root";
       password = "1214";
       database = "tikkle";
     }
-    
-    
+
     return { host, user, password, database };
   }
   /**
@@ -39,7 +37,7 @@ class DBManager {
    */
   async openTransaction() {
     const credentials = await this.getDatabaseCredentials();
-    console.log(credentials)
+    console.log(credentials);
     this.connection = await mysql.createConnection(credentials);
     await this.connection.beginTransaction();
   }
@@ -78,7 +76,7 @@ class DBManager {
    * }
    */
   async commitTransaction() {
-    console.log('commit');
+    console.log("commit");
     await this.connection.commit();
     await this.connection.end();
   }
