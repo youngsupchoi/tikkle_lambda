@@ -154,6 +154,44 @@ class Tikkle {
   }
 
   /**
+   * Asynchronously updates the sending_tikkle state_id to 6, "결제 실패" in the database.
+   * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @memberof Tikkle
+   * @instance
+   * @async
+   * @example
+   * const Tikkle = new Tikkle({ user_id: 1, amount: 10000 });
+   * await Tikkle.updateTikkleToFail();
+   * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
+   * // => sending_tikkle.state_id = 6
+   */
+  async updateTikkleToFail() {
+    try {
+      const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`, [this.merchant_uid]);
+
+      // console.log("&&&&&&&&&&&&& : ", result);
+      if (result.affectedRows == 0) {
+        console.error(`🚨 error -> ⚡️ updateTikkleToFail : 🐞 ${"데이터가 DB상에 반영되지 않음"}`);
+        throw new ExpectedError({
+          status: "500",
+          message: `서버에러 : updateTikkleToFail 쿼리결과`,
+          detail_code: "00",
+        });
+      } else {
+        this.state_id = 3;
+      }
+    } catch (err) {
+      console.error(`🚨 error -> ⚡️ updateTikkleToFail : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러: updateTikkleToFail 쿼리`,
+        detail_code: "00",
+      });
+    }
+  }
+
+  /**
    * create payment info
    * @param {string} user_name
    * @param {string} user_phone_number
@@ -231,7 +269,7 @@ class Tikkle {
       console.error(`🚨error -> ⚡️ compareStoredTikkleData : 🐞사용자가 일치하지 않습니다.`);
       throw new ExpectedError({
         status: "401",
-        message: `비정상적 접근`,
+        message: `비정상적 접근 : 다른 사용자의 결제 정보`,
         detail_code: "00",
       });
     }
@@ -246,7 +284,7 @@ class Tikkle {
         console.error(`🚨 error -> ⚡️ getTikkleByMerchantUid : 🐞 ${"사용자가 존재하지 않는 티클을 검색하였습니다."}`);
         throw new ExpectedError({
           status: "403",
-          message: `비정상적 접근`,
+          message: `비정상적 접근 : 존재하지 않는 티클`,
           detail_code: "00",
         });
       }
