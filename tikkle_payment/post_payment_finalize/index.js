@@ -14,8 +14,6 @@ exports.post_payment_finalize = async (req, res) => {
     console.error("🚨post_payment_finalize");
     console.error(body);
     console.error(tikkleAction);
-    await db.rollbackTransaction();
-    return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료"));
     //티클 객체 생성
     const tikkle_info = await Tikkle.getTikkleByMerchantUid({ merchant_uid, db });
     console.log(tikkle_info.merchant_uid);
