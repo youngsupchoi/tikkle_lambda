@@ -148,10 +148,6 @@ api.post("/post_tikkling_create", authtoken, post_tikkling_create);
 
 api.put("/put_tikkling_end/:type", authtoken, put_tikkling_end);
 
-api.post("/post_tikkling_sendtikkle", authtoken, post_tikkling_sendtikkle);
-
-api.post("/post_tikkling_buymytikkle", authtoken, post_tikkling_buymytikkle);
-
 api.put("/put_tikkling_cancel", authtoken, put_tikkling_cancel);
 
 api.put("/put_tikkling_stop", authtoken, put_tikkling_stop);
