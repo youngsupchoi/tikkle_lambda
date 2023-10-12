@@ -325,12 +325,9 @@ class Tikkle {
     const data = `${userID}${productID}${timestamp}`;
 
     // SHA-256 해시를 생성합니다.
-    const hashBuffer = crypto.createHash("sha256").update(data).digest();
+    const hash = crypto.createHash("md5").update(data).digest("hex");
 
-    // Base64로 인코딩합니다.
-    const base64Hash = hashBuffer.toString("base64");
-    console.log(base64Hash);
-    return base64Hash;
+    return hash;
   }
 
   /**
