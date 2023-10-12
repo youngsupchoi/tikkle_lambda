@@ -11,9 +11,6 @@ exports.post_payment_finalize = async (req, res) => {
   const db = new DBManager();
   await db.openTransaction();
   try {
-    console.error("🚨post_payment_finalize");
-    console.error(body);
-    console.error(tikkleAction);
     //티클 객체 생성
     const tikkle_info = await Tikkle.getTikkleByMerchantUid({ merchant_uid, db });
     console.log(tikkle_info.merchant_uid);

@@ -324,7 +324,6 @@ class Tikkle {
     const timestamp = new Date().getTime();
     const data = `${userID}${productID}${timestamp}`;
 
-    // SHA-256 해시를 생성합니다.
     const hash = crypto.createHash("md5").update(data).digest("hex");
 
     return hash;
