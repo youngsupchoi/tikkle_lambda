@@ -147,7 +147,7 @@ class Tikkling {
       if (this.tikkle_quantity < this.tikkle_count + tikkle_quantity) {
         throw new ExpectedError({
           status: "403",
-          message: `티클을 받을 수 있는 수량을 초과하였습니다.`,
+          message: `티클을 받을 수 있는 수량을 초과하였습니다.${typeof this.tikkle_quantity} ${typeof this.tikkle_count} ${typeof tikkle_quantity}`,
           detail_code: "02",
         });
       }
