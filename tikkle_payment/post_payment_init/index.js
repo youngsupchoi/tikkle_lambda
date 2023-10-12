@@ -4,6 +4,7 @@ const { Response } = require("../../features/Response");
 const { DBManager } = require("../../db");
 const { Tikkling } = require("../../features/Tikkling");
 const { ExpectedError } = require("../../features/ExpectedError");
+const { getSSMParameter } = require("ssm.js");
 
 exports.post_payment_init = async (req, res) => {
   const { body, id, returnToken, params } = req;
@@ -45,7 +46,9 @@ exports.post_payment_init = async (req, res) => {
     await tikkle.initTikklePayment();
 
     //payment param 객체 생성
-    const notice_url = `https://frrk5g3voe.execute-api.ap-northeast-2.amazonaws.com/dev/post_payment_finalize/${tikkleAction}`;
+    const TIKKLE_API_ADDRESS = await getSSMParameter("TIKKLE_API_ADDRESS");
+    console.log("🚀 ~ file: index.js:50 ~ exports.post_payment_init= ~ TIKKLE_API_ADDRESS:", TIKKLE_API_ADDRESS);
+    const notice_url = `${TIKKLE_API_ADDRESS}/post_payment_finalize/${tikkleAction}`;
     const payment_param = tikkle.createPaymentParam({ user_name: user.name, user_phone: user.phone, notice_url });
 
     //transaction commit
