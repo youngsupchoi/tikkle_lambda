@@ -293,7 +293,7 @@ api.put("/put_payment_fail", put_payment_fail);
 
 api.post("/post_payment_getData", authtoken, post_payment_getData);
 
-api.post("/post_payment_finalize", post_payment_finalize);
+api.post("/post_payment_finalize/:tikkleAction", post_payment_finalize);
 
 api.put("/put_payment_refund", authtoken, put_payment_refund);
 
