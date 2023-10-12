@@ -1,15 +1,14 @@
 {
   "resource": "/post_payment_init/{tikkleAction}",
-  "path": "/post_payment_init/buymytikkle",
+  "path": "/post_payment_init/sendtikkle",
   "httpMethod": "POST",
   "headers": {
     "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjE2OTMzNjI5OTAsImlzcyI6IkxpRm9saSJ9.2q1rnumRYD5G6ZajAdHkU3HibgTRDbzhgGNFoPAw2qY,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjQyODUzNjIwOTAsImlzcyI6IkxpRm9saSJ9.3lO5YCgVXXzrz5LrodPQoccq11ZHvHdwKAflg22RXXc"
   },
   "queryStringParameters": null,
   "body": {
-    "amount": 500,
     "tikkling_id": 11,
-    "tikkle_quantity": 3,
+    "tikkle_quantity": 1,
     "message": "test"
   }
 }
