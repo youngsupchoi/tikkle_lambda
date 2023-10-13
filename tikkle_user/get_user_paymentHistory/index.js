@@ -24,7 +24,7 @@ exports.get_user_paymentHistory = async (req, res) => {
 				INNER JOIN brands as b ON p.brand_id = b.id
 				INNER JOIN users as u ON t.user_id = u.id
 				INNER JOIN sending_tikkle_state as sts ON st.state_id = sts.id
-				WHERE st.user_id = ?
+				WHERE st.user_id = ? and st.state_id != 5 and st.state_id != 6
 				ORDER BY st.created_at DESC
 			`,
       [id]
