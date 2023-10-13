@@ -104,7 +104,7 @@ class Tikkling {
    */
   validateBuyMyTikkleRequest({ user_id, tikkle_quantity }) {
     console.log(this.tikkle_quantity, this.tikkle_count, tikkle_quantity);
-    if (this.tikkle_quantity != this.tikkle_count + tikkle_quantity) {
+    if (parseInt(this.tikkle_quantity) != parseInt(this.tikkle_count) + parseInt(tikkle_quantity)) {
       throw new ExpectedError({
         status: "403",
         message: `남은 티클의 구매 수량이 정확하지 않습니다.`,
@@ -118,7 +118,7 @@ class Tikkling {
         detail_code: "00",
       });
     }
-    if (this.tikkle_quantity == this.tikkle_count) {
+    if (parseInt(this.tikkle_quantity) == parseInt(this.tikkle_count)) {
       throw new ExpectedError({
         status: "403",
         message: `이미 모든 티클을 수집한 티클링입니다.`,
