@@ -7,7 +7,7 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"funding_limit": "2023-09-20",
+		"funding_limit": "2023-10-30",
 		"tikkle_quantity": 3,
 		"product_id": 5,
 		"type": "none"
