@@ -47,7 +47,6 @@ exports.post_payment_init = async (req, res) => {
 
     //payment param 객체 생성
     const TIKKLE_API_ADDRESS = await getSSMParameter("TIKKLE_API_ADDRESS");
-    console.log("🚀 ~ file: index.js:50 ~ exports.post_payment_init= ~ TIKKLE_API_ADDRESS:", TIKKLE_API_ADDRESS);
     const notice_url = `${TIKKLE_API_ADDRESS}/post_payment_finalize/${tikkleAction}`;
     const payment_param = tikkle.createPaymentParam({ user_name: user.name, user_phone: user.phone, notice_url });
 

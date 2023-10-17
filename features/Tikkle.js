@@ -280,8 +280,6 @@ class Tikkle {
   static async getTikkleByMerchantUid({ merchant_uid, db }) {
     try {
       const rows = await db.executeQuery(`SELECT * FROM sending_tikkle WHERE merchant_uid = ?`, [merchant_uid]);
-
-      console.error("🚀 ~ file: Tik_uid:", merchant_uid);
       if (!Tikkle.checkRowExists(rows)) {
         console.error(`🚨 error -> ⚡️ getTikkleByMerchantUid : 🐞 ${"사용자가 존재하지 않는 티클을 검색하였습니다."}`);
         throw new ExpectedError({
