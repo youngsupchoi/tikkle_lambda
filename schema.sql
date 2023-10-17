@@ -206,12 +206,14 @@ CREATE TABLE `notification` (
     `is_read` BOOL NOT NULL DEFAULT false,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `notification_type_id` INT NOT NULL,
-		`deep_link` VARCHAR(255),
-		`link` VARCHAR(255),
-		`meta_data` TEXT,
+	`deep_link` VARCHAR(255),
+	`link` VARCHAR(255),
+	`meta_data` TEXT,
+    `source_user_id` INT,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`notification_type_id`) REFERENCES `notification_type`(`id`)
+    FOREIGN KEY (`source_user_id`) REFERENCES `users`(`id`),
 );
 
 -- 1: 진행중, 2: 시작 이전 종료, 3: 완료되기 전 종료, 4: 조각을 모두 모은 후 종료
