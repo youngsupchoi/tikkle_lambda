@@ -2,7 +2,7 @@ CREATE DATABASE tikkle_db
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_general_ci;
 
-use tikkle;
+use tikkle_db;
 
 CREATE TABLE bank (
     bank_code INT PRIMARY KEY,
