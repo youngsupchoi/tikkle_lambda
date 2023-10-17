@@ -1,4 +1,4 @@
-CREATE DATABASE tikkle
+CREATE DATABASE tikkle_db
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_general_ci;
 
@@ -502,38 +502,6 @@ BEGIN
 END//
 DELIMITER ;
 
-
-DELIMITER //
-CREATE PROCEDURE insert_sending_tikkle(IN desired_tikkling_id INT, IN sending_user_id INT, IN sending_quantity INT, IN sending_message TEXT, OUT out_result BOOLEAN)
-BEGIN
-    DECLARE total_tikkle_quantity INT;
-    DECLARE received_tikkle_count INT;
-    DECLARE new_received_tikkle_count INT;
-    DECLARE tikkling_state_id INT;
-
-    START TRANSACTION;
-    
-    SELECT tikkle_quantity, state_id INTO total_tikkle_quantity, tikkling_state_id FROM tikkling WHERE id = desired_tikkling_id FOR UPDATE;
-
-    SELECT COALESCE(SUM(quantity), 0) INTO received_tikkle_count FROM sending_tikkle WHERE tikkling_id = desired_tikkling_id;
-
-    IF received_tikkle_count + sending_quantity <= total_tikkle_quantity AND tikkling_state_id = 1 THEN
-        INSERT INTO sending_tikkle (tikkling_id, user_id, quantity, message) VALUES (desired_tikkling_id, sending_user_id, sending_quantity, sending_message);
-        SELECT COALESCE(SUM(quantity), 0) INTO new_received_tikkle_count FROM sending_tikkle WHERE tikkling_id = desired_tikkling_id;
-        
-        IF new_received_tikkle_count >= total_tikkle_quantity THEN
-            UPDATE tikkling SET state_id = 4 WHERE id = desired_tikkling_id AND state_id = 1;
-        END IF;
-        
-        SET out_result = TRUE;
-    ELSE
-        SET out_result = FALSE;
-    END IF;
-
-    COMMIT;
-END //
-
-DELIMITER ;
 
 -- 기존의 create_tikkling 저장 프로시저 삭제
 DROP PROCEDURE IF EXISTS `create_tikkling`;
