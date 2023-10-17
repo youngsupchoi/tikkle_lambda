@@ -26,7 +26,7 @@ exports.post_tikkling_receivedTikkle = async (req, res) => {
 			users.image
 			FROM   sending_tikkle
 			INNER JOIN users ON sending_tikkle.user_id = users.id
-			WHERE  sending_tikkle.tikkling_id = ? AND sending_tikkle.id in (1, 2, 3, 4); `,
+			WHERE  sending_tikkle.tikkling_id = ? AND sending_tikkle.state_id in (1, 2, 3, 4); `,
       [body.tikkling_id]
     );
     const return_body = {
