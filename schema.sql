@@ -237,7 +237,7 @@ CREATE TABLE `tikkling` (
     `terminated_at` TIMESTAMP NULL,
     `state_id` INT NOT NULL DEFAULT 1,
     `type` VARCHAR(255) NOT NULL,
-    `resolution_type` ENUM('goods', 'refund', `cancel`) NULL,
+    `resolution_type` ENUM('goods', 'refund', 'cancel') NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`product_id`) REFERENCES `products`(`id`),
@@ -434,7 +434,7 @@ VALUES
     (2, '사용'),
     (3, '환불'),
     (4, '환급'),
-    (5, '결제 대기');
+    (5, '결제 대기'),
     (6, '결제 실패');
 
 
@@ -450,7 +450,7 @@ CREATE TABLE `sending_tikkle` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-    FOREIGN KEY (`state_id`) REFERENCES `sending_tikkle_state`(`id`),
+    FOREIGN KEY (`state_id`) REFERENCES `sending_tikkle_state`(`id`)
 );
 
 -- tikkling_id에 index 추가
