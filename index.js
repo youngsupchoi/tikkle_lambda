@@ -39,6 +39,7 @@ const { get_tikkling_friendinfo } = require("./tikkle_tikkling/get_tikkling_frie
 const { get_tikkling_info } = require("./tikkle_tikkling/get_tikkling_info/index.js");
 const { post_tikkling_receivedTikkle } = require("./tikkle_tikkling/post_tikkling_receivedTikkle/index.js");
 const { post_tikkling_create } = require("./tikkle_tikkling/post_tikkling_create/index.js");
+const { post_user_getTikklingDetail } = require("./tikkle_tikkling/post_user_getTikklingDetail/index.js");
 const { put_tikkling_end } = require("./tikkle_tikkling/put_tikkling_end/index.js");
 const { post_tikkling_sendtikkle } = require("./tikkle_tikkling/post_tikkling_sendtikkle/index.js");
 const { put_tikkling_cancel } = require("./tikkle_tikkling/put_tikkling_cancel/index.js");
@@ -145,6 +146,8 @@ api.get("/get_tikkling_info/:tikkling_id", authtoken, get_tikkling_info);
 api.post("/post_tikkling_receivedTikkle", authtoken, post_tikkling_receivedTikkle);
 
 api.post("/post_tikkling_create", authtoken, post_tikkling_create);
+
+api.post("/post_user_getTikklingDetail", authtoken, post_user_getTikklingDetail);
 
 api.put("/put_tikkling_end/:type", authtoken, put_tikkling_end);
 
