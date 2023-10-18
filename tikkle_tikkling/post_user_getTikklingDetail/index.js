@@ -49,7 +49,7 @@ exports.post_user_getTikklingDetail = async (req, res) => {
     return res.status(500).send(return_body);
   }
 
-  const retData_temp = sqlResult[0];
+  const retData_temp = sqlResult;
 
   let is_mine;
   if (retData_temp.user_id == id) {
@@ -58,7 +58,9 @@ exports.post_user_getTikklingDetail = async (req, res) => {
     is_mine = false;
   }
 
-  const retData = { ...retData_temp, is_mine };
+  retData_temp[1] = is_mine;
+
+  const retData = retData_temp;
 
   //-------- return result --------------------------------------------------------------------------------------//
 
