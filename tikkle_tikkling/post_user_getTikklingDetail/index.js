@@ -58,7 +58,7 @@ exports.post_user_getTikklingDetail = async (req, res) => {
     is_mine = false;
   }
 
-  retData_temp[1] = is_mine;
+  retData_temp[0] = { ...retData_temp[0], is_mine: is_mine };
 
   const retData = retData_temp;
 
