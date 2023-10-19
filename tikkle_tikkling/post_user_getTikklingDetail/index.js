@@ -52,7 +52,7 @@ exports.post_user_getTikklingDetail = async (req, res) => {
   const retData_temp = sqlResult;
 
   let is_mine;
-  if (retData_temp.user_id == id) {
+  if (retData_temp[0].user_id == id) {
     is_mine = true;
   } else {
     is_mine = false;
