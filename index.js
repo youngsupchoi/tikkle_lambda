@@ -58,8 +58,8 @@ const { get_user_isNotice } = require("./tikkle_user/get_user_isNotice/index.js"
 const { get_user_deleteUser } = require("./tikkle_user/get_user_deleteUser/index.js");
 const { put_user_address } = require("./tikkle_user/put_user_address/index.js");
 const { put_user_nick } = require("./tikkle_user/put_user_nick/index.js");
-const { post_tikkling_buymytikkle } = require("./tikkle_tikkling/post_tikkilng_buymytikkle/index.js");
 const { put_user_account } = require("./tikkle_user/put_user_account/index.js");
+const { put_user_token } = require("./tikkle_user/put_user_token/index.js");
 const { put_tikkling_stop } = require("./tikkle_tikkling/put_tikkling_stop/index.js");
 const { post_seller_startdelivery } = require("./tikkle_seller/post_seller_startdelivery/index.js");
 
@@ -185,6 +185,8 @@ api.put("/put_user_address", authtoken, put_user_address);
 api.put("/put_user_nick", authtoken, put_user_nick);
 
 api.put("/put_user_account", authtoken, put_user_account);
+
+api.put("/put_user_token", authtoken, put_user_token);
 
 //
 
