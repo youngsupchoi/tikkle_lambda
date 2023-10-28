@@ -551,3 +551,21 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+
+
+CREATE TABLE `product_option` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+    `product_id` INT NOT NULL,
+    `category` VARCHAR(255),
+    `option` VARCHAR(255),
+	`additional_amount` INT,
+	`sales_volume` INT NOT NULL DEFAULT 0,
+	`quantity` INT,
+	`is_deleted` BOOL NOT NULL DEFAULT false,
+	`wishlist_count` INT NOT NULL DEFAULT 0,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
+);
+
