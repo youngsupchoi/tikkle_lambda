@@ -75,6 +75,7 @@ const { post_payment_finalize } = require("./tikkle_payment/post_payment_finaliz
 const { post_payment_getData } = require("./tikkle_payment/post_payment_getData/index.js");
 
 const { put_payment_refund } = require("./tikkle_payment/put_payment_refund/index.js");
+const { get_product_options } = require("./tikkle_product/get_product_options/index.js");
 
 //
 
@@ -135,6 +136,8 @@ api.post("/post_product_info", authtoken, post_product_info);
 api.post("/post_product_list", authtoken, post_product_list);
 
 api.put("/put_product_viewIncrease", authtoken, put_product_viewIncrease);
+
+api.get("/get_product_options/:product_id", authtoken, get_product_options);
 
 //
 
