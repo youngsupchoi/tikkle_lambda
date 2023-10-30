@@ -568,3 +568,14 @@ CREATE TABLE `product_option` (
 	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
 );
 
+CREATE TABLE `tikkling_option` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `tikkling_id` INT NOT NULL,
+    `option_id` INT,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
+    FOREIGN KEY (`option_id`) REFERENCES `product_option`(`id`)
+);
+
+
+ALTER TABLE tikkling ADD COLUMN `tikkling_option_id` INT NOT NULL;
