@@ -156,8 +156,6 @@ CREATE TABLE `products` (
 	`name` VARCHAR(30) NOT NULL,
 	`price` INT NOT NULL,
 	`description` TEXT NOT NULL,
-	`sales_volume` INT NOT NULL DEFAULT 0,
-	`quantity` INT NOT NULL,
 	`category_id` INT NOT NULL,
 	`brand_id` INT NOT NULL,
 	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -564,8 +562,17 @@ CREATE TABLE `product_option` (
 	`sales_volume` INT NOT NULL DEFAULT 0,
 	`quantity` INT,
 	`is_deleted` BOOL NOT NULL DEFAULT false,
-	`wishlist_count` INT NOT NULL DEFAULT 0,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
 );
+
+CREATE TABLE `tikkling_option` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `tikkling_id` INT NOT NULL,
+    `option_id` INT,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
+    FOREIGN KEY (`option_id`) REFERENCES `product_option`(`id`)
+);
+
 
