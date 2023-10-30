@@ -564,7 +564,6 @@ CREATE TABLE `product_option` (
 	`sales_volume` INT NOT NULL DEFAULT 0,
 	`quantity` INT,
 	`is_deleted` BOOL NOT NULL DEFAULT false,
-	`wishlist_count` INT NOT NULL DEFAULT 0,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
 );
