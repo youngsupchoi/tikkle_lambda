@@ -156,8 +156,6 @@ CREATE TABLE `products` (
 	`name` VARCHAR(30) NOT NULL,
 	`price` INT NOT NULL,
 	`description` TEXT NOT NULL,
-	`sales_volume` INT NOT NULL DEFAULT 0,
-	`quantity` INT NOT NULL,
 	`category_id` INT NOT NULL,
 	`brand_id` INT NOT NULL,
 	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -578,4 +576,3 @@ CREATE TABLE `tikkling_option` (
 );
 
 
-ALTER TABLE tikkling ADD COLUMN `tikkling_option_id` INT NOT NULL;
