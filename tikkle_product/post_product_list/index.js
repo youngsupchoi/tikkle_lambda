@@ -164,7 +164,7 @@ exports.post_product_list = async (req, res) => {
     const return_body = {
       success: false,
       detail_code: "00",
-      message: err,
+      message: "SQL error",
       returnToken: null,
     };
     return res.status(500).send(return_body);
