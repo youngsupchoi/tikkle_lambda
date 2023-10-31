@@ -9,6 +9,7 @@ exports.post_notification_send = async (req, res) => {
   let receive_user_id = body.receive_user_id;
   const notification_type_id = body.notification_type_id;
   const tikkling_id = body.tikkling_id;
+  let title = "알림";
 
   //-------- get user data from DB --------------------------------------------------------------------------------------//
 
@@ -55,18 +56,21 @@ exports.post_notification_send = async (req, res) => {
 
   if (notification_type_id === 1) {
     message = name + "님이 가입했어요.";
+    title = "새로운 친구";
     link = "link_for_1";
     deep_link = "tikkle://notification";
     source_user_id = id;
     //
   } else if (notification_type_id === 3) {
     message = name + "님의 티클링이 시작되었어요.";
+    title = "✨ 티클링 시작";
     link = "link_for_3";
     source_user_id = id;
     deep_link = "tikkle://tikklingDetail/" + tikkling_id.toString();
     //
   } else if (notification_type_id === 5) {
     message = name + "님이 보낸 티클을 확인해보세요.";
+    title = "🎁 티클 선물";
     link = "link_for_5";
     deep_link = "tikkle://tikklingDetail/" + receive_user_id.toString();
     source_user_id = id;
@@ -93,12 +97,14 @@ exports.post_notification_send = async (req, res) => {
   } else if (notification_type_id === 6) {
     message = "티클링 상품 교환이 완료되었어요.";
     link = "link_for_6";
+    title = "📦 배송 시작";
     deep_link = "tikkle://main";
     source_user_id = id;
     receive_user_id = id;
     //
   } else if (notification_type_id === 8) {
     message = name + "님이 티클을 환불했어요.";
+    title = "환불된 티클";
     link = "dlink_for_8";
     deep_link = "tikkle://tikklingDetail/" + receive_user_id.toString();
     source_user_id = id;
@@ -125,6 +131,7 @@ exports.post_notification_send = async (req, res) => {
     //
   } else if (notification_type_id === 9) {
     message = "티클링 환급 신청이 완료되었어요.";
+    title = "💵 환급 신청 완료";
     deep_link = "tikkle://notification";
     link = "link_for_9";
     source_user_id = id;
@@ -267,7 +274,7 @@ exports.post_notification_send = async (req, res) => {
     if (device_tokens.length > 0) {
       // console.log("@@@SQL result : ", device_tokens);
       console.log("@@@ : ", deep_link);
-      await fcm_send_many(device_tokens, "알림", message, deep_link);
+      await fcm_send_many(device_tokens, title, message, deep_link);
     }
   } else {
   } //일단 1인 경우는 알림 x
