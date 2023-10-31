@@ -199,7 +199,6 @@ class Tikkling {
     }
   }
 
-  //TODO: 함수 분리 필요
   /**
    * Asynchronously check validation of create tikkling request
    * @returns {void}
@@ -244,10 +243,10 @@ class Tikkling {
    * @return {number} - 생성된 티클링의 id
    * @example
    * const new_tikkling = new Tikkling({ user_id: id, funding_limit, tikkle_quantity, product_id, type, db });
-   * new_tikkling.createTikkling();
+   * new_tikkling.saveTikkling();
    * // => throw ExpectedError with status 403 if the request is invalid.
    */
-  async createTikkling() {
+  async saveTikkling() {
     try {
       const results = await this.db.executeQuery(`INSERT INTO tikkling (user_id, funding_limit, tikkle_quantity, product_id, type, option_combination_id) VALUES (?, ?, ?, ?, ?, ?); `, [
         this.user_id,
@@ -264,6 +263,77 @@ class Tikkling {
       return results.insertId;
     } catch (error) {
       console.error(`🚨 error -> ⚡️ createTikkling : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  //받은 티클이 0인지 확인
+  assertTikkleCountIsZero() {
+    try {
+      if (this.tikkle_count != 0) {
+        throw new ExpectedError({
+          status: "401",
+          message: `티클을 받은 상태입니다.`,
+          detail_code: "00",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ assertTikkleCountIsZero : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  decreaseTikklingTicket() {
+    try {
+      this.db.executeQuery(`UPDATE users SET tikkling_ticket = tikkling_ticket - 1 WHERE id = ?`, [this.user_id]);
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ decreaseTikkleQuantity : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  increaseTikklingTicket() {
+    try {
+      this.db.executeQuery(`UPDATE users SET tikkling_ticket = tikkling_ticket + 1 WHERE id = ?`, [this.user_id]);
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ increaseTikklingTicket : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  decreaseOptionCombinationQuantity() {
+    try {
+      this.db.executeQuery(`UPDATE option_combination SET quantity = quantity + 1 WHERE id = ?`, [this.option_combination_id]);
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ increaseOptionCombinationQuantity : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  increaseOptionCombinationQuantity() {
+    try {
+      this.db.executeQuery(`UPDATE option_combination SET quantity = quantity + 1 WHERE id = ?`, [this.option_combination_id]);
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ increaseOptionCombinationQuantity : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  //티클링을 취소상태로 만드는 함수
+  async cancelTikkling() {
+    try {
+      if (this.state_id && this.terminated_at && this.resolution_type) {
+        this.state_id = 2;
+        this.terminated_at = new Date();
+        this.resolution_type = "cancel";
+      }
+      const results = await this.db.executeQuery(`UPDATE tikkling SET state_id = 2, terminated_at = now(), resolution_type = 'cancel' WHERE id = ?;`, [this.id]);
+      if (results.affectedRows == 0) {
+        console.error(`🚨 error -> ⚡️ cancelTikkling : 🐞 티클링 취소 실패`);
+        throw error;
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ cancelTikkling : 🐞 ${error}`);
       throw error;
     }
   }

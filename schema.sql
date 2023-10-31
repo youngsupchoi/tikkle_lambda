@@ -164,6 +164,7 @@ CREATE TABLE `products` (
 	`wishlist_count` INT NOT NULL DEFAULT 0,
 	`thumbnail_image` TEXT NOT NULL,
 	`images` TEXT,
+    `sales_volume` INT NOT NULL DEFAULT 0,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`category_id`) REFERENCES `product_category`(`id`),
 	FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`)

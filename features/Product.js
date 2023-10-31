@@ -1,11 +1,77 @@
 const { ExpectedError } = require("./ExpectedError.js");
 
 class OptionCombination {
-  constructor({ id, product_id, sales_volume, quantity }) {
-    this.id = id;
-    this.product_id = product_id;
-    this.sales_volume = sales_volume;
-    this.quantity = quantity;
+  constructor({ id, product_id, sales_volume, quantity, db }) {
+    this.id = id || null;
+    this.product_id = product_id || null;
+    this.sales_volume = sales_volume || null;
+    this.quantity = quantity || null;
+    this.db = db || null;
+  }
+  /**
+   * 재고를 감소시키는 함수
+   * @memberof OptionCombination
+   * @instance
+   * @async
+   * @example
+   * const option_combination = new OptionCombination({id: 1, db});
+   * await option_combination.decreaseQuantity();
+   * // => option_combination = {
+   * //  id: 1,
+   * //  product_id: 1,
+   * //  sales_volume: 0,
+   * //  quantity: 99,
+   * // }
+   * @returns {Promise<void>} - A promise that resolves with nothing.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @throws {ExpectedError} Throws an ExpectedError with status 400 if the option combination is not valid.
+   */
+
+  async decreaseQuantity() {
+    try {
+      if (this.quantity) {
+        this.quantity -= 1;
+      }
+      const result = this.db.executeQuery(`UPDATE option_combination SET quantity = quantity - 1 WHERE id = ?`, [this.id]);
+      if (result.affectedRows === 0) {
+        throw error;
+      }
+    } catch (error) {
+      console.error(`🚨error -> decreaseQuantity : 🐞${error}`);
+      throw error;
+    }
+  }
+  /**
+   * 재고를 증가시키는 함수
+   * @memberof OptionCombination
+   * @instance
+   * @async
+   * @example
+   * const option_combination = new OptionCombination({id: 1, db});
+   * await option_combination.increaseQuantity();
+   * // => option_combination = {
+   * //  id: 1,
+   * //  product_id: 1,
+   * //  sales_volume: 0,
+   * //  quantity: 101,
+   * // }
+   * @returns {Promise<void>} - A promise that resolves with nothing.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @throws {ExpectedError} Throws an ExpectedError with status 400 if the option combination is not valid.
+   */
+  async increaseQuantity() {
+    try {
+      if (this.quantity) {
+        this.quantity += 1;
+      }
+      const result = this.db.executeQuery(`UPDATE option_combination SET quantity = quantity + 1 WHERE id = ?`, [this.id]);
+      if (result.affectedRows === 0) {
+        throw error;
+      }
+    } catch (error) {
+      console.error(`🚨error -> decreaseQuantity : 🐞${error}`);
+      throw error;
+    }
   }
 }
 
@@ -162,7 +228,7 @@ class Product {
         });
       }
       console.log("🚀 ~ file: Product.js:148 ~ Product ~ loadSelectedProductOptionCombination ~ result[0]:", result[0]);
-      const option_combination = new OptionCombination(result[0]);
+      const option_combination = new OptionCombination({ ...result[0], db: this.db });
       this.selected_option_combination = option_combination;
     } catch (error) {
       console.log(`🚨error -> loadSelectedProductOptionCombination : 🐞${error}`);
@@ -332,21 +398,12 @@ class Product {
 
   async decreaseProductQuantity() {
     try {
-      this.selected_option_combination.quantity -= 1;
-      const query = `UPDATE option_combination SET quantity = quantity - 1 WHERE id = ?`;
-      await this.db.executeQuery(query, [this.selected_option_combination.id]);
+      this.selected_option_combination.decreaseQuantity();
     } catch (error) {
       console.error(`🚨error -> decreaseProductQuantity : 🐞${error}`);
-      if (error.status) {
-        throw error;
-      }
-      throw new ExpectedError({
-        status: "500",
-        message: `서버에러`,
-        detail_code: "00",
-      });
+      throw error;
     }
   }
 }
 
-module.exports = { Product };
+module.exports = { Product, OptionCombination };

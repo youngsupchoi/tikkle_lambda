@@ -91,7 +91,23 @@ class User {
   }
   async decreaseTikkleTicket() {
     try {
+      if (this.tikkling_ticket) {
+        this.tikkling_ticket -= 1;
+      }
       const query = `UPDATE users SET tikkling_ticket = tikkling_ticket - 1 WHERE id = ?`;
+      await this.db.executeQuery(query, [this.id]);
+    } catch (error) {
+      console.error(`🚨error -> decreaseTikkleTicket : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  async increaseTikkleTicket() {
+    try {
+      if (this.tikkling_ticket) {
+        this.tikkling_ticket += 1;
+      }
+      const query = `UPDATE users SET tikkling_ticket = tikkling_ticket + 1 WHERE id = ?`;
       await this.db.executeQuery(query, [this.id]);
     } catch (error) {
       console.error(`🚨error -> decreaseTikkleTicket : 🐞${error}`);
