@@ -219,7 +219,7 @@ CREATE TABLE `product_option` (
     `product_id` INT NOT NULL,
     `category` VARCHAR(255),
     `option` VARCHAR(255),
-	`additional_amount` INT,
+	`additional_amount` INT NOT NULL DEFAULT 0,
 	`is_deleted` BOOL NOT NULL DEFAULT false,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
