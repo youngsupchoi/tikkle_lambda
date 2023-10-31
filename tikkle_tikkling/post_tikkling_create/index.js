@@ -1,4 +1,3 @@
-const { queryDatabase, queryDatabase_multi } = require("db.js");
 const { Tikkling } = require("../../features/Tikkling");
 const { Response } = require("../../features/Response");
 const { User } = require("../../features/User");
@@ -42,7 +41,7 @@ exports.post_tikkling_create = async (req, res) => {
 
     await Promise.all([
       //티클링 생성
-      new_tikkling.createTikkling(),
+      new_tikkling.saveTikkling(),
       //상품의 재고를 감소시킴
       product.decreaseProductQuantity(),
       //유저의 티클링 티켓을 감소시킴
