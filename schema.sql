@@ -214,6 +214,35 @@ CREATE TABLE `notification` (
     FOREIGN KEY (`source_user_id`) REFERENCES `users`(`id`)
 );
 
+CREATE TABLE `product_option` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+    `product_id` INT NOT NULL,
+    `category` VARCHAR(255),
+    `option` VARCHAR(255),
+	`additional_amount` INT NOT NULL DEFAULT 0,
+	`is_deleted` BOOL NOT NULL DEFAULT false,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
+);
+
+CREATE TABLE `option_combination` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+    `product_id` INT NOT NULL,
+    `sales_volume` INT NOT NULL DEFAULT 0,
+	`quantity` INT NOT NULL DEFAULT 100000,
+    PRIMARY KEY (`id`),
+	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
+);
+
+CREATE TABLE `option_combination_detail` (
+    `combination_id` INT NOT NULL,
+    `option_id` INT NOT NULL,
+    FOREIGN KEY (`combination_id`) REFERENCES `option_combination`(`id`),
+	FOREIGN KEY (`option_id`) REFERENCES `product_option`(`id`)
+);
+
+
+
 -- 1: 진행중, 2: 시작 이전 종료, 3: 완료되기 전 종료, 4: 조각을 모두 모은 후 종료
 CREATE TABLE `tikkling_state` (
     `id` INT NOT NULL AUTO_INCREMENT,
@@ -238,10 +267,12 @@ CREATE TABLE `tikkling` (
     `state_id` INT NOT NULL DEFAULT 1,
     `type` VARCHAR(255) NOT NULL,
     `resolution_type` ENUM('goods', 'refund', 'cancel') NULL,
+    `option_combination_id` INT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`product_id`) REFERENCES `products`(`id`),
     FOREIGN KEY (`state_id`) REFERENCES `tikkling_state`(`id`) ON UPDATE CASCADE,
+    FOREIGN KEY (`option_combination_id`) REFERENCES `option_combination`(`id`),
     UNIQUE (`id`)
 );
 
@@ -551,28 +582,5 @@ END //
 DELIMITER ;
 
 
-
-
-CREATE TABLE `product_option` ( 
-	`id` INT NOT NULL AUTO_INCREMENT,
-    `product_id` INT NOT NULL,
-    `category` VARCHAR(255),
-    `option` VARCHAR(255),
-	`additional_amount` INT,
-	`sales_volume` INT NOT NULL DEFAULT 0,
-	`quantity` INT,
-	`is_deleted` BOOL NOT NULL DEFAULT false,
-	PRIMARY KEY (`id`),
-	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
-);
-
-CREATE TABLE `tikkling_option` (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `tikkling_id` INT NOT NULL,
-    `option_id` INT,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
-    FOREIGN KEY (`option_id`) REFERENCES `product_option`(`id`)
-);
 
 

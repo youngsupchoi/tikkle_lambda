@@ -3,7 +3,7 @@ const { getSSMParameter } = require("ssm.js");
 const { ExpectedError } = require("./ExpectedError.js");
 
 class Tikkling {
-  constructor({ id, user_id, funding_limit, created_at = null, tikkle_quantity, product_id, terminated_at, state_id, type, resolution_type, tikkle_count, db }) {
+  constructor({ id, user_id, funding_limit, created_at = null, tikkle_quantity, product_id, terminated_at, state_id, type, resolution_type, tikkle_count, option_combination_id, db }) {
     this.id = id || null;
     this.user_id = user_id || null;
     this.funding_limit = funding_limit || null;
@@ -15,6 +15,7 @@ class Tikkling {
     this.type = type || null;
     this.resolution_type = resolution_type || null;
     this.tikkle_count = tikkle_count || null;
+    this.option_combination_id = option_combination_id || null;
     this.db = db;
   }
 
@@ -49,13 +50,9 @@ class Tikkling {
       let active_tikkling = rows[0];
       active_tikkling.id = active_tikkling.tikkling_id;
       this.updateFromDatabaseResult(active_tikkling);
-    } catch (err) {
-      console.error(`🚨 error -> ⚡️ loadActiveTikklingViewByUserId : 🐞 ${err}`);
-      throw new ExpectedError({
-        status: "500",
-        message: `서버에러`,
-        detail_code: "00",
-      });
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ loadActiveTikklingViewByUserId : 🐞 ${error}`);
+      throw error;
     }
   }
 
@@ -72,13 +69,9 @@ class Tikkling {
       let active_tikkling = rows[0];
       active_tikkling.id = active_tikkling.tikkling_id;
       this.updateFromDatabaseResult(active_tikkling);
-    } catch (err) {
-      console.error(`🚨 error -> ⚡️ loadActiveTikklingViewByTikklingId : 🐞 ${err}`);
-      throw new ExpectedError({
-        status: "500",
-        message: `서버에러`,
-        detail_code: "00",
-      });
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ loadActiveTikklingViewByTikklingId : 🐞 ${error}`);
+      throw error;
     }
   }
 
@@ -103,33 +96,37 @@ class Tikkling {
    * // => throw ExpectedError with status 403 if the request is invalid.
    */
   validateBuyMyTikkleRequest({ user_id, tikkle_quantity }) {
-    console.log(this.tikkle_quantity, this.tikkle_count, tikkle_quantity);
-    if (parseInt(this.tikkle_quantity) != parseInt(this.tikkle_count) + parseInt(tikkle_quantity)) {
-      throw new ExpectedError({
-        status: "403",
-        message: `남은 티클의 구매 수량이 정확하지 않습니다.`,
-        detail_code: "03",
-      });
-    }
-    if (this.user_id !== user_id) {
-      throw new ExpectedError({
-        status: "403",
-        message: `비정상적 요청, 해당 티클링의 소유자가 아닙니다.`,
-        detail_code: "00",
-      });
-    }
-    if (parseInt(this.tikkle_quantity) == parseInt(this.tikkle_count)) {
-      throw new ExpectedError({
-        status: "403",
-        message: `이미 모든 티클을 수집한 티클링입니다.`,
-        detail_code: "01",
-      });
-    } else if (this.state_id !== 3 && this.state_id != 5) {
-      throw new ExpectedError({
-        status: "403",
-        message: `비정상적 요청, 아직 티클링이 종료되지 않았거나 이미 종료되었습니다.`,
-        detail_code: "02",
-      });
+    try {
+      if (parseInt(this.tikkle_quantity) != parseInt(this.tikkle_count) + parseInt(tikkle_quantity)) {
+        throw new ExpectedError({
+          status: "403",
+          message: `남은 티클의 구매 수량이 정확하지 않습니다.`,
+          detail_code: "03",
+        });
+      }
+      if (this.user_id !== user_id) {
+        throw new ExpectedError({
+          status: "403",
+          message: `비정상적 요청, 해당 티클링의 소유자가 아닙니다.`,
+          detail_code: "00",
+        });
+      }
+      if (parseInt(this.tikkle_quantity) == parseInt(this.tikkle_count)) {
+        throw new ExpectedError({
+          status: "403",
+          message: `이미 모든 티클을 수집한 티클링입니다.`,
+          detail_code: "01",
+        });
+      } else if (this.state_id !== 3 && this.state_id != 5) {
+        throw new ExpectedError({
+          status: "403",
+          message: `비정상적 요청, 아직 티클링이 종료되지 않았거나 이미 종료되었습니다.`,
+          detail_code: "02",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ validateBuyMyTikkleRequest : 🐞 ${error}`);
+      throw error;
     }
   }
 
@@ -151,13 +148,9 @@ class Tikkling {
           detail_code: "02",
         });
       }
-    } catch (err) {
-      console.error(`🚨 error -> ⚡️ validateSendTikkleRequest : 🐞 ${err}`);
-      throw new ExpectedError({
-        status: "500",
-        message: `서버에러`,
-        detail_code: "00",
-      });
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ validateSendTikkleRequest : 🐞 ${error}`);
+      throw error;
     }
   }
 
@@ -167,13 +160,9 @@ class Tikkling {
   async lockTikklingForInsertTikkle() {
     try {
       this.db.executeQuery(`SELECT * FROM tikkling WHERE id = ? FOR UPDATE;`, [this.id]);
-    } catch (err) {
-      console.error(`🚨 error -> ⚡️ lockTikklingForInsertTikkle : 🐞 ${err}`);
-      throw new ExpectedError({
-        status: "500",
-        message: `서버에러`,
-        detail_code: "00",
-      });
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ lockTikklingForInsertTikkle : 🐞 ${error}`);
+      throw error;
     }
   }
 
@@ -182,13 +171,9 @@ class Tikkling {
       if (parseInt(this.tikkle_quantity) == parseInt(this.tikkle_count) + parseInt(tikkle_quantity)) {
         await this.db.executeQuery(`UPDATE tikkling SET state_id = 4 WHERE id = ?;`, [this.id]);
       }
-    } catch (err) {
-      console.error(`🚨 error -> ⚡️ checkAndUpdateTikklingStateToEnd : 🐞 ${err}`);
-      throw new ExpectedError({
-        status: "500",
-        message: `서버에러`,
-        detail_code: "00",
-      });
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ checkAndUpdateTikklingStateToEnd : 🐞 ${error}`);
+      throw error;
     }
   }
 
@@ -208,13 +193,78 @@ class Tikkling {
           detail_code: "00",
         });
       }
-    } catch (err) {
-      console.error(`🚨 error -> ⚡️ buyMyTikkle : 🐞 ${err}`);
-      throw new ExpectedError({
-        status: "500",
-        message: `서버에러`,
-        detail_code: "00",
-      });
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ buyMyTikkle : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  //TODO: 함수 분리 필요
+  /**
+   * Asynchronously check validation of create tikkling request
+   * @returns {void}
+   * @throws {ExpectedError} Throws an ExpectedError with status 403 if the request is invalid.
+   * @memberof Tikkling
+   * @instance
+   * @async
+   * @example
+   * const new_tikkling = new Tikkling({ user_id: id, funding_limit, tikkle_quantity, product_id, type, db });
+   * tikkling.validateBuyMyTikkleRequest();
+   * // => throw ExpectedError with status 403 if the request is invalid.
+   *
+   */
+  async validateCreaetTikklingRequest() {
+    try {
+      //funding_limit 검증
+      const difUnit = 8;
+      const today = new Date();
+      const funding_limit = new Date(this.funding_limit);
+      const diff = funding_limit.getTime() - today.getTime();
+      const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+      if (diffDays > difUnit || diffDays < 0) {
+        throw new ExpectedError({
+          status: "403",
+          message: `잘못된 요청, 티클링 마감일은 ${difUnit}일 이내여야 합니다. 이를 수정하고 싶다면 diffUnit의 변경을 요청해주세요`,
+          detail_code: "04",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ validateSendTikkleRequest : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  /**
+   * 티클링 생성
+   * @returns {void}
+   * @throws {ExpectedError} Throws an ExpectedError with status 403 if the request is invalid.
+   * @memberof Tikkling
+   * @instance
+   * @async
+   * @return {number} - 생성된 티클링의 id
+   * @example
+   * const new_tikkling = new Tikkling({ user_id: id, funding_limit, tikkle_quantity, product_id, type, db });
+   * new_tikkling.createTikkling();
+   * // => throw ExpectedError with status 403 if the request is invalid.
+   */
+  async createTikkling() {
+    try {
+      const results = await this.db.executeQuery(`INSERT INTO tikkling (user_id, funding_limit, tikkle_quantity, product_id, type, option_combination_id) VALUES (?, ?, ?, ?, ?, ?); `, [
+        this.user_id,
+        this.funding_limit,
+        this.tikkle_quantity,
+        this.product_id,
+        this.type,
+        this.option_combination_id,
+      ]);
+      if (results.affectedRows == 0) {
+        console.error(`🚨 error -> ⚡️ createTikkling : 🐞 티클링 생성 실패`);
+        throw error;
+      }
+      return results.insertId;
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ createTikkling : 🐞 ${error}`);
+      throw error;
     }
   }
 }
