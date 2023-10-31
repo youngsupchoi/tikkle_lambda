@@ -7,7 +7,7 @@
   },
   "queryStringParameters": null,
   "body": {
-    "receive_user_id": 78,
-    "notification_type_id": 9
+    "tikkling_id": 15,
+    "notification_type_id": 3
   }
 }
