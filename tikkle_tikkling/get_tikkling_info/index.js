@@ -93,7 +93,7 @@ exports.get_tikkling_info = async (req, res) => {
       `;
       let rows = await queryDatabase(query, [parsedId]);
       const rows_of_selected_options = await queryDatabase(
-        `select * from option_combination_detail inner join product_option on option_combination_detail.option_id = product_option.id where option_combination_detail.combination_id = 1;`,
+        `select * from option_combination_detail inner join product_option on option_combination_detail.option_id = product_option.id where option_combination_detail.combination_id = ?;`,
         [rows[0].option_combination_id]
       );
 
