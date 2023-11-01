@@ -1,5 +1,3 @@
-const { queryDatabase, queryDatabase_multi } = require("db.js");
-const { getSSMParameter } = require("ssm.js");
 const { ExpectedError } = require("./ExpectedError.js");
 
 class Tikkling {
@@ -62,7 +60,7 @@ class Tikkling {
       if (!Tikkling.checkRowExists(rows)) {
         throw new ExpectedError({
           status: "404",
-          message: `비정상적 요청, 티클링이 존재하지 않습니다.`,
+          message: `비정상적 요청, 활성화된 티클링이 존재하지 않습니다.`,
           detail_code: "00",
         });
       }
@@ -120,12 +118,42 @@ class Tikkling {
       } else if (this.state_id !== 3 && this.state_id != 5) {
         throw new ExpectedError({
           status: "403",
-          message: `비정상적 요청, 아직 티클링이 종료되지 않았거나 이미 종료되었습니다.`,
+          message: `비정상적 요청, 아직 티클링이 중단되지 않았거나 이미 종료되었습니다.`,
           detail_code: "02",
         });
       }
     } catch (error) {
       console.error(`🚨 error -> ⚡️ validateBuyMyTikkleRequest : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  assertTikklingIsStopped() {
+    try {
+      if (this.state_id == 1) {
+        throw new ExpectedError({
+          status: "403",
+          message: `비정상적 요청, 아직 진행중인 티클링입니다. 먼저 중단한 뒤 해당 api를 요청하세요`,
+          detail_code: "01",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ assertMyTikklingIsNotEnded : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  assertTikklingisMine({ user_id }) {
+    try {
+      if (this.user_id !== user_id) {
+        throw new ExpectedError({
+          status: "401",
+          message: `비정상적 요청, 해당 티클링의 소유자가 아닙니다.`,
+          detail_code: "00",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ validateMyTikkling : 🐞 ${error}`);
       throw error;
     }
   }
@@ -283,6 +311,22 @@ class Tikkling {
     }
   }
 
+  //받은 티클이 0인지 확인
+  assertTikkleCountIsNotZero() {
+    try {
+      if (this.tikkle_count == 0) {
+        throw new ExpectedError({
+          status: "401",
+          message: `티클을 받지 않은 상태입니다.`,
+          detail_code: "00",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ assertTikkleCountIsZero : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
   decreaseTikklingTicket() {
     try {
       this.db.executeQuery(`UPDATE users SET tikkling_ticket = tikkling_ticket - 1 WHERE id = ?`, [this.user_id]);
@@ -334,6 +378,47 @@ class Tikkling {
       }
     } catch (error) {
       console.error(`🚨 error -> ⚡️ cancelTikkling : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  async updateTikklingToRefund() {
+    try {
+      const results = await this.db.executeQuery(`UPDATE tikkling SET terminated_at = now(), resolution_type = 'refund' WHERE id = ?;`, [this.id]);
+      if (results.affectedRows == 0) {
+        throw error;
+      }
+      this.resolution_type = "refund";
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ updateTikklingToRefund : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  async updateTikklingToGoods() {
+    try {
+      const results = await this.db.executeQuery(`UPDATE tikkling SET terminated_at = now(), resolution_type = 'goods' WHERE id = ?;`, [this.id]);
+      if (results.affectedRows == 0) {
+        throw error;
+      }
+      this.resolution_type = "goods";
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ updateTikklingToRefund : 🐞 ${error}`);
+      throw error;
+    }
+  }
+
+  async assertAllTikkleIsArrived() {
+    try {
+      if (this.tikkle_count != this.tikkle_quantity) {
+        throw new ExpectedError({
+          status: "400",
+          message: `아직 모든 티클이 도착하지 않았습니다.`,
+          detail_code: "01",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ assertAllTikkleIsArrived : 🐞 ${error}`);
       throw error;
     }
   }

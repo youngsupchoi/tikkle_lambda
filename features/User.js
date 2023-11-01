@@ -1,4 +1,3 @@
-const { queryDatabase, queryDatabase_multi } = require("db.js");
 const { getSSMParameter } = require("ssm.js");
 const { ExpectedError } = require("./ExpectedError.js");
 
@@ -121,6 +120,31 @@ class User {
       await this.db.executeQuery(query, [this.id, product_id]);
     } catch (error) {
       console.error(`🚨error -> deleteWishlist : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  validateAddress() {
+    try {
+      if (
+        !this.zonecode ||
+        !this.address ||
+        !this.detail_address ||
+        typeof this.zonecode !== "string" ||
+        typeof this.address !== "string" ||
+        typeof this.detail_address !== "string" ||
+        this.zonecode.length !== 5 ||
+        this.address.length > 250 ||
+        this.detail_address.length > 250
+      ) {
+        throw new ExpectedError({
+          status: "400",
+          message: `비정상적 요청, 주소 데이터가 올바르지 않습니다.`,
+          detail_code: "05",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨error -> validateAddress : 🐞${error}`);
       throw error;
     }
   }

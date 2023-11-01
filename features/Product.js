@@ -227,7 +227,7 @@ class Product {
           detail_code: "01",
         });
       }
-      console.log("🚀 ~ file: Product.js:148 ~ Product ~ loadSelectedProductOptionCombination ~ result[0]:", result[0]);
+
       const option_combination = new OptionCombination({ ...result[0], db: this.db });
       this.selected_option_combination = option_combination;
     } catch (error) {
