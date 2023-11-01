@@ -404,6 +404,24 @@ class Product {
       throw error;
     }
   }
+  async increaseProductSalesVolume() {
+    try {
+      if (this.sales_volume) {
+        this.sales_volume += 1;
+      }
+      const result = this.db.executeQuery(`UPDATE products SET sales_volume = sales_volume + 1 WHERE id = ?`, [this.id]);
+      if (result.affectedRows === 0) {
+        throw ExpectedError({
+          status: 500,
+          detail_code: "00",
+          message: "상품 판매량 증가 실패",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨error -> increaseQuantity : 🐞${error}`);
+      throw error;
+    }
+  }
 }
 
 module.exports = { Product, OptionCombination };

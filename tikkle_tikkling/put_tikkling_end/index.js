@@ -4,7 +4,7 @@ const { Response } = require("../../features/Response");
 const { User } = require("../../features/User");
 const { ExpectedError } = require("../../features/ExpectedError");
 const { DBManager } = require("../../db");
-const { OptionCombination } = require("../../features/Product");
+const { OptionCombination, Product } = require("../../features/Product");
 const { BankDetail } = require("../../features/BankDetail");
 const { Refund } = require("../../features/Refund");
 const { Delivery } = require("../../features/Delivery");
@@ -69,6 +69,11 @@ exports.put_tikkling_end = async (req, res) => {
       user.validateAddress();
       //모든 티클이 모여있는지 확인
       tikkling.assertAllTikkleIsArrived();
+
+      //판매량 증가
+      const product = new Product({ id: tikkling.product_id, db });
+      await product.increaseProductSalesVolume();
+
       //티클링을 종료시키기
       await tikkling.updateTikklingToGoods();
       //상품 발송 요청하기

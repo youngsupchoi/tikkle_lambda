@@ -7,7 +7,7 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"tikkling_id": 22,
+		"tikkling_id": 23,
 		"zonecode": "12345",
 		"address": "1234567890" ,
 		"detail_address": "1231231"
