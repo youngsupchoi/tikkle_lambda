@@ -32,20 +32,17 @@ exports.get_tikkling_info = async (req, res) => {
       JOIN users u ON a.user_id = u.id 
       JOIN product_category pc ON a.category_id = pc.id 
       WHERE u.id = ?;`;
-      const rows = await queryDatabase(query, [id]);
-
-      const selected_options = await queryDatabase(
-        `select * from option_combination_detail inner join product_option on option_combination_detail.option_id = product_option.id where option_combination_detail.combination_id = 1;`,
+      let rows = await queryDatabase(query, [id]);
+      const rows_of_selected_options = await queryDatabase(
+        `select * from option_combination_detail inner join product_option on option_combination_detail.option_id = product_option.id where option_combination_detail.combination_id = ?;`,
         [rows[0].option_combination_id]
       );
 
-      const selected_option = selected_options.map((selected_option) => {
-        return {
-          category: selected_option.category,
-          option: selected_option.option,
-        };
-      });
-      console.log(selected_option);
+      const selected_options = rows_of_selected_options.reduce((acc, cur) => {
+        acc[cur.category] = cur.option;
+        return acc;
+      }, {});
+      rows[0]["selected_options"] = selected_options;
 
       if (rows.length == 0) {
         return res.status(404).send({
