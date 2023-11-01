@@ -31,7 +31,6 @@ class Tikkle {
     this.state_id = state_id || null;
     this.merchant_uid = merchant_uid || this.generateMerchantUid();
     this.amount = quantity * 5000;
-
     this.created_at = created_at;
     this.db = db;
   }
@@ -95,6 +94,7 @@ class Tikkle {
 	 */
   async updateTikkleToFail() {
     try {
+      console.log("🚀 ~ file: Tikkle.js:100 ~ Tikkle ~ updateTikkleToFail ~ db:", db);
       const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`, [this.merchant_uid]);
       if (result.affectedRows == 0) {
         throw new ExpectedError({
@@ -428,6 +428,21 @@ class Tikkle {
 
         detail_code: "00",
       });
+    }
+  }
+
+  assertTikkleIsNotPaid() {
+    try {
+      if (this.state_id !== 5) {
+        throw new ExpectedError({
+          status: "403",
+          message: `비정상적 접근 : 결제가 완료된 티클`,
+          detail_code: "00",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨error -> ⚡️ assertTikkleIsNotPaid : 🐞${error}`);
+      throw error;
     }
   }
 }

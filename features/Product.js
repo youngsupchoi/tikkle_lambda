@@ -227,7 +227,7 @@ class Product {
           detail_code: "01",
         });
       }
-      console.log("🚀 ~ file: Product.js:148 ~ Product ~ loadSelectedProductOptionCombination ~ result[0]:", result[0]);
+
       const option_combination = new OptionCombination({ ...result[0], db: this.db });
       this.selected_option_combination = option_combination;
     } catch (error) {
@@ -401,6 +401,24 @@ class Product {
       this.selected_option_combination.decreaseQuantity();
     } catch (error) {
       console.error(`🚨error -> decreaseProductQuantity : 🐞${error}`);
+      throw error;
+    }
+  }
+  async increaseProductSalesVolume() {
+    try {
+      if (this.sales_volume) {
+        this.sales_volume += 1;
+      }
+      const result = this.db.executeQuery(`UPDATE products SET sales_volume = sales_volume + 1 WHERE id = ?`, [this.id]);
+      if (result.affectedRows === 0) {
+        throw ExpectedError({
+          status: 500,
+          detail_code: "00",
+          message: "상품 판매량 증가 실패",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨error -> increaseQuantity : 🐞${error}`);
       throw error;
     }
   }

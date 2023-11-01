@@ -1,15 +1,16 @@
 {
 	"resource": "/put_tikkling_end/{type}",
-	"path": "/put_tikkling_end/refund",
+	"path": "/put_tikkling_end/goods",
 	"httpMethod": "PUT",
 	"headers": {
 		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjE2OTMzNjI5OTAsImlzcyI6IkxpRm9saSJ9.2q1rnumRYD5G6ZajAdHkU3HibgTRDbzhgGNFoPAw2qY,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjQyODUzNjIwOTAsImlzcyI6IkxpRm9saSJ9.3lO5YCgVXXzrz5LrodPQoccq11ZHvHdwKAflg22RXXc"
 	},
 	"queryStringParameters": null,
 	"body": {
-		"tikkling_id": 11,
-		"bank_code": 2,
-		"account": "1234567890" 
+		"tikkling_id": 23,
+		"zonecode": "12345",
+		"address": "1234567890" ,
+		"detail_address": "1231231"
 
 	}
 }

@@ -13,8 +13,11 @@ exports.post_payment_finalize = async (req, res) => {
   try {
     //티클 객체 생성
     const tikkle_info = await Tikkle.getTikkleByMerchantUid({ merchant_uid, db });
-    console.log(tikkle_info.merchant_uid);
+
     const tikkle = new Tikkle({ ...tikkle_info, db });
+
+    //결제 이전인지 확인
+    tikkle.assertTikkleIsNotPaid();
 
     //티클링 객체 생성
     const tikkling = new Tikkling({ id: tikkle.tikkling_id, db });
@@ -45,16 +48,16 @@ exports.post_payment_finalize = async (req, res) => {
     const tikkle_info = await Tikkle.getTikkleByMerchantUid({ merchant_uid, db });
 
     //티클 객체 생성
-    const tikkle = new Tikkle(tikkle_info);
+    const tikkle = new Tikkle({ ...tikkle_info, db });
 
-    //포트원 토큰 가져오기
-    const port_one_token = await Tikkle.getPortOneApiToken();
+    //확실한 결제 직후의 상태
+    if (tikkle.state_id == 5) {
+      //포트원 토큰 가져오기
+      const port_one_token = await Tikkle.getPortOneApiToken();
 
-    //결제 실패로 변경
-    await tikkle.updateTikkleToFail();
-
-    //포트원 환불 api 호출
-    await tikkle.callPortOneCancelPaymentAPI({ reason: "buymytikkle 처리중 에러", port_one_token });
+      //포트원 환불 api 호출
+      await tikkle.callPortOneCancelPaymentAPI({ reason: "buymytikkle 처리중 에러", port_one_token });
+    }
 
     //트랜잭션 롤백
     await db.rollbackTransaction();
