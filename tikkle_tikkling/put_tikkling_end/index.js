@@ -42,8 +42,13 @@ exports.put_tikkling_end = async (req, res) => {
       //암호화
       await bank_detail.encryptAccount();
 
-      //티클링을 종료시키기
-      await tikkling.updateTikklingToRefund();
+      //모든 티클을 환급 상태로 변경
+      await Promise.all([
+        await tikkling.updateAllTikkleToRefund(),
+
+        //티클링을 종료시키기
+        await tikkling.updateTikklingToRefund(),
+      ]);
 
       // 재고를 복구하기
       const option_combination = new OptionCombination({ id: tikkling.option_combination_id, db });
@@ -74,18 +79,23 @@ exports.put_tikkling_end = async (req, res) => {
       const product = new Product({ id: tikkling.product_id, db });
       await product.increaseProductSalesVolume();
 
-      //티클링을 종료시키기
-      await tikkling.updateTikklingToGoods();
+      await Promise.all([
+        //모든 티클을 사용된 상태로 변경
+        tikkling.updateAllTikkleToUsed(),
+        //티클링을 종료시키기
+        tikkling.updateTikklingToGoods(),
+      ]);
+
       //상품 발송 요청하기
       const delivery = new Delivery({ tikkling_id: tikkling.id, zonecode: user.zonecode, address: user.detail_address, detail_address: user.detail_address, state_id: 1, db });
-      delivery.saveDeliveryData();
+      await delivery.saveDeliveryData();
       await db.commitTransaction();
       return res.status(200).send(Response.create(true, "02", "티클링을 성공적으로 종료하였습니다. 배송요청을 완료하였습니다.", returnToken));
     }
   } catch (err) {
     await db.rollbackTransaction();
 
-    console.error(`🚨error -> ⚡️ post_tikkling_create : 🐞${err}`);
+    console.error(`🚨error -> ⚡️ post_tikkling_end : 🐞${err}`);
 
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));

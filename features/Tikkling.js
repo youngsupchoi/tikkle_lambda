@@ -422,6 +422,37 @@ class Tikkling {
       throw error;
     }
   }
+
+  async updateAllTikkleToUsed() {
+    try {
+      const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 2 WHERE tikkling_id = ? AND state_id = 1;`, [this.id]);
+      if (result.affectedRows == 0) {
+        throw new ExpectedError({
+          status: "400",
+          message: `사용할 수 있는 티클이 없습니다.`,
+          detail_code: "01",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ updateTikklingToUsed : 🐞 ${error}`);
+      throw error;
+    }
+  }
+  async updateAllTikkleToRefund() {
+    try {
+      const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 4 WHERE tikkling_id = ? AND state_id = 1;`, [this.id]);
+      if (result.affectedRows == 0) {
+        throw new ExpectedError({
+          status: "400",
+          message: `사용할 수 있는 티클이 없습니다.`,
+          detail_code: "01",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ updateTikklingToUsed : 🐞 ${error}`);
+      throw error;
+    }
+  }
 }
 
 module.exports = { Tikkling };
