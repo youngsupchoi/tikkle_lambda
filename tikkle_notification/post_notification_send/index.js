@@ -149,7 +149,7 @@ exports.post_notification_send = async (req, res) => {
 			SELECT friend_user_id  
 			FROM friends_relation 
 			WHERE central_user_id = ? 
-				AND relation_state_id <> 3
+				AND relation_state_id = 2
 			`,
         [id]
       );
