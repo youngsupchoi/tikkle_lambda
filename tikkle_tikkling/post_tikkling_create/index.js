@@ -38,8 +38,8 @@ exports.post_tikkling_create = async (req, res) => {
       //유저에 대한 유효성 검사
       user.validatteUserForStartTikkling(),
     ]);
-    let inserted_tikkling_id = null;
-    [inserted_tikkling_id] = await Promise.all([
+    let tikkling_id = null;
+    [tikkling_id] = await Promise.all([
       //티클링 생성
       new_tikkling.saveTikkling(),
       //상품의 재고를 감소시킴
@@ -49,11 +49,10 @@ exports.post_tikkling_create = async (req, res) => {
       //위시리스트 제거
       user.deleteWishlist(product_id),
     ]);
-    console.log("🚀 ~ file: index.js:52 ~ exports.post_tikkling_create= ~ inserted_tikkling_id:", inserted_tikkling_id);
 
     await db.commitTransaction();
 
-    return res.status(200).send(Response.create(true, "00", "티클링 생성을 성공하였습니다.", { inserted_tikkling_id }, returnToken));
+    return res.status(200).send(Response.create(true, "00", "티클링 생성을 성공하였습니다.", { tikkling_id }, returnToken));
   } catch (err) {
     await db.rollbackTransaction();
     console.error(`🚨error -> ⚡️ post_tikkling_create : 🐞${err}`);
