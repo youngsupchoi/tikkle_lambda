@@ -142,7 +142,7 @@ exports.post_notification_send = async (req, res) => {
   //-------- get friend ID from DB or set receive user ID --------------------------------------------------------------------------------------//
   let receiver;
 
-  if (notification_type_id === 1 || notification_type_id === 3) {
+  if (notification_type_id === 1) {
     try {
       const rows = await queryDatabase(
         `
@@ -150,6 +150,29 @@ exports.post_notification_send = async (req, res) => {
 			FROM friends_relation 
 			WHERE central_user_id = ? 
 				AND relation_state_id = 2
+			`,
+        [id]
+      );
+      receiver = rows;
+      // console.log("SQL result : ", receiver);
+    } catch (err) {
+      console.log("post_notification_send 에서 에러가 발생했습니다.", err);
+      const return_body = {
+        success: false,
+        detail_code: "02",
+        message: "SQL error",
+        returnToken: null,
+      };
+      return res.status(500).send(return_body);
+    }
+  } else if (notification_type_id === 3) {
+    try {
+      const rows = await queryDatabase(
+        `
+			SELECT friend_user_id  
+			FROM friends_relation 
+			WHERE central_user_id = ? 
+				AND relation_state_id <> 3
 			`,
         [id]
       );
