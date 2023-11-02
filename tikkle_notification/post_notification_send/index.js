@@ -142,7 +142,7 @@ exports.post_notification_send = async (req, res) => {
   //-------- get friend ID from DB or set receive user ID --------------------------------------------------------------------------------------//
   let receiver;
 
-  if (notification_type_id === 1) {
+  if (notification_type_id === 1 && receive_user_id === null) {
     try {
       const rows = await queryDatabase(
         `
@@ -188,7 +188,7 @@ exports.post_notification_send = async (req, res) => {
       };
       return res.status(500).send(return_body);
     }
-  } else if (notification_type_id === 5 || notification_type_id === 6 || notification_type_id === 8 || notification_type_id === 9) {
+  } else if ((notification_type_id === 1 && receive_user_id !== null) || notification_type_id === 5 || notification_type_id === 6 || notification_type_id === 8 || notification_type_id === 9) {
     receiver = [];
     const a = { friend_user_id: receive_user_id };
     receiver.push(a);
@@ -226,7 +226,7 @@ exports.post_notification_send = async (req, res) => {
 
   //-------- send notification by FCM --------------------------------------------------------------------------------------//
 
-  if (notification_type_id !== 1 && notification_type_id !== 3) {
+  if (!(notification_type_id == 1 && receive_user_id === null) && notification_type_id !== 3) {
     //resiver 1명
     let token_sqlResult;
 
