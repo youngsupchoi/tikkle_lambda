@@ -95,11 +95,6 @@ class Tikkling {
    */
   validateBuyMyTikkleRequest({ user_id, tikkle_quantity }) {
     try {
-      throw new ExpectedError({
-        status: "403",
-        message: `남은 티클의 구매 수량이 정확하지 않습니다.`,
-        detail_code: "03",
-      });
       if (parseInt(this.tikkle_quantity) != parseInt(this.tikkle_count) + parseInt(tikkle_quantity)) {
         throw new ExpectedError({
           status: "403",
@@ -192,7 +187,7 @@ class Tikkling {
    */
   async lockTikklingForInsertTikkle() {
     try {
-      this.db.executeQuery(`SELECT * FROM tikkling WHERE id = ? FOR UPDATE;`, [this.id]);
+      this.db.executeQuery(`SSELECT * FROM tikkling WHERE id = ? FOR UPDATE;`, [this.id]);
     } catch (error) {
       console.error(`🚨 error -> ⚡️ lockTikklingForInsertTikkle : 🐞 ${error}`);
       throw error;
