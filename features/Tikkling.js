@@ -95,6 +95,11 @@ class Tikkling {
    */
   validateBuyMyTikkleRequest({ user_id, tikkle_quantity }) {
     try {
+      throw new ExpectedError({
+        status: "403",
+        message: `남은 티클의 구매 수량이 정확하지 않습니다.`,
+        detail_code: "03",
+      });
       if (parseInt(this.tikkle_quantity) != parseInt(this.tikkle_count) + parseInt(tikkle_quantity)) {
         throw new ExpectedError({
           status: "403",
@@ -197,7 +202,7 @@ class Tikkling {
   async checkAndUpdateTikklingStateToEnd({ tikkle_quantity }) {
     try {
       if (parseInt(this.tikkle_quantity) == parseInt(this.tikkle_count) + parseInt(tikkle_quantity)) {
-        await this.db.executeQuery(`UUPDATE tikkling SET state_id = 4 WHERE id = ?;`, [this.id]);
+        await this.db.executeQuery(`UPDATE tikkling SET state_id = 4 WHERE id = ?;`, [this.id]);
       }
     } catch (error) {
       console.error(`🚨 error -> ⚡️ checkAndUpdateTikklingStateToEnd : 🐞 ${error}`);
