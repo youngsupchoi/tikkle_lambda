@@ -197,7 +197,7 @@ class Tikkling {
   async checkAndUpdateTikklingStateToEnd({ tikkle_quantity }) {
     try {
       if (parseInt(this.tikkle_quantity) == parseInt(this.tikkle_count) + parseInt(tikkle_quantity)) {
-        await this.db.executeQuery(`UPDATE tikkling SET state_id = 4 WHERE id = ?;`, [this.id]);
+        await this.db.executeQuery(`UPDATE tikklihng SET state_id = 4 WHERE id = ?;`, [this.id]);
       }
     } catch (error) {
       console.error(`🚨 error -> ⚡️ checkAndUpdateTikklingStateToEnd : 🐞 ${error}`);
