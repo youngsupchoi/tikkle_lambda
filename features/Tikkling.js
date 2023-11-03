@@ -187,7 +187,7 @@ class Tikkling {
    */
   async lockTikklingForInsertTikkle() {
     try {
-      this.db.executeQuery(`SSELECT * FROM tikkling WHERE id = ? FOR UPDATE;`, [this.id]);
+      this.db.executeQuery(`SELECT * FROM tikkling WHERE id = ? FOR UPDATE;`, [this.id]);
     } catch (error) {
       console.error(`🚨 error -> ⚡️ lockTikklingForInsertTikkle : 🐞 ${error}`);
       throw error;
