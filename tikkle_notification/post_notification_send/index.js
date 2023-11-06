@@ -72,27 +72,8 @@ exports.post_notification_send = async (req, res) => {
     message = name + "님이 보낸 티클을 확인해보세요.";
     title = "🎁 티클 선물";
     link = "link_for_5";
-    deep_link = "tikkle://tikklingDetail/" + receive_user_id.toString();
+    deep_link = "tikkle://tikklingDetail/" + tikkling_id.toString();
     source_user_id = id;
-
-    //receive_user_id 대신 tikkling id 가오는 상황이라 쿼리로 바꿔줌
-    let sqlResult_tikkling;
-    try {
-      const rows = await queryDatabase("select user_id from tikkling where id = ?", [receive_user_id]);
-      sqlResult_tikkling = rows;
-      //console.log("SQL result : ", sqlResult_tikkling);
-    } catch (err) {
-      console.log("post_notification_send 에서 에러가 발생했습니다.", err);
-      const return_body = {
-        success: false,
-        detail_code: "02",
-        message: "SQL error",
-        returnToken: null,
-      };
-      return res.status(500).send(return_body);
-    }
-
-    receive_user_id = sqlResult_tikkling[0].user_id;
     //
   } else if (notification_type_id === 6) {
     message = "티클링 상품 교환이 완료되었어요.";
