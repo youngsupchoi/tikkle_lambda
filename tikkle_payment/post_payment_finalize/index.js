@@ -3,7 +3,8 @@ const { Tikkle } = require("../../features/Tikkle");
 const { Response } = require("../../features/Response");
 const { ExpectedError } = require("../../features/ExpectedError");
 const { DBManager } = require("../../db");
-const { queryDatabase } = require("db.js");
+// const { queryDatabase } = require("db.js");
+const { post_notification_send } = require("../../tikkle_notification/post_notification_send/index.js");
 
 exports.post_payment_finalize = async (req, res) => {
   const { body, id, returnToken, params } = req;
@@ -45,43 +46,11 @@ exports.post_payment_finalize = async (req, res) => {
     await db.commitTransaction();
 
     //-------- send notification --------------------------------------------------------------------------------------//
-    try {
-      //보낸 사람 이름 가져오기
-      try {
-        const rows = await queryDatabase("select * from users where id = ?", [id]);
-        sqlResult = rows;
-        //console.log("SQL result : ", sqlResult);
-      } catch (err) {
-        console.log("🚨 error ->알림을 위한 회원정보 조회 에서 에러가 발생했습니다.", err);
-      }
 
-      // check data is one
-      if (sqlResult.length !== 1) {
-        console.log("🚨 error ->알림을 위한 회원정보 조회 에서 에러가 발생했습니다.");
-      }
+    const req_n = { body: { receive_user_id: tikkling.user_id, notification_type_id: 5, tikkling_id: tikkling.id }, id: id, returnToken: returnToken };
+    await post_notification_send(req_n);
 
-      const name = sqlResult[0].name;
-      const profile = sqlResult[0].image;
-
-      const message = name + "님이 보낸 티클을 확인해보세요.";
-      const title = "티클 도착 🎁";
-      const link = "link_for_5";
-      const deep_link = "tikkle://tikklingDetail/" + tikkling.id.toString();
-      const source_user_id = tikkle.user_id;
-      const receive_user_id = tikkling.user_id;
-      const meta_data = profile;
-
-      //DB 알림 보내기
-      await queryDatabase(
-        `INSERT INTO notification
-        (user_id, message, is_deleted, is_read, notification_type_id, deep_link, link, meta_data, source_user_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [receive_user_id, message, 0, 0, 5, deep_link, link, meta_data, source_user_id]
-      );
-    } catch (err) {
-      console.log("🚨 error -> @@@ 알림을 보내는데에서 에러가 발생했습니다.", err);
-    }
-
+    //
     return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료"));
   } catch (err) {
     //티클 정보 가져오기
