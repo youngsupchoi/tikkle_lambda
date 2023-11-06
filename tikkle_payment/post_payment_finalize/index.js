@@ -52,12 +52,12 @@ exports.post_payment_finalize = async (req, res) => {
         sqlResult = rows;
         //console.log("SQL result : ", sqlResult);
       } catch (err) {
-        console.log("알림을 위한 회원정보 조회 에서 에러가 발생했습니다.", err);
+        console.log("🚨 error ->알림을 위한 회원정보 조회 에서 에러가 발생했습니다.", err);
       }
 
       // check data is one
       if (sqlResult.length !== 1) {
-        console.log("알림을 위한 회원정보 조회 에서 에러가 발생했습니다.");
+        console.log("🚨 error ->알림을 위한 회원정보 조회 에서 에러가 발생했습니다.");
       }
 
       const name = sqlResult[0].name;
@@ -79,7 +79,7 @@ exports.post_payment_finalize = async (req, res) => {
         [receive_user_id, message, 0, 0, 5, deep_link, link, meta_data, source_user_id]
       );
     } catch (err) {
-      console.log("@@@ 알림을 보내는데에서 에러가 발생했습니다.", err);
+      console.log("🚨 error -> @@@ 알림을 보내는데에서 에러가 발생했습니다.", err);
     }
 
     return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료"));
