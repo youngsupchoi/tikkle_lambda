@@ -3,8 +3,8 @@ const { Tikkle } = require("../../features/Tikkle");
 const { Response } = require("../../features/Response");
 const { ExpectedError } = require("../../features/ExpectedError");
 const { DBManager } = require("../../db");
-// const { queryDatabase } = require("db.js");
-const { post_notification_send } = require("../../tikkle_notification/post_notification_send/index.js");
+const { queryDatabase } = require("db.js");
+const { fcm_send, fcm_send_many } = require("fcm.js");
 
 exports.post_payment_finalize = async (req, res) => {
   const { body, id, returnToken, params } = req;
@@ -13,7 +13,11 @@ exports.post_payment_finalize = async (req, res) => {
   //main logic------------------------------------------------------------------------------------------------------------------//
   const db = new DBManager();
   await db.openTransaction();
-  console.log("@@@@@@@@@@@@@@@@@@@@");
+
+  let receive_user_id;
+  let tikkling_id;
+  let send_user_id;
+
   try {
     //티클 객체 생성
     const tikkle_info = await Tikkle.getTikkleByMerchantUid({ merchant_uid, db });
@@ -28,7 +32,6 @@ exports.post_payment_finalize = async (req, res) => {
 
     //해당 티클링 락
     await tikkling.lockTikklingForInsertTikkle();
-
     //티클링 정보 가져오기
     await tikkling.loadActiveTikklingViewByTikklingId();
 
@@ -40,20 +43,15 @@ exports.post_payment_finalize = async (req, res) => {
       tikkling.validateBuyMyTikkleRequest({ user_id: tikkle.user_id, tikkle_quantity: tikkle.quantity });
     }
 
+    receive_user_id = tikkling.user_id;
+    tikkling_id = tikkling.id;
+    send_user_id = tikkle.user_id;
+
     //DB상 결제 완료 처리
     await tikkle.completeTikklePayment();
 
     //트랜잭션 종료
     await db.commitTransaction();
-    console.log("@@@@@@@@@@@@@@@@@@@@");
-
-    //-------- send notification --------------------------------------------------------------------------------------//
-
-    const req_n = { body: { receive_user_id: tikkling.user_id, notification_type_id: 5, tikkling_id: tikkling.id }, id: id, returnToken: returnToken };
-    const ret = await post_notification_send(req_n);
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@post_notification_send result : \n", ret);
-    //
-    return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료"));
   } catch (err) {
     //티클 정보 가져오기
     const tikkle_info = await Tikkle.getTikkleByMerchantUid({ merchant_uid, db });
@@ -79,4 +77,64 @@ exports.post_payment_finalize = async (req, res) => {
     }
     return res.status(500).send(Response.create(false, "00", "서버 에러"));
   }
+
+  //-------- send notification --------------------------------------------------------------------------------------//
+  console.log("sned noti ", receive_user_id, tikkling_id, send_user_id);
+  try {
+    //보내는 사람 정보
+    try {
+      const rows = await queryDatabase("select * from users where id = ?", [send_user_id]);
+      sqlResult = rows;
+      //console.log("SQL result : ", sqlResult);
+    } catch (err) {
+      console.log("post_notification_send 에서 에러가 발생했습니다.", err);
+    }
+
+    // check data is one
+    if (sqlResult.length !== 1) {
+      console.log("post_notification_send 에서 에러가 발생했습니다.", err);
+    }
+
+    const name = sqlResult[0].name;
+
+    //DB에 알림 저장
+    message = name + "님이 보낸 티클을 확인해보세요.";
+    title = "티클 선물 🎁";
+    link = "link_for_5";
+    deep_link = "tikkle://tikklingDetail/" + tikkling_id.toString();
+    source_user_id = send_user_id;
+
+    const notiDB = await queryDatabase(
+      `INSERT INTO notification
+    (user_id, message, is_deleted, is_read, notification_type_id, deep_link, link, meta_data, source_user_id) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [receive_user_id, message, 0, 0, 5, deep_link, link, null, source_user_id]
+    );
+    console.log("notiDB : ", notiDB);
+
+    ////푸시 알림
+    //resiver 1명
+    let token_sqlResult;
+
+    try {
+      const rows = await queryDatabase("select * from users where id = ?", [receive_user_id]);
+      token_sqlResult = rows;
+      //console.log("SQL result : ", token_sqlResult);
+    } catch (err) {
+      console.log("post_notification_send token확인 에서 에러가 발생했습니다.", err);
+    }
+
+    // check data is one
+    if (token_sqlResult.length !== 1) {
+      console.log("post_notification_send token확인 에서 에러가 발생했습니다.", err);
+    }
+
+    const device_token = token_sqlResult[0].device_token;
+
+    //send notification
+
+    await fcm_send(device_token, "알림", message, deep_link);
+  } catch {}
+
+  return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료"));
 };
