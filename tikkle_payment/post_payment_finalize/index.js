@@ -48,8 +48,8 @@ exports.post_payment_finalize = async (req, res) => {
     //-------- send notification --------------------------------------------------------------------------------------//
 
     const req_n = { body: { receive_user_id: tikkling.user_id, notification_type_id: 5, tikkling_id: tikkling.id }, id: id, returnToken: returnToken };
-    await post_notification_send(req_n);
-
+    const ret = await post_notification_send(req_n);
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@post_notification_send result : \n", ret);
     //
     return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료"));
   } catch (err) {
