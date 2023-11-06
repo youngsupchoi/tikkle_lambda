@@ -13,6 +13,7 @@ exports.post_payment_finalize = async (req, res) => {
   //main logic------------------------------------------------------------------------------------------------------------------//
   const db = new DBManager();
   await db.openTransaction();
+  console.log("@@@@@@@@@@@@@@@@@@@@");
   try {
     //티클 객체 생성
     const tikkle_info = await Tikkle.getTikkleByMerchantUid({ merchant_uid, db });
@@ -44,6 +45,7 @@ exports.post_payment_finalize = async (req, res) => {
 
     //트랜잭션 종료
     await db.commitTransaction();
+    console.log("@@@@@@@@@@@@@@@@@@@@");
 
     //-------- send notification --------------------------------------------------------------------------------------//
 
