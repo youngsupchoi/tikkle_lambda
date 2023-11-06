@@ -85,6 +85,57 @@ class ProductOption {
   }
 }
 
+class Brand {
+  constructor({ id, brand_name, is_deleted, db }) {
+    this.id = id;
+    this.brand_name = brand_name;
+    this.is_deleted = is_deleted;
+    this.db = db;
+  }
+  toJSON() {
+    return {
+      id: this.id,
+      brand_name: this.brand_name,
+      is_deleted: this.is_deleted,
+      // 다른 프로퍼티들도 포함시킵니다.
+    };
+  }
+
+  static async checkBrandNameList(brand_name_list, db) {
+    try {
+      //기존에 존재하는 브랜드인지 확인
+      const placeholders = brand_name_list.map(() => "?").join(", ");
+      // 쿼리를 실행할 때 placeholders를 사용하고 배열의 요소들을 전달합니다.
+      const result = await db.executeQuery(`SELECT * FROM brands WHERE brand_name IN (${placeholders})`, [...brand_name_list]);
+      //존재하지 않는브랜드는 새로 생성
+      console.log("🚀 ~ file: Product.js:103 ~ Brand ~ checkBrandNameList ~ result:", result[0]);
+      let brand_obj_list = [];
+
+      for (const brand_name of brand_name_list) {
+        const brandExists = result.some((brand) => brand.brand_name === brand_name);
+        if (!brandExists) {
+          const temp_result = await db.executeQuery(`INSERT INTO brands (brand_name) VALUES (?)`, [brand_name]);
+          const newBrand = new Brand({ id: temp_result.insertId, brand_name: brand_name, db });
+          const newBrandObj = newBrand.toJSON();
+          brand_obj_list.push(newBrandObj);
+        } else {
+          const brand = result.find((brand) => brand.brand_name === brand_name);
+          const existingBrand = new Brand({ id: brand.id, brand_name: brand_name, db });
+          const existingBrandObj = existingBrand.toJSON();
+          console.log("🚀 ~ file: Product.js:123 ~ Brand ~ checkBrandNameList ~ existingBrand:", existingBrandObj);
+          brand_obj_list.push(existingBrandObj);
+        }
+      }
+
+      console.log("🚀 ~ file: Product.js:105 ~ Brand ~ checkBrandNameList ~ brand_obj_list:", brand_obj_list);
+      return brand_obj_list;
+    } catch (error) {
+      console.log(`🚨error -> checkBrandNameList : 🐞${error}`);
+      throw error;
+    }
+  }
+}
+
 class Product {
   constructor({ id, name, price, description = null, category_id, thumbnail_image, brand_id, created_at, views, is_deleted, wishlist_count, images, db }) {
     this.id = id || null;
@@ -424,4 +475,4 @@ class Product {
   }
 }
 
-module.exports = { Product, OptionCombination };
+module.exports = { Product, OptionCombination, Brand };
