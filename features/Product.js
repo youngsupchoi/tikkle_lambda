@@ -473,6 +473,40 @@ class Product {
       throw error;
     }
   }
+
+  static async enrollProductList(product_list, db) {
+    try {
+      for (const product of product_list) {
+        const result = await db.executeQuery(`SELECT * FROM products WHERE name = ?`, [product.name]);
+        if (result.length == 0) {
+          const result_of_insert_product = await db.executeQuery(`INSERT INTO products (name, price, description, category_id, brand_id, thumbnail_image, images) VALUES (?, ?, ?, ?, ?, ?, ?)`, [
+            product.name,
+            product.price,
+            product.description,
+            product.category_id,
+            product.brand_id,
+            product.thumbnail_image,
+            product.images,
+          ]);
+          const result_of_insert_option_combination = await db.executeQuery(`INSERT INTO option_combination (product_id, quantity) VALUES (?, ?)`, [result_of_insert_product.insertId, 10000]);
+          const result_of_insert_option = await db.executeQuery(`INSERT INTO product_option (product_id, category, \`option\`, additional_amount) VALUES (?, ?, ?, ?)`, [
+            result_of_insert_product.insertId,
+            "default",
+            "default",
+            0,
+          ]);
+
+          const result_of_insert_option_combination_detail = await db.executeQuery(`INSERT INTO option_combination_detail (combination_id, option_id) values (?, ?)`, [
+            result_of_insert_option_combination.insertId,
+            result_of_insert_option.insertId,
+          ]);
+        }
+      }
+    } catch (error) {
+      console.error(`🚨error -> enrollProductList : 🐞${error}`);
+      throw error;
+    }
+  }
 }
 
 module.exports = { Product, OptionCombination, Brand };

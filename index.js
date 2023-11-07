@@ -76,6 +76,7 @@ const { post_payment_getData } = require("./tikkle_payment/post_payment_getData/
 const { put_payment_refund } = require("./tikkle_payment/put_payment_refund/index.js");
 const { get_product_options } = require("./tikkle_product/get_product_options/index.js");
 const { post_product_brand } = require("./tikkle_product/post_product_brand/index.js");
+const { post_product_enrollment } = require("./tikkle_product/post_product_enrollment/index.js");
 
 //
 
@@ -141,6 +142,7 @@ api.get("/get_product_options/:product_id", authtoken, get_product_options);
 
 api.post("/post_product_brand", authtoken, post_product_brand);
 
+api.post("/post_product_enrollment", authtoken, post_product_enrollment);
 //
 
 //------- tikkling
