@@ -153,7 +153,7 @@ CREATE TABLE `product_category` (
 
 CREATE TABLE `products` ( 
 	`id` INT NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR(30) NOT NULL,
+	`name` VARCHAR(255) NOT NULL,
 	`price` INT NOT NULL,
 	`description` TEXT NOT NULL,
 	`category_id` INT NOT NULL,
