@@ -1,8 +1,8 @@
-CREATE DATABASE tikkle
+CREATE DATABASE tikkle_db
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_general_ci;
 
-use tikkle;
+use tikkle_db;
 
 CREATE TABLE bank (
     bank_code INT PRIMARY KEY,
@@ -153,11 +153,9 @@ CREATE TABLE `product_category` (
 
 CREATE TABLE `products` ( 
 	`id` INT NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR(30) NOT NULL,
+	`name` VARCHAR(255) NOT NULL,
 	`price` INT NOT NULL,
 	`description` TEXT NOT NULL,
-	`sales_volume` INT NOT NULL DEFAULT 0,
-	`quantity` INT NOT NULL,
 	`category_id` INT NOT NULL,
 	`brand_id` INT NOT NULL,
 	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -166,6 +164,7 @@ CREATE TABLE `products` (
 	`wishlist_count` INT NOT NULL DEFAULT 0,
 	`thumbnail_image` TEXT NOT NULL,
 	`images` TEXT,
+    `sales_volume` INT NOT NULL DEFAULT 0,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`category_id`) REFERENCES `product_category`(`id`),
 	FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`)
@@ -206,13 +205,44 @@ CREATE TABLE `notification` (
     `is_read` BOOL NOT NULL DEFAULT false,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `notification_type_id` INT NOT NULL,
-		`deep_link` VARCHAR(255),
-		`link` VARCHAR(255),
-		`meta_data` TEXT,
+	`deep_link` VARCHAR(255),
+	`link` VARCHAR(255),
+	`meta_data` TEXT,
+    `source_user_id` INT,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-    FOREIGN KEY (`notification_type_id`) REFERENCES `notification_type`(`id`)
+    FOREIGN KEY (`notification_type_id`) REFERENCES `notification_type`(`id`),
+    FOREIGN KEY (`source_user_id`) REFERENCES `users`(`id`)
 );
+
+CREATE TABLE `product_option` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+    `product_id` INT NOT NULL,
+    `category` VARCHAR(255),
+    `option` VARCHAR(255),
+	`additional_amount` INT NOT NULL DEFAULT 0,
+	`is_deleted` BOOL NOT NULL DEFAULT false,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
+);
+
+CREATE TABLE `option_combination` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+    `product_id` INT NOT NULL,
+    `sales_volume` INT NOT NULL DEFAULT 0,
+	`quantity` INT NOT NULL DEFAULT 100000,
+    PRIMARY KEY (`id`),
+	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
+);
+
+CREATE TABLE `option_combination_detail` (
+    `combination_id` INT NOT NULL,
+    `option_id` INT NOT NULL,
+    FOREIGN KEY (`combination_id`) REFERENCES `option_combination`(`id`),
+	FOREIGN KEY (`option_id`) REFERENCES `product_option`(`id`)
+);
+
+
 
 -- 1: 진행중, 2: 시작 이전 종료, 3: 완료되기 전 종료, 4: 조각을 모두 모은 후 종료
 CREATE TABLE `tikkling_state` (
@@ -237,11 +267,13 @@ CREATE TABLE `tikkling` (
     `terminated_at` TIMESTAMP NULL,
     `state_id` INT NOT NULL DEFAULT 1,
     `type` VARCHAR(255) NOT NULL,
-    `resolution_type` ENUM('goods', 'refund', `cancel`) NULL,
+    `resolution_type` ENUM('goods', 'refund', 'cancel') NULL,
+    `option_combination_id` INT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`product_id`) REFERENCES `products`(`id`),
     FOREIGN KEY (`state_id`) REFERENCES `tikkling_state`(`id`) ON UPDATE CASCADE,
+    FOREIGN KEY (`option_combination_id`) REFERENCES `option_combination`(`id`),
     UNIQUE (`id`)
 );
 
@@ -434,7 +466,7 @@ VALUES
     (2, '사용'),
     (3, '환불'),
     (4, '환급'),
-    (5, '결제 대기');
+    (5, '결제 대기'),
     (6, '결제 실패');
 
 
@@ -450,7 +482,7 @@ CREATE TABLE `sending_tikkle` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-    FOREIGN KEY (`state_id`) REFERENCES `sending_tikkle_state`(`id`),
+    FOREIGN KEY (`state_id`) REFERENCES `sending_tikkle_state`(`id`)
 );
 
 -- tikkling_id에 index 추가
@@ -475,6 +507,7 @@ SELECT
     tikkling.terminated_at,
     tikkling.state_id,
     tikkling.type,
+    tikkling.option_combination_id,
     COALESCE(SUM(sending_tikkle.quantity), 0) as tikkle_count, 
     products.name as product_name, 
     products.thumbnail_image, 
@@ -502,38 +535,6 @@ BEGIN
 END//
 DELIMITER ;
 
-
-DELIMITER //
-CREATE PROCEDURE insert_sending_tikkle(IN desired_tikkling_id INT, IN sending_user_id INT, IN sending_quantity INT, IN sending_message TEXT, OUT out_result BOOLEAN)
-BEGIN
-    DECLARE total_tikkle_quantity INT;
-    DECLARE received_tikkle_count INT;
-    DECLARE new_received_tikkle_count INT;
-    DECLARE tikkling_state_id INT;
-
-    START TRANSACTION;
-    
-    SELECT tikkle_quantity, state_id INTO total_tikkle_quantity, tikkling_state_id FROM tikkling WHERE id = desired_tikkling_id FOR UPDATE;
-
-    SELECT COALESCE(SUM(quantity), 0) INTO received_tikkle_count FROM sending_tikkle WHERE tikkling_id = desired_tikkling_id;
-
-    IF received_tikkle_count + sending_quantity <= total_tikkle_quantity AND tikkling_state_id = 1 THEN
-        INSERT INTO sending_tikkle (tikkling_id, user_id, quantity, message) VALUES (desired_tikkling_id, sending_user_id, sending_quantity, sending_message);
-        SELECT COALESCE(SUM(quantity), 0) INTO new_received_tikkle_count FROM sending_tikkle WHERE tikkling_id = desired_tikkling_id;
-        
-        IF new_received_tikkle_count >= total_tikkle_quantity THEN
-            UPDATE tikkling SET state_id = 4 WHERE id = desired_tikkling_id AND state_id = 1;
-        END IF;
-        
-        SET out_result = TRUE;
-    ELSE
-        SET out_result = FALSE;
-    END IF;
-
-    COMMIT;
-END //
-
-DELIMITER ;
 
 -- 기존의 create_tikkling 저장 프로시저 삭제
 DROP PROCEDURE IF EXISTS `create_tikkling`;
@@ -581,3 +582,7 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+
+

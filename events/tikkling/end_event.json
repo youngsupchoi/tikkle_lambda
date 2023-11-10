@@ -7,9 +7,9 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"tikkling_id": 13,
+		"tikkling_id": 27,
 		"bank_code": 2,
-		"account": "1234567890" 
+		"account": "1212314124"
 
 	}
 }

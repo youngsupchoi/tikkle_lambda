@@ -7,6 +7,8 @@
   },
   "queryStringParameters": null,
   "body": {
-    "merchant_uid": "tikkling_1697077729353882682"
+    "imp_uid": "imp_697619053908",
+    "merchant_uid": "c36ba1c286d92719b841817b6251d52b",
+    "status": "paid"
   }
 }

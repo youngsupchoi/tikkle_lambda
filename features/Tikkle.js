@@ -31,7 +31,6 @@ class Tikkle {
     this.state_id = state_id || null;
     this.merchant_uid = merchant_uid || this.generateMerchantUid();
     this.amount = quantity * 5000;
-
     this.created_at = created_at;
     this.db = db;
   }
@@ -73,7 +72,7 @@ class Tikkle {
       console.error(`🚨 error -> ⚡️ getUserById : 🐞 ${err}`);
       throw new ExpectedError({
         status: "500",
-        message: `서버에러`,
+        message: `서버에러 :getUserById`,
         detail_code: "00",
       });
     }
@@ -95,11 +94,12 @@ class Tikkle {
 	 */
   async updateTikkleToFail() {
     try {
+      console.log("🚀 ~ file: Tikkle.js:100 ~ Tikkle ~ updateTikkleToFail ~ db:", db);
       const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`, [this.merchant_uid]);
       if (result.affectedRows == 0) {
         throw new ExpectedError({
           status: "500",
-          message: `서버에러`,
+          message: `서버에러 : updateTikkleToFail`,
           detail_code: "00",
         });
       } else {
@@ -109,7 +109,7 @@ class Tikkle {
       console.error(`🚨 error -> ⚡️ updatePaymentToCancle : 🐞 ${err}`);
       throw new ExpectedError({
         status: "500",
-        message: `서버에러`,
+        message: `서버에러 : updateTikkleToFail`,
         detail_code: "00",
       });
     }
@@ -148,6 +148,44 @@ class Tikkle {
       throw new ExpectedError({
         status: "500",
         message: `서버에러: updateTikkleToRefund 쿼리`,
+        detail_code: "00",
+      });
+    }
+  }
+
+  /**
+   * Asynchronously updates the sending_tikkle state_id to 6, "결제 실패" in the database.
+   * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @memberof Tikkle
+   * @instance
+   * @async
+   * @example
+   * const Tikkle = new Tikkle({ user_id: 1, amount: 10000 });
+   * await Tikkle.updateTikkleToFail();
+   * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
+   * // => sending_tikkle.state_id = 6
+   */
+  async updateTikkleToFail() {
+    try {
+      const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`, [this.merchant_uid]);
+
+      // console.log("&&&&&&&&&&&&& : ", result);
+      if (result.affectedRows == 0) {
+        console.error(`🚨 error -> ⚡️ updateTikkleToFail : 🐞 ${"데이터가 DB상에 반영되지 않음"}`);
+        throw new ExpectedError({
+          status: "500",
+          message: `서버에러 : updateTikkleToFail 쿼리결과`,
+          detail_code: "00",
+        });
+      } else {
+        this.state_id = 3;
+      }
+    } catch (err) {
+      console.error(`🚨 error -> ⚡️ updateTikkleToFail : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러: updateTikkleToFail 쿼리`,
         detail_code: "00",
       });
     }
@@ -205,7 +243,7 @@ class Tikkle {
       console.error(`🚨 error -> ⚡️ completeTikklePayment : 🐞 ${err}`);
       throw new ExpectedError({
         status: "500",
-        message: `서버에러`,
+        message: `서버에러:completeTikklePayment`,
         detail_code: "00",
       });
     }
@@ -231,7 +269,7 @@ class Tikkle {
       console.error(`🚨error -> ⚡️ compareStoredTikkleData : 🐞사용자가 일치하지 않습니다.`);
       throw new ExpectedError({
         status: "401",
-        message: `비정상적 접근`,
+        message: `비정상적 접근 : 다른 사용자의 결제 정보`,
         detail_code: "00",
       });
     }
@@ -246,7 +284,7 @@ class Tikkle {
         console.error(`🚨 error -> ⚡️ getTikkleByMerchantUid : 🐞 ${"사용자가 존재하지 않는 티클을 검색하였습니다."}`);
         throw new ExpectedError({
           status: "403",
-          message: `비정상적 접근`,
+          message: `비정상적 접근 : 존재하지 않는 티클`,
           detail_code: "00",
         });
       }
@@ -284,13 +322,9 @@ class Tikkle {
     const timestamp = new Date().getTime();
     const data = `${userID}${productID}${timestamp}`;
 
-    // SHA-256 해시를 생성합니다.
-    const hashBuffer = crypto.createHash("sha256").update(data).digest();
+    const hash = crypto.createHash("md5").update(data).digest("hex");
 
-    // Base64로 인코딩합니다.
-    const base64Hash = hashBuffer.toString("base64");
-    console.log(base64Hash);
-    return base64Hash;
+    return hash;
   }
 
   /**
@@ -390,10 +424,25 @@ class Tikkle {
       console.error(`🚨 error -> ⚡️ checkTikkleCanRefund : 🐞 ${err}`);
       throw new ExpectedError({
         status: "500",
-        message: `서버에러`,
+        message: `서버에러 : checkTikkleCanRefund`,
 
         detail_code: "00",
       });
+    }
+  }
+
+  assertTikkleIsNotPaid() {
+    try {
+      if (this.state_id !== 5) {
+        throw new ExpectedError({
+          status: "403",
+          message: `비정상적 접근 : 결제가 완료된 티클`,
+          detail_code: "00",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨error -> ⚡️ assertTikkleIsNotPaid : 🐞${error}`);
+      throw error;
     }
   }
 }

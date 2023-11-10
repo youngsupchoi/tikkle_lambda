@@ -1,14 +1,10 @@
 {
-	"resource": "/post_tikkling_sendtikkle",
-	"path": "/post_tikkling_sendtikkle",
-	"httpMethod": "POST",
+	"resource": "/get_product_options/{product_id}",
+	"path": "/get_product_options/4",
+	"httpMethod": "GET",
 	"headers": {
 		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjE2OTMzNjI5OTAsImlzcyI6IkxpRm9saSJ9.2q1rnumRYD5G6ZajAdHkU3HibgTRDbzhgGNFoPAw2qY,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjQyODUzNjIwOTAsImlzcyI6IkxpRm9saSJ9.3lO5YCgVXXzrz5LrodPQoccq11ZHvHdwKAflg22RXXc"
 	},
 	"queryStringParameters": null,
-	"body": {
-		"tikkling_id": 17,
-		"tikkle_quantity": 1,
-		"message": "선물이지롱"
-	}
+	"body": "{}"
 }

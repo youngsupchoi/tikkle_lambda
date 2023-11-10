@@ -26,7 +26,7 @@ exports.get_friend_search = async (req, res) => {
 
     const return_body = {
       success: true,
-      data: rows,
+      data: { ...rows, central_user_id: id },
       detail_code: "00",
       message: "성공적으로 친구를 찾았습니다.",
       returnToken,
