@@ -103,6 +103,8 @@ class Brand {
 
   static async checkBrandNameList(brand_name_list, db) {
     try {
+      //brand_name_list에서 중복을 제거
+      brand_name_list = [...new Set(brand_name_list)];
       //기존에 존재하는 브랜드인지 확인
       const placeholders = brand_name_list.map(() => "?").join(", ");
       // 쿼리를 실행할 때 placeholders를 사용하고 배열의 요소들을 전달합니다.
