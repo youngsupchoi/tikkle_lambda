@@ -31,6 +31,27 @@ class Delivery {
     this.db = db || null;
   }
 
+  /**
+   * @description 객체를 json으로 변환하는 함수
+   */
+
+  toJSON() {
+    return {
+      id: this.id,
+      invoice_number: this.invoice_number,
+      courier_company_code: this.courier_company_code,
+      tikkling_id: this.tikkling_id,
+      state_id: this.state_id,
+      zonecode: this.zonecode,
+      address: this.address,
+      detail_address: this.detail_address,
+      created_at: this.created_at,
+      start_delivery_date: this.start_delivery_date,
+      expected_delivery_date: this.expected_delivery_date,
+      actual_delivery_date: this.actual_delivery_date,
+    };
+  }
+
   updateDelivery(row_of_delivery) {
     try {
       this.id = row_of_delivery.id;
@@ -73,7 +94,7 @@ class Delivery {
         [user_id]
       );
       if (rows.length === 0) {
-        throw ExpectedError({
+        throw new ExpectedError({
           status: 404,
           etail_code: "00",
           message: "해당 유저의 배송 기록이 없습니다.",
@@ -97,7 +118,7 @@ class Delivery {
     try {
       const rows = await this.db.executeQuery(`SELECT * FROM delivery_info WHERE tikkling_id = ?`, [tikkling_id]);
       if (rows.length === 0) {
-        throw ExpectedError({
+        throw new ExpectedError({
           status: 404,
           etail_code: "01",
           message: "해당 티클링의 배송 기록이 없습니다.",
@@ -121,7 +142,7 @@ class Delivery {
         this.detail_address,
       ]);
       if (result.affectedRows === 0) {
-        throw ExpectedError({
+        throw new ExpectedError({
           status: 500,
           detail_code: "00",
           message: "배송 정보 저장 실패",
