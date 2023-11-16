@@ -131,7 +131,7 @@ class Delivery {
         throw new ExpectedError({
           status: 404,
           etail_code: "02",
-          message: "해당 티클링의 배송 기록이 없습니다.",
+          message: `해당 티클링의 배송 기록이 없습니다.${tikkling_id}`,
         });
       }
       this.updateDelivery(rows[0]);
