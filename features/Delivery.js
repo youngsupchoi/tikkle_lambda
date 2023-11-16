@@ -96,7 +96,7 @@ class Delivery {
       if (rows.length === 0) {
         throw new ExpectedError({
           status: 404,
-          etail_code: "00",
+          detail_code: "00",
           message: "해당 유저의 배송 기록이 없습니다.",
         });
       }
