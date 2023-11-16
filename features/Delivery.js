@@ -15,6 +15,7 @@ class Delivery {
     start_delivery_date,
     expected_delivery_date,
     actual_delivery_date,
+    courier_company_name,
     db,
   }) {
     this.id = id || null;
@@ -29,6 +30,7 @@ class Delivery {
     this.start_delivery_date = start_delivery_date || null;
     this.expected_delivery_date = expected_delivery_date || null;
     this.actual_delivery_date = actual_delivery_date || null;
+    this.courier_company_name = courier_company_name || null;
     this.db = db || null;
   }
 
@@ -50,6 +52,7 @@ class Delivery {
       start_delivery_date: this.start_delivery_date,
       expected_delivery_date: this.expected_delivery_date,
       actual_delivery_date: this.actual_delivery_date,
+      courier_company_name: this.courier_company_name,
     };
   }
 
@@ -76,6 +79,7 @@ class Delivery {
       this.start_delivery_date = row_of_delivery.start_delivery_date;
       this.expected_delivery_date = row_of_delivery.expected_delivery_date;
       this.actual_delivery_date = row_of_delivery.actual_delivery_date;
+      this.courier_company_name = row_of_delivery.courier_company_name;
     } catch (error) {
       console.error(`🚨error -> ⚡️updateDelivery : 🐞객체의 모든 값이 전달되지 않았습니다.`);
       throw ExpectedError({
@@ -97,12 +101,15 @@ class Delivery {
     try {
       const rows = await this.db.executeQuery(
         `
-      SELECT delivery_info.* 
+      SELECT delivery_info.*, courier_company.name as courier_company_name
       FROM delivery_info as delivery_info 
       INNER JOIN (SELECT * FROM tikkling WHERE user_id = ?) AS user_tikkling ON delivery_info.tikkling_id = user_tikkling.id 
+      INNER JOIN (SELECT * FROM courier_company) AS courier_company ON delivery_info.courier_company_code = courier_company.code
       ORDER BY delivery_info.created_at DESC LIMIT 1`,
         [user_id]
       );
+      console.log("🚀 ~ file: Delivery.js:110 ~ Delivery ~ getRecentDeliveryInfoOfUser ~ rows:", rows);
+      console.log("hihi");
       if (rows.length === 0) {
         throw new ExpectedError({
           status: 404,
@@ -126,7 +133,14 @@ class Delivery {
 
   async getDeliveryInfoByTikklingId(tikkling_id) {
     try {
-      const rows = await this.db.executeQuery(`SELECT * FROM delivery_info WHERE tikkling_id = ?`, [tikkling_id]);
+      const rows = await this.db.executeQuery(
+        `
+      SELECT delivery_info.*, courier_company.name as courier_company_name 
+      FROM delivery_info 
+      INNER JOIN courier_company on delivery_info.courier_company_code = courier_company.code
+      WHERE tikkling_id = ?`,
+        [tikkling_id]
+      );
       if (rows.length === 0) {
         throw new ExpectedError({
           status: 404,
