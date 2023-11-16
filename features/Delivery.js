@@ -1,4 +1,5 @@
 const { ExpectedError } = require("./ExpectedError.js");
+const { getSSMParameter } = require("ssm.js");
 //=========================================Model=======================================================
 class Delivery {
   constructor({
@@ -50,6 +51,15 @@ class Delivery {
       expected_delivery_date: this.expected_delivery_date,
       actual_delivery_date: this.actual_delivery_date,
     };
+  }
+
+  /**
+   * delivery_info정보를 통해 스마트 택배 api에서 제공하는 배송정보 확인 링크를 생성
+   * @returns {string} 배송조회 링크
+   */
+  async createDeliveryCheckLink() {
+    const t_key = await getSSMParameter("t_key");
+    return `http://info.sweettracker.co.kr/tracking/5?t_key=${t_key}&t_code=${this.courier_company_code}&t_invoice=${this.invoice_number}`;
   }
 
   updateDelivery(row_of_delivery) {

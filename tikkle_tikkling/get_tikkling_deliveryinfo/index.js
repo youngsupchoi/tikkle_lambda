@@ -19,9 +19,11 @@ exports.get_tikkling_deliveryinfo = async (req, res) => {
     if (Number(tikkling_id) >= 1) {
       await delivery_info.getDeliveryInfoByTikklingId(tikkling_id);
     }
+
+    const delivery_check_link = await delivery_info.createDeliveryCheckLink();
     await db.commitTransaction();
 
-    return res.status(200).send(Response.create(true, "00", "성공적으로 배송정보를 조회하였습니다.", { delivery_info: delivery_info.toJSON() }, returnToken));
+    return res.status(200).send(Response.create(true, "00", "성공적으로 배송정보를 조회하였습니다.", { delivery_info: delivery_info.toJSON(), delivery_check_link }, returnToken));
   } catch (err) {
     await db.rollbackTransaction();
     console.error(`🚨error -> ⚡️ get_tikkling_deliveryinfo : 🐞${err}`);
