@@ -126,7 +126,7 @@ class Delivery {
 
   async getDeliveryInfoByTikklingId(tikkling_id) {
     try {
-      const rows = await this.db.executeQuery(`SELECT * FROM delivery_info WHERE tikkling_id = ?`, [tikkling_id]);
+      const rows = await this.db.executeQuery(`SELECT * FROM delivery_info WHERE tikkling_id = 174`, [tikkling_id]);
       if (rows.length === 0) {
         throw new ExpectedError({
           status: 404,
