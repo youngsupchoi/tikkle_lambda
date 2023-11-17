@@ -170,7 +170,7 @@ class Tikkle {
       const result = await this.db.executeQuery(`SELECT * FROM tikkling  WHERE id = ?`, [this.tikkling_id]);
 
       const res = result[0];
-      //console.log("res: ", res);
+      // console.log("res: ", res.user_id);
 
       if (res.state_id == 4 && res.terminated_at == null) {
         const temp = await this.db.executeQuery(`UPDATE tikkling SET state_id = 1 WHERE id = ?`, [this.tikkling_id]);
@@ -183,9 +183,9 @@ class Tikkle {
             detail_code: "00",
           });
         }
-        return;
+        return res.user_id;
       } else {
-        return;
+        return null;
       }
     } catch (err) {
       console.error(`🚨 error -> ⚡️ restart_tikkling : 🐞 ${err}`);
