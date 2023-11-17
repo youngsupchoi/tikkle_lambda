@@ -248,7 +248,7 @@ class Product {
       throw new ExpectedError({
         status: "400",
         message: `해당 옵션 조합의 재고가 없습니다.`,
-        detail_code: "01",
+        detail_code: "02",
       });
     }
   }
@@ -318,7 +318,7 @@ class Product {
         throw new ExpectedError({
           status: "400",
           message: `상품의 가격이 일치하지 않습니다.`,
-          detail_code: "01",
+          detail_code: "03",
         });
       }
     } catch (error) {
