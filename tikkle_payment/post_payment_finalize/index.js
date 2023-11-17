@@ -99,6 +99,9 @@ exports.post_payment_finalize = async (req, res) => {
 
     //DB에 알림 저장
     message = name + "님이 보낸 티클을 확인해보세요.";
+    if (send_user_id == receive_user_id) {
+      message = "직접 구매한 티클을 확인해보세요.";
+    }
     title = "티클 선물 🎁";
     link = "link_for_5";
     deep_link = "tikkle://tikklingDetail/" + tikkling_id.toString();
