@@ -82,7 +82,7 @@ exports.put_payment_refund = async (req, res) => {
           `INSERT INTO notification
         (user_id, message, is_deleted, is_read, notification_type_id, deep_link, link, meta_data, source_user_id)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [receive_user_id, message, 0, 0, 5, deep_link, link, null, source_user_id]
+          [receive_user_id, message, 0, 0, 10, deep_link, link, null, source_user_id]
         );
         // console.log("notiDB : ", notiDB);
 
