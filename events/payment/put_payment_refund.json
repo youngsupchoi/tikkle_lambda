@@ -1,14 +1,13 @@
 {
-	"resource": "/put_payment_refund",
-	"path": "/put_payment_refund",
-	"httpMethod": "PUT",
-	"headers": {
-		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjE2OTMzNjI5OTAsImlzcyI6IkxpRm9saSJ9.2q1rnumRYD5G6ZajAdHkU3HibgTRDbzhgGNFoPAw2qY,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjQyODUzNjIwOTAsImlzcyI6IkxpRm9saSJ9.3lO5YCgVXXzrz5LrodPQoccq11ZHvHdwKAflg22RXXc"
-	},
-	"queryStringParameters": null,
-	"body": {
-		"tikkling_id": 6,
-		"merchant_uid": "test_lncj36r7",
-		"reason": "단순 변심"
-	}
+  "resource": "/put_payment_refund",
+  "path": "/put_payment_refund",
+  "httpMethod": "PUT",
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjE2OTMzNjI5OTAsImlzcyI6IkxpRm9saSJ9.2q1rnumRYD5G6ZajAdHkU3HibgTRDbzhgGNFoPAw2qY,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjQyODUzNjIwOTAsImlzcyI6IkxpRm9saSJ9.3lO5YCgVXXzrz5LrodPQoccq11ZHvHdwKAflg22RXXc"
+  },
+  "queryStringParameters": null,
+  "body": {
+    "merchant_uid": "0ba6e832a81faedd7dc4573a10585a5b",
+    "reason": "단순 변심"
+  }
 }

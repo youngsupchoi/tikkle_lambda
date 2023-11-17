@@ -152,6 +152,52 @@ class Tikkle {
   }
 
   /**
+   *      //state 가 4이고 terminate 가 없으면 state->4
+   * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @memberof Payment
+   * @instance
+   * @async
+   * @example
+   * const payment = new Payment({ user_id: 1, amount: 10000 });
+   * await payment.updateTikkleToRefund();
+   * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
+   * // => sending_tikkle.state_id = 3
+   */
+  async restart_tikkling() {
+    try {
+      console.log("this.tikkling_id: ", this.tikkling_id);
+      const result = await this.db.executeQuery(`SELECT * FROM tikkling  WHERE id = ?`, [this.tikkling_id]);
+
+      const res = result[0];
+      console.log("res: ", res);
+
+      if (res.state_id == 4 && res.terminated_at == null) {
+        const temp = await this.db.executeQuery(`UPDATE tikkling SET state_id = 1 WHERE id = ?`, [this.tikkling_id]);
+
+        if (temp.affectedRows == 0) {
+          console.error(`🚨 error -> ⚡️ restart_tikkling : 🐞 ${"데이터가 DB상에 반영되지 않음"}`);
+          throw new ExpectedError({
+            status: "500",
+            message: `서버에러 : restart_tikkling 쿼리결과`,
+            detail_code: "00",
+          });
+        }
+        return;
+      } else {
+        return;
+      }
+    } catch (err) {
+      console.error(`🚨 error -> ⚡️ restart_tikkling : 🐞 ${err}`);
+      throw new ExpectedError({
+        status: "500",
+        message: `서버에러: restart_tikkling 쿼리`,
+        detail_code: "00",
+      });
+    }
+  }
+
+  /**
    * Asynchronously updates the sending_tikkle state_id to 6, "결제 실패" in the database.
    * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
    * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
