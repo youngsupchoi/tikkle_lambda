@@ -189,11 +189,7 @@ class Tikkle {
       }
     } catch (err) {
       console.error(`🚨 error -> ⚡️ restart_tikkling : 🐞 ${err}`);
-      throw new ExpectedError({
-        status: "500",
-        message: `서버에러: restart_tikkling 쿼리`,
-        detail_code: "00",
-      });
+      throw err;
     }
   }
 
