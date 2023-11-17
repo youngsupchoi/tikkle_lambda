@@ -79,7 +79,7 @@ exports.post_payment_finalize = async (req, res) => {
   }
 
   //-------- send notification --------------------------------------------------------------------------------------//
-  console.log("sned noti ", receive_user_id, tikkling_id, send_user_id);
+  // console.log("sned noti ", receive_user_id, tikkling_id, send_user_id);
   try {
     //보내는 사람 정보
     try {
@@ -110,7 +110,7 @@ exports.post_payment_finalize = async (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [receive_user_id, message, 0, 0, 5, deep_link, link, null, source_user_id]
     );
-    console.log("notiDB : ", notiDB);
+    // console.log("notiDB : ", notiDB);
 
     ////푸시 알림
     //resiver 1명

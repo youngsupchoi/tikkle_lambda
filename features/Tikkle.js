@@ -94,7 +94,6 @@ class Tikkle {
 	 */
   async updateTikkleToFail() {
     try {
-      console.log("🚀 ~ file: Tikkle.js:100 ~ Tikkle ~ updateTikkleToFail ~ db:", db);
       const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`, [this.merchant_uid]);
       if (result.affectedRows == 0) {
         throw new ExpectedError({
@@ -132,7 +131,6 @@ class Tikkle {
     try {
       const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 3 WHERE merchant_uid = ?`, [this.merchant_uid]);
 
-      // console.log("&&&&&&&&&&&&& : ", result);
       if (result.affectedRows == 0) {
         console.error(`🚨 error -> ⚡️ updateTikkleToRefund : 🐞 ${"데이터가 DB상에 반영되지 않음"}`);
         throw new ExpectedError({
@@ -170,7 +168,6 @@ class Tikkle {
     try {
       const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`, [this.merchant_uid]);
 
-      // console.log("&&&&&&&&&&&&& : ", result);
       if (result.affectedRows == 0) {
         console.error(`🚨 error -> ⚡️ updateTikkleToFail : 🐞 ${"데이터가 DB상에 반영되지 않음"}`);
         throw new ExpectedError({

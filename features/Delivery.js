@@ -108,8 +108,6 @@ class Delivery {
       ORDER BY delivery_info.created_at DESC LIMIT 1`,
         [user_id]
       );
-      console.log("🚀 ~ file: Delivery.js:110 ~ Delivery ~ getRecentDeliveryInfoOfUser ~ rows:", rows);
-      console.log("hihi");
       if (rows.length === 0) {
         throw new ExpectedError({
           status: 404,
@@ -120,7 +118,7 @@ class Delivery {
       this.updateDelivery(rows[0]);
       return;
     } catch (error) {
-      console.log(`🚨error -> ⚡️ getRecentDeliveryInfoOfUser : 🐞${error}`);
+      console.error(`🚨error -> ⚡️ getRecentDeliveryInfoOfUser : 🐞${error}`);
       throw error;
     }
   }
@@ -151,7 +149,7 @@ class Delivery {
       this.updateDelivery(rows[0]);
       return;
     } catch (error) {
-      console.log(`🚨error -> ⚡️ getDeliveryInfoByTikklingId : 🐞${error}`);
+      console.error(`🚨error -> ⚡️ getDeliveryInfoByTikklingId : 🐞${error}`);
       throw error;
     }
   }

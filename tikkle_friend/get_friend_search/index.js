@@ -14,7 +14,6 @@ exports.get_friend_search = async (req, res) => {
     if (typeof nick !== "string") {
       throw new Error("입력 오류: nick은 문자열이어야 합니다.");
     }
-    console.log(nick);
     // nick이 빈 문자열인지 확인
     if (nick.trim().length === 0) {
       throw new Error("입력 오류: nick은 빈 문자열이면 안 됩니다.");

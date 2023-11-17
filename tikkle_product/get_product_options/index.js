@@ -21,7 +21,6 @@ exports.get_product_options = async (req, res) => {
       return acc;
     }, {});
     sqlResult = transformedData;
-    console.log("🚀 ~ file: index.js:20 ~ transformedData ~ transformedData:", transformedData);
     //console.log("SQL result : ", sqlResult);
   } catch (err) {
     console.log("post_product_info 에서 에러가 발생했습니다.", err);

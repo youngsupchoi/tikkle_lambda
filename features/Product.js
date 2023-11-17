@@ -110,7 +110,6 @@ class Brand {
       // 쿼리를 실행할 때 placeholders를 사용하고 배열의 요소들을 전달합니다.
       const result = await db.executeQuery(`SELECT * FROM brands WHERE brand_name IN (${placeholders})`, [...brand_name_list]);
       //존재하지 않는브랜드는 새로 생성
-      console.log("🚀 ~ file: Product.js:103 ~ Brand ~ checkBrandNameList ~ result:", result[0]);
       let brand_obj_list = [];
 
       for (const brand_name of brand_name_list) {
@@ -124,15 +123,13 @@ class Brand {
           const brand = result.find((brand) => brand.brand_name === brand_name);
           const existingBrand = new Brand({ id: brand.id, brand_name: brand_name, db });
           const existingBrandObj = existingBrand.toJSON();
-          console.log("🚀 ~ file: Product.js:123 ~ Brand ~ checkBrandNameList ~ existingBrand:", existingBrandObj);
           brand_obj_list.push(existingBrandObj);
         }
       }
 
-      console.log("🚀 ~ file: Product.js:105 ~ Brand ~ checkBrandNameList ~ brand_obj_list:", brand_obj_list);
       return brand_obj_list;
     } catch (error) {
-      console.log(`🚨error -> checkBrandNameList : 🐞${error}`);
+      console.error(`🚨error -> checkBrandNameList : 🐞${error}`);
       throw error;
     }
   }
@@ -215,7 +212,7 @@ class Product {
         }
       }
     } catch (error) {
-      console.log(`🚨error -> validateProductOption : 🐞${error}`);
+      console.error(`🚨error -> validateProductOption : 🐞${error}`);
       if (error.status) {
         throw error;
       }
@@ -284,7 +281,7 @@ class Product {
       const option_combination = new OptionCombination({ ...result[0], db: this.db });
       this.selected_option_combination = option_combination;
     } catch (error) {
-      console.log(`🚨error -> loadSelectedProductOptionCombination : 🐞${error}`);
+      console.error(`🚨error -> loadSelectedProductOptionCombination : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -325,7 +322,7 @@ class Product {
         });
       }
     } catch (error) {
-      console.log(`🚨error -> validateProductPrice : 🐞${error}`);
+      console.error(`🚨error -> validateProductPrice : 🐞${error}`);
       if (error.status) {
         throw error;
       }
@@ -370,7 +367,7 @@ class Product {
       });
       return this.price + additionalAmount;
     } catch (error) {
-      console.log(`🚨error -> calculateTotalPrice : 🐞${error}`);
+      console.error(`🚨error -> calculateTotalPrice : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -379,27 +376,6 @@ class Product {
     }
   }
 
-  selectProductOption(category, option) {
-    // 유효한 카테고리인지 확인
-    if (!this.product_options.hasOwnProperty(category)) {
-      console.log(`Invalid category: ${category}`);
-      return;
-    }
-
-    // 유효한 옵션인지 확인
-    if (!this.product_options[category].includes(option)) {
-      console.log(`Invalid option: ${option} for category: ${category}`);
-      return;
-    }
-
-    // 이미 선택된 옵션이 있는지 확인하고, 있으면 업데이트
-    if (this.selected_options.hasOwnProperty(category)) {
-      console.log(`Updating option from ${this.selected_options[category]} to ${option}`);
-    }
-
-    // 선택된 옵션 저장
-    this.selected_options[category] = option;
-  }
   /**
    * id를 사용하여 Product 인스턴스를 생성한다.
    * @memberof Product
