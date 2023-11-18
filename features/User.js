@@ -60,7 +60,7 @@ class User {
       const [user] = await db.executeQuery(query, [id]);
       return new User({ ...user, db });
     } catch (error) {
-      console.error(`🚨error -> createById : 🐞${error}`);
+      console.error(`🚨 error -> createById : 🐞${error}`);
       throw error;
     }
   };
@@ -96,7 +96,7 @@ class User {
       const query = `UPDATE users SET tikkling_ticket = tikkling_ticket - 1 WHERE id = ?`;
       await this.db.executeQuery(query, [this.id]);
     } catch (error) {
-      console.error(`🚨error -> decreaseTikkleTicket : 🐞${error}`);
+      console.error(`🚨 error -> decreaseTikkleTicket : 🐞${error}`);
       throw error;
     }
   }
@@ -109,7 +109,7 @@ class User {
       const query = `UPDATE users SET tikkling_ticket = tikkling_ticket + 1 WHERE id = ?`;
       await this.db.executeQuery(query, [this.id]);
     } catch (error) {
-      console.error(`🚨error -> decreaseTikkleTicket : 🐞${error}`);
+      console.error(`🚨 error -> decreaseTikkleTicket : 🐞${error}`);
       throw error;
     }
   }
@@ -119,7 +119,7 @@ class User {
       const query = `DELETE FROM user_wish_list WHERE user_id = ? AND product_id = ?`;
       await this.db.executeQuery(query, [this.id, product_id]);
     } catch (error) {
-      console.error(`🚨error -> deleteWishlist : 🐞${error}`);
+      console.error(`🚨 error -> deleteWishlist : 🐞${error}`);
       throw error;
     }
   }
@@ -144,7 +144,7 @@ class User {
         });
       }
     } catch (error) {
-      console.error(`🚨error -> validateAddress : 🐞${error}`);
+      console.error(`🚨 error -> validateAddress : 🐞${error}`);
       throw error;
     }
   }

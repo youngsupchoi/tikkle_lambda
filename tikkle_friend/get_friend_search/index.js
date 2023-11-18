@@ -50,7 +50,7 @@ exports.get_friend_search = async (req, res) => {
       };
       return res.status(400).send(return_body);
     } else {
-      console.error(`🚨error -> ⚡️post_friend_search : 🐞${err}`);
+      console.error(`🚨 error -> ⚡️ post_friend_search : 🐞${err}`);
       const return_body = {
         success: false,
         detail_code: "00",

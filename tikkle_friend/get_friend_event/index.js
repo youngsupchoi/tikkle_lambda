@@ -47,7 +47,7 @@ exports.get_friend_event = async (req, res) => {
 
     return res.status(200).send(return_body);
   } catch (err) {
-    console.error(`🚨error -> ⚡️post_friend_event : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_friend_event : 🐞${err}`);
     const return_body = {
       success: false,
       detail_code: "00",

@@ -130,7 +130,7 @@ exports.get_tikkling_info = async (req, res) => {
       };
       return res.status(400).send(return_body);
     } else {
-      console.error(`🚨error -> ⚡️post_tikkling_info : 🐞${err}`);
+      console.error(`🚨 error -> ⚡️ post_tikkling_info : 🐞${err}`);
       const return_body = {
         success: false,
         detail_code: "00",

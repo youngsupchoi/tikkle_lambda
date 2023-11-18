@@ -21,7 +21,7 @@ exports.post_product_enrollment = async (req, res) => {
     return res.status(200).send(Response.create(true, "00", "상품을 성공적으로 추가하였습니다.", null, returnToken));
   } catch (err) {
     await db.rollbackTransaction();
-    console.error(`🚨error -> ⚡️ post_product_enrollment : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_product_enrollment : 🐞${err}`);
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     }

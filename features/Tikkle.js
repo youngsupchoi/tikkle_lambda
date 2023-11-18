@@ -305,7 +305,7 @@ class Tikkle {
 	 */
   compareStoredTikkleData({ user_id }) {
     if (this.user_id !== user_id) {
-      console.error(`🚨error -> ⚡️ compareStoredTikkleData : 🐞사용자가 일치하지 않습니다.`);
+      console.error(`🚨 error -> ⚡️ compareStoredTikkleData : 🐞사용자가 일치하지 않습니다.`);
       throw new ExpectedError({
         status: "401",
         message: `비정상적 접근 : 다른 사용자의 결제 정보`,
@@ -396,7 +396,7 @@ class Tikkle {
 
       return "Bearer " + response.response.access_token;
     } catch (error) {
-      console.error(`🚨error -> ⚡️ getPortOneApiToken : 🐞import token get error`);
+      console.error(`🚨 error -> ⚡️ getPortOneApiToken : 🐞import token get error`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러: 아임포트 토큰 가져오기 실패`,
@@ -423,7 +423,7 @@ class Tikkle {
       });
       //FIXME: 조건 수정 요함
       if (!response.data) {
-        console.error(`🚨error -> ⚡️ callPortOneCancelPaymentAPI : 🐞import token get error`);
+        console.error(`🚨 error -> ⚡️ callPortOneCancelPaymentAPI : 🐞import token get error`);
         throw new ExpectedError({
           status: "500",
           message: `서버에러 : 아임포트 결제 취소 실패`,
@@ -452,7 +452,7 @@ class Tikkle {
   async checkTikkleCanRefund() {
     try {
       if (this.state_id !== 1) {
-        console.error(`🚨error -> ⚡️ checkTikkleCanRefund : 🐞payment state is not 1`);
+        console.error(`🚨 error -> ⚡️ checkTikkleCanRefund : 🐞payment state is not 1`);
         throw new ExpectedError({
           status: "403",
           message: `사용 혹은 결제되지 않은 티클에 대한 환불 신청`,
@@ -480,7 +480,7 @@ class Tikkle {
         });
       }
     } catch (error) {
-      console.error(`🚨error -> ⚡️ assertTikkleIsNotPaid : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ assertTikkleIsNotPaid : 🐞${error}`);
       throw error;
     }
   }

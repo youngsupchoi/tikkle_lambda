@@ -39,7 +39,7 @@ exports.put_tikkling_cancel = async (req, res) => {
     return res.status(200).send(Response.create(true, "00", "티클링 취소를 성공하였습니다.", returnToken));
   } catch (err) {
     await db.rollbackTransaction();
-    console.error(`🚨error -> ⚡️ post_tikkling_create : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_tikkling_create : 🐞${err}`);
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     }

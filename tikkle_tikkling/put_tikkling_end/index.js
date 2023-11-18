@@ -95,7 +95,7 @@ exports.put_tikkling_end = async (req, res) => {
   } catch (err) {
     await db.rollbackTransaction();
 
-    console.error(`🚨error -> ⚡️ post_tikkling_end : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_tikkling_end : 🐞${err}`);
 
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));

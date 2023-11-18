@@ -71,7 +71,7 @@ exports.post_payment_finalize = async (req, res) => {
     //트랜잭션 롤백
     await db.rollbackTransaction();
 
-    console.error(`🚨error -> ⚡️ post_payment_finalize/${tikkleAction} : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_payment_finalize/${tikkleAction} : 🐞${err}`);
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     }

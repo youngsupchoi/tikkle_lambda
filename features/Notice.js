@@ -36,7 +36,7 @@ class Notice {
       const rows = await queryDatabase("select * from sending_tikkle where merchant_uid = ?", [merchant_uid]);
       sqlResult = rows;
     } catch (err) {
-      console.error(`🚨error -> ⚡️getUserById : 🐞${err}`);
+      console.error(`🚨 error -> ⚡️getUserById : 🐞${err}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러: class Notice sendPayCancleNoti 쿼리 에러`,
@@ -45,14 +45,14 @@ class Notice {
     }
 
     if (sqlResult[0].user_id !== this.send_user_id) {
-      console.error(`🚨error -> ⚡️getUserById : 🐞본인의 결제가 아님`);
+      console.error(`🚨 error -> ⚡️getUserById : 🐞본인의 결제가 아님`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러: class Notice sendPayCancleNoti 본인의 결제가 아님`,
         detail_code: "01",
       });
     } else if (sqlResult[0].state_id !== 3) {
-      console.error(`🚨error -> ⚡️getUserById : 🐞환불된 결제가 아님`);
+      console.error(`🚨 error -> ⚡️getUserById : 🐞환불된 결제가 아님`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러: class Notice sendPayCancleNoti 환불된 결제가 아님`,
@@ -71,7 +71,7 @@ class Notice {
         [this.receive_user_id, this.message, this.deep_link, this.link, null, this.send_user_id]
       );
     } catch (err) {
-      console.error(`🚨error -> ⚡️getUserById : 🐞${err}`);
+      console.error(`🚨 error -> ⚡️getUserById : 🐞${err}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러: class Notice sendPayCancleNoti 에러 전송 쿼리 실패`,

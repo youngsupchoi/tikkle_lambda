@@ -26,7 +26,7 @@ exports.get_tikkling_deliveryinfo = async (req, res) => {
     return res.status(200).send(Response.create(true, "00", "성공적으로 배송정보를 조회하였습니다.", { delivery_info: delivery_info.toJSON(), delivery_check_link }, returnToken));
   } catch (err) {
     await db.rollbackTransaction();
-    console.error(`🚨error -> ⚡️ get_tikkling_deliveryinfo : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ get_tikkling_deliveryinfo : 🐞${err}`);
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     }

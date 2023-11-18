@@ -10,10 +10,7 @@ exports.post_friend_phonecheck = async (req, res) => {
     // phone_list가 문자열 배열인지 확인
     const phone_list = body.phone_list;
 
-    if (
-      !Array.isArray(phone_list) ||
-      !phone_list.every((phone) => typeof phone === "string")
-    ) {
+    if (!Array.isArray(phone_list) || !phone_list.every((phone) => typeof phone === "string")) {
       throw new Error("입력 오류: phone_list는 문자열의 배열이어야 합니다.");
     }
 
@@ -36,12 +33,8 @@ exports.post_friend_phonecheck = async (req, res) => {
     return res.status(200).send(return_body);
   } catch (error) {
     console.log("에러 : ", error);
-    if (
-      error.message === "입력 오류: phone_list는 문자열의 배열이어야 합니다."
-    ) {
-      console.log(
-        "비정상적 요청-post_friend_phonecheck: phone_list는 문자열의 배열이어야 합니다."
-      );
+    if (error.message === "입력 오류: phone_list는 문자열의 배열이어야 합니다.") {
+      console.log("비정상적 요청-post_friend_phonecheck: phone_list는 문자열의 배열이어야 합니다.");
       const return_body = {
         success: false,
         detail_code: "01",
@@ -49,9 +42,7 @@ exports.post_friend_phonecheck = async (req, res) => {
         returnToken: null,
       };
       return res.status(400).send(return_body);
-    } else if (
-      error.message === "입력 오류: phone_list는 빈 배열이면 안 됩니다."
-    ) {
+    } else if (error.message === "입력 오류: phone_list는 빈 배열이면 안 됩니다.") {
       const return_body = {
         success: false,
         detail_code: "02",
@@ -60,7 +51,7 @@ exports.post_friend_phonecheck = async (req, res) => {
       };
       return res.status(400).send(return_body);
     } else {
-      console.error(`🚨error -> ⚡️post_friend_phonecheck : 🐞${err}`);
+      console.error(`🚨 error -> ⚡️ post_friend_phonecheck : 🐞${err}`);
       const return_body = {
         success: false,
         detail_code: "00",

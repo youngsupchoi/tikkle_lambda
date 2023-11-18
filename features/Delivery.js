@@ -81,7 +81,7 @@ class Delivery {
       this.actual_delivery_date = row_of_delivery.actual_delivery_date;
       this.courier_company_name = row_of_delivery.courier_company_name;
     } catch (error) {
-      console.error(`🚨error -> ⚡️updateDelivery : 🐞객체의 모든 값이 전달되지 않았습니다.`);
+      console.error(`🚨 error -> ⚡️ updateDelivery : 🐞객체의 모든 값이 전달되지 않았습니다.`);
       throw ExpectedError({
         status: 500,
         detail_code: "00",
@@ -118,7 +118,7 @@ class Delivery {
       this.updateDelivery(rows[0]);
       return;
     } catch (error) {
-      console.error(`🚨error -> ⚡️ getRecentDeliveryInfoOfUser : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ getRecentDeliveryInfoOfUser : 🐞${error}`);
       throw error;
     }
   }
@@ -149,7 +149,7 @@ class Delivery {
       this.updateDelivery(rows[0]);
       return;
     } catch (error) {
-      console.error(`🚨error -> ⚡️ getDeliveryInfoByTikklingId : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ getDeliveryInfoByTikklingId : 🐞${error}`);
       throw error;
     }
   }
@@ -172,7 +172,7 @@ class Delivery {
       }
       this.id = result.insertId;
     } catch (error) {
-      console.error(`🚨error -> ⚡️saveDeleveryData : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ saveDeleveryData : 🐞${error}`);
       throw error;
     }
   }

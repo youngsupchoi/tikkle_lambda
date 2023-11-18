@@ -37,7 +37,7 @@ class OptionCombination {
         throw error;
       }
     } catch (error) {
-      console.error(`🚨error -> decreaseQuantity : 🐞${error}`);
+      console.error(`🚨 error -> decreaseQuantity : 🐞${error}`);
       throw error;
     }
   }
@@ -69,7 +69,7 @@ class OptionCombination {
         throw error;
       }
     } catch (error) {
-      console.error(`🚨error -> decreaseQuantity : 🐞${error}`);
+      console.error(`🚨 error -> decreaseQuantity : 🐞${error}`);
       throw error;
     }
   }
@@ -129,7 +129,7 @@ class Brand {
 
       return brand_obj_list;
     } catch (error) {
-      console.error(`🚨error -> checkBrandNameList : 🐞${error}`);
+      console.error(`🚨 error -> checkBrandNameList : 🐞${error}`);
       throw error;
     }
   }
@@ -179,7 +179,7 @@ class Product {
         this.addProductOption(product_option);
       });
     } catch (error) {
-      console.error(`🚨error -> loadAllProductOptions : 🐞${error}`);
+      console.error(`🚨 error -> loadAllProductOptions : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -212,7 +212,7 @@ class Product {
         }
       }
     } catch (error) {
-      console.error(`🚨error -> validateProductOption : 🐞${error}`);
+      console.error(`🚨 error -> validateProductOption : 🐞${error}`);
       if (error.status) {
         throw error;
       }
@@ -281,7 +281,7 @@ class Product {
       const option_combination = new OptionCombination({ ...result[0], db: this.db });
       this.selected_option_combination = option_combination;
     } catch (error) {
-      console.error(`🚨error -> loadSelectedProductOptionCombination : 🐞${error}`);
+      console.error(`🚨 error -> loadSelectedProductOptionCombination : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -322,7 +322,7 @@ class Product {
         });
       }
     } catch (error) {
-      console.error(`🚨error -> validateProductPrice : 🐞${error}`);
+      console.error(`🚨 error -> validateProductPrice : 🐞${error}`);
       if (error.status) {
         throw error;
       }
@@ -367,7 +367,7 @@ class Product {
       });
       return this.price + additionalAmount;
     } catch (error) {
-      console.error(`🚨error -> calculateTotalPrice : 🐞${error}`);
+      console.error(`🚨 error -> calculateTotalPrice : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -416,7 +416,7 @@ class Product {
       const rows = await db.executeQuery(query, [id]);
       return new Product({ ...rows[0], db });
     } catch (error) {
-      console.error(`🚨error -> createById : 🐞${error}`);
+      console.error(`🚨 error -> createById : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -429,7 +429,7 @@ class Product {
     try {
       this.selected_option_combination.decreaseQuantity();
     } catch (error) {
-      console.error(`🚨error -> decreaseProductQuantity : 🐞${error}`);
+      console.error(`🚨 error -> decreaseProductQuantity : 🐞${error}`);
       throw error;
     }
   }
@@ -447,7 +447,7 @@ class Product {
         });
       }
     } catch (error) {
-      console.error(`🚨error -> increaseQuantity : 🐞${error}`);
+      console.error(`🚨 error -> increaseQuantity : 🐞${error}`);
       throw error;
     }
   }
@@ -481,7 +481,7 @@ class Product {
         }
       }
     } catch (error) {
-      console.error(`🚨error -> enrollProductList : 🐞${error}`);
+      console.error(`🚨 error -> enrollProductList : 🐞${error}`);
       throw error;
     }
   }
