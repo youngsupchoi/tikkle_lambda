@@ -23,7 +23,7 @@ exports.get_product_options = async (req, res) => {
     sqlResult = transformedData;
     //console.log("SQL result : ", sqlResult);
   } catch (err) {
-    console.log("post_product_info 에서 에러가 발생했습니다.", err);
+    console.error(`🚨 error -> ⚡️ get_product_options : 🐞${err}`);
     const return_body = {
       success: false,
       detail_code: "00",
