@@ -24,7 +24,7 @@ exports.post_user_wishlist = async (req, res) => {
     sqlResult = rows;
     //console.log("SQL result : ", sqlResult.insertId);
   } catch (err) {
-    console.log("post_user_wishlist 에서 에러가 발생했습니다.", err);
+    console.error(`🚨 error -> ⚡️ post_user_wishlist : 🐞 ${err}`);
     const return_body = {
       success: false,
       detail_code: "01",
@@ -38,7 +38,7 @@ exports.post_user_wishlist = async (req, res) => {
   const retData = sqlResult;
 
   if (sqlResult.affectedRows === 0) {
-    console.log("post_user_wishlist 에서 에러가 발생했습니다.");
+    // console.log("post_user_wishlist 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       detail_code: "02",
@@ -56,7 +56,7 @@ exports.post_user_wishlist = async (req, res) => {
     sqlResult = rows;
     //console.log("SQL result : ", sqlResult);
   } catch (err) {
-    console.log("post_user_wishlist 에서 에러가 발생했습니다.", err);
+    console.error(`🚨 error -> ⚡️ post_user_wishlist : 🐞 ${err}`);
     const return_body = {
       success: false,
       detail_code: "03",

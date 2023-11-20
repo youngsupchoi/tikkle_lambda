@@ -14,7 +14,7 @@ exports.get_bank_data = async (req, res) => {
     sqlResult = rows;
     // console.log("SQL result : ", sqlResult);
   } catch (err) {
-    console.log("get_bank_data 에서 에러가 발생했습니다.", err);
+    console.error(`🚨 error -> ⚡️ get_bank_data : 🐞 ${err}`);
     const return_body = {
       success: false,
       detail_code: "01",
@@ -26,7 +26,7 @@ exports.get_bank_data = async (req, res) => {
 
   // check data is one
   if (sqlResult.length === 0) {
-    console.log("get_bank_data 에서 에러가 발생했습니다.", err);
+    console.error(`🚨 error -> ⚡️ get_bank_data : 🐞 bankdata db조회 실패`);
     const return_body = {
       success: false,
       detail_code: "01",

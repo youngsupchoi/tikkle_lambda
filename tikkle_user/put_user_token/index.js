@@ -39,7 +39,7 @@ exports.put_user_token = async (req, res) => {
     sqlResult = rows;
     //console.log("SQL result : ", sqlResult);
   } catch (err) {
-    console.log("put_user_token의 query에서 에러가 발생했습니다.", err);
+    console.error(`🚨 error -> ⚡️ put_user_token : 🐞 ${err}`);
     const return_body = {
       success: false,
       detail_code: "00",
