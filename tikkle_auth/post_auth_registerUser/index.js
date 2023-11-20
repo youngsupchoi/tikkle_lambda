@@ -101,7 +101,7 @@ exports.post_auth_registerUser = async (req, res) => {
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	  `;
 
-  const values = [name, birthday, nick, phone, gender, "https://optimumsolutions.co.nz/wp-content/uploads/2021/06/profile-placeholder-768x605.jpg", null, null, false, 2];
+  const values = [name, birthday, nick, phone, gender, "https://d2da4yi19up8sp.cloudfront.net/profile/profile.png", null, null, false, 2];
 
   try {
     const rows = await queryDatabase(insertQuery, values);
