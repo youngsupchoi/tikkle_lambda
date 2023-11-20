@@ -30,7 +30,7 @@ exports.post_user_getTikklingDetail = async (req, res) => {
     sqlResult = rows;
     //console.log("SQL result : ", sqlResult);
   } catch (err) {
-    console.log("post_user_getTikklingDetail 에서 에러가 발생했습니다.", err);
+    console.error(`🚨 error -> ⚡️ post_user_getTikklingDetail : 🐞${err}`);
     const return_body = {
       success: false,
       detail_code: "00",
@@ -41,7 +41,7 @@ exports.post_user_getTikklingDetail = async (req, res) => {
   }
 
   if (sqlResult.length != 1) {
-    console.log("post_user_getTikklingDetail 에서 에러가 발생했습니다.", err);
+    console.error(`🚨 error -> ⚡️ post_user_getTikklingDetail : 🐞 쿼리의 결과가 1개가 아닙니다.`);
     const return_body = {
       success: false,
       detail_code: "00",
