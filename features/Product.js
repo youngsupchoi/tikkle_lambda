@@ -84,13 +84,178 @@ class ProductOption {
     this.isDeleted = isDeleted;
   }
 }
+class ProductOptions {
+  constructor({ product_id, db }) {
+    this.product_id = product_id;
+    this.essential_options = null;
+    this.not_essential_options = null;
+    this.db = db;
+  }
+
+  //옵션 객체를 받아서 옵션을 업데이터
+  // 현재 가지고 있는 옵션 객체로 db없데이트
+  // 특정 product_id에 대해 옵션을 가져오기
+  // option_list를 받아서 옵션 형태로 수정
+  // 현재 가지고 있는 옵션 객체로 db추가
+
+  /**
+   * 상품 아이디를 통해 객체를 생성
+   * @param {number} product_id
+   * @param {object} db
+   * @returns
+   */
+  static createProductOptions(product_id, db) {
+    return new ProductOptions({ product_id, db });
+  }
+
+  /**
+   * 상품의 모든 옵션을 가져와 list로 반환
+   * @returns
+   */
+  async getProductOptions() {
+    try {
+      const rows = await db.executeQuery(`SELECT * FROM product_option WHERE product_id = ?;`, [this.product_id]);
+      return rows;
+    } catch (error) {
+      console.error(`🚨 error -> getProductOptions : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  formatOptionListOnlyNotEssential(option_list) {
+    try {
+      const option_category_dict = {};
+
+      option_list.forEach((option) => {
+        // 옵션에서 카테고리 추출
+        if (option.is_essential === 0) {
+          const category = option.category;
+          // 해당 카테고리가 사전에 아직 존재하지 않으면 초기화
+          if (!option_category_dict[category]) {
+            option_category_dict[category] = [];
+          }
+          // 해당 카테고리 리스트에 옵션 추가
+          option_category_dict[category].push(option);
+        }
+      });
+      return option_category_dict;
+    } catch (error) {
+      console.error(`🚨 error -> formatOptionListOnlyNotEssential : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  formatOptionListOnlyEssential(option_list) {
+    try {
+      const option_category_dict = {};
+
+      option_list.forEach((option) => {
+        // 옵션에서 카테고리 추출
+        if (option.is_essential === 1) {
+          const category = option.category;
+          // 해당 카테고리가 사전에 아직 존재하지 않으면 초기화
+          if (!option_category_dict[category]) {
+            option_category_dict[category] = [];
+          }
+          // 해당 카테고리 리스트에 옵션 추가
+          option_category_dict[category].push(option);
+        }
+      });
+      return option_category_dict;
+    } catch (error) {
+      console.error(`🚨 error -> formatOptionListOnlyEssential : 🐞${error}`);
+      throw error;
+    }
+  }
+  /**
+   * 특정 object가 product_option테이블의 column을 모두 갖고있는지 확인하는 함수
+   * @param {object} option
+   * @returns bool
+   */
+  isValidOption(option) {
+    const requiredFields = ["id", "product_id", "category", "option", "additional_amount", "is_deleted", "is_essential"];
+
+    for (const field of requiredFields) {
+      if (!option.hasOwnProperty(field)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+  /**
+   * ProductOption에서 사용하는 형식의 options인지 확인하는 함수
+   * @param {object} input
+   * @returns bool
+   * @example
+   * const option_obj = {
+   *  color: [
+   * {id: 1, product_id: 10: category: "color", option: "red", additional_amount = 0, is_deleted = 0, is_essential = 0},
+   * {id: 2, product_id: 10: category: "color", option: "blue", additional_amount = 0, is_deleted = 0, is_essential = 0}
+   * ]
+   * size: [
+   * {id: 3, product_id: 10: category: "size", option: "L", additional_amount = 3000, is_deleted = 0, is_essential = 0},
+   * {id: 4, product_id: 10: category: "size", option: "S", additional_amount = 2000, is_deleted = 0, is_essential = 0}
+   * ]
+   * }
+   * validateOptionFormat(option_obj);
+   */
+  validateOptionFormat(options_obj) {
+    try {
+      // 입력값이 객체인지 확인
+      if (typeof options_obj !== "object" || options_obj === null) {
+        return false;
+      }
+
+      for (const category in options_obj) {
+        const options = options_obj[category];
+
+        // 카테고리별 값이 배열인지 확인
+        if (!Array.isArray(options)) {
+          return false;
+        }
+
+        // 배열의 각 요소가 필요한 필드를 갖춘 객체 형태인지 확인
+        for (const option of options) {
+          if (!this.isValidOption(option)) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    } catch (error) {
+      console.error(`🚨 error -> validateOptionFormat : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  async updateOptions(essential_options, not_essential_options) {
+    try {
+      const [is_formatted_essential_options, is_formatted_not_essential_options] = await Promise.all(validateOptionFormat(essential_options), validateOptionFormat(not_essential_options));
+      if (!is_formatted_essential_options || !is_formatted_not_essential_options) {
+        throw new ExpectedError({
+          status: "500",
+          message: `formating하지 않은 값이 updateOptions의 input으로 들어왔습니다.`,
+          detail_code: "00",
+        });
+      }
+      this.essential_options = essential_options;
+      this.not_essential_options = not_essential_options;
+      return;
+    } catch (error) {
+      console.error(`🚨 error -> updateOptions : 🐞${error}`);
+      throw error;
+    }
+  }
+}
 
 class Brand {
   constructor({ id, brand_name, is_deleted, db }) {
-    this.id = id;
-    this.brand_name = brand_name;
-    this.is_deleted = is_deleted;
-    this.db = db;
+    this.id = id || null;
+    this.brand_name = brand_name || null;
+    this.is_deleted = is_deleted || null;
+    this.db = db || null;
   }
   toJSON() {
     return {
@@ -149,7 +314,7 @@ class Product {
     this.wishlist_count = wishlist_count || null;
     this.thumbnail_image = thumbnail_image || null;
     this.images = images || null;
-    this.product_options = [];
+    this.product_options = new ProductOptions({ product_id: this.id });
     this.selected_options = null;
     this.selected_option_combination = null;
     this.db = db;
@@ -174,6 +339,8 @@ class Product {
     try {
       const query = `SELECT * FROM product_option WHERE product_id = ?`;
       const product_options = await this.db.executeQuery(query, [this.id]);
+
+      //TODO: 이 부분 product_options수정 반영
       product_options.forEach(async (productOption) => {
         const product_option = new ProductOption(productOption);
         this.addProductOption(product_option);
@@ -193,6 +360,7 @@ class Product {
     try {
       for (const [category, option] of Object.entries(selectedOption)) {
         // 선택된 옵션의 카테고리와 일치하는 제품 옵션을 찾는다.
+        //TODO: 이 부분 product_options수정 반영
         const matchingOptions = this.product_options.filter((productOption) => productOption.category === category);
         // 일치하는 카테고리가 없으면, 선택된 옵션은 유효하지 않다.
         if (matchingOptions.length === 0) {
@@ -352,6 +520,7 @@ class Product {
   }
 
   addProductOption(productOption) {
+    //TODO: 이 부분 product_options수정 반영
     this.product_options.push(productOption);
   }
 
@@ -359,7 +528,7 @@ class Product {
   calculateTotalPrice() {
     try {
       let additionalAmount = 0;
-
+      //TODO: 이 부분 product_options수정 반영
       this.product_options.forEach(({ category, option, additional_amount }) => {
         if (this.selected_options[category] === option) {
           additionalAmount += additional_amount;
@@ -467,11 +636,12 @@ class Product {
             product.images,
           ]);
           const result_of_insert_option_combination = await db.executeQuery(`INSERT INTO option_combination (product_id, quantity) VALUES (?, ?)`, [result_of_insert_product.insertId, 10000]);
-          const result_of_insert_option = await db.executeQuery(`INSERT INTO product_option (product_id, category, \`option\`, additional_amount) VALUES (?, ?, ?, ?)`, [
+          //TODO: product_option의 is_essential을 결정하는 로직 추가 필요, 현재는 모두 필수로 들어감
+          const result_of_insert_option = await db.executeQuery(`INSERT INTO product_option (product_id, category, \`option\`, additional_amount, is_essential) VALUES (?, ?, ?, ?, )`, [
             result_of_insert_product.insertId,
             "default",
             "default",
-            0,
+            1,
           ]);
 
           const result_of_insert_option_combination_detail = await db.executeQuery(`INSERT INTO option_combination_detail (combination_id, option_id) values (?, ?)`, [
