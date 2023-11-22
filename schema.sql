@@ -226,6 +226,8 @@ CREATE TABLE `product_option` (
 	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
 );
 
+
+
 CREATE TABLE `option_combination` (
 	`id` INT NOT NULL AUTO_INCREMENT,
     `product_id` INT NOT NULL,

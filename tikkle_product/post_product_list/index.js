@@ -17,7 +17,7 @@ exports.post_product_list = async (req, res) => {
 
   //check category_id
   if (!category_id || typeof category_id !== "number" || !Number.isInteger(category_id) || category_id > 20) {
-    console.log("post_product_list 에서 에러가 발생했습니다.");
+    // console.log("post_product_list 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       detail_code: "01",
@@ -45,7 +45,7 @@ exports.post_product_list = async (req, res) => {
     priceMax > 9999999999 ||
     priceMax < 0
   ) {
-    console.log("post_product_list 에서 에러가 발생했습니다.");
+    // console.log("post_product_list 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       detail_code: "02",
@@ -58,7 +58,7 @@ exports.post_product_list = async (req, res) => {
   //check sortAttribute
   if (!sortAttribute || typeof sortAttribute !== "string" || sortAttribute.length > 30) {
     //return invalid
-    console.log(" post_product_list 에서 에러가 발생했습니다.");
+    // console.log(" post_product_list 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       detail_code: "03",
@@ -70,7 +70,7 @@ exports.post_product_list = async (req, res) => {
 
   if (sortAttribute != "sales_volume" && sortAttribute != "price" && sortAttribute != "views" && sortAttribute != "wishlist_count") {
     //return invalid
-    console.log("post_product_list 에서 에러가 발생했습니다.");
+    // console.log("post_product_list 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       detail_code: "03",
@@ -83,7 +83,7 @@ exports.post_product_list = async (req, res) => {
   //check sortWay
   if (!sortWay || typeof sortWay !== "string" || (sortWay !== "ASC" && sortWay !== "DESC")) {
     //return invalid
-    console.log("post_product_list 에서 에러가 발생했습니다.");
+    // console.log("post_product_list 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       detail_code: "04",
@@ -96,7 +96,7 @@ exports.post_product_list = async (req, res) => {
   //check search
   if (search && (typeof search !== "string" || search.length > 100)) {
     //return invalid
-    console.log("post_product_list 에서 에러가 발생했습니다.");
+    // console.log("post_product_list 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       detail_code: "05",
@@ -108,7 +108,7 @@ exports.post_product_list = async (req, res) => {
 
   //check getNum
   if (!getNum || typeof getNum !== "number" || !Number.isInteger(getNum) || getNum < 0) {
-    console.log("post_product_list 에서 에러가 발생했습니다.");
+    // console.log("post_product_list 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       detail_code: "06",
@@ -160,7 +160,7 @@ exports.post_product_list = async (req, res) => {
     sqlResult = rows;
     //console.log("SQL result : ", sqlResult);
   } catch (err) {
-    console.log(" post_product_list 에서 에러가 발생했습니다.\n", err);
+    console.error(`🚨 error -> ⚡️ post_product_info : 🐞${err}`);
     const return_body = {
       success: false,
       detail_code: "00",

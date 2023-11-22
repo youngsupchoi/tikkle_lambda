@@ -8,6 +8,32 @@ class OptionCombination {
     this.quantity = quantity || null;
     this.db = db || null;
   }
+
+  static createOptionCombination(product_id, db) {
+    try {
+      return new OptionCombination({ product_id, db });
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ createOptionCombination : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  /**
+   * productid에 대한 새로운 option combination을 생성
+   * @param {number} quantity 100000
+   * @returns void
+   */
+  async insertNewOptionCombination(quantity = 100000) {
+    try {
+      const result = await this.db.executeQuery(`INSERT INTO option_combination (product_id, quantity) values (?, ?)`, [this.product_id, quantity]);
+      this.id = result.insertId;
+      return;
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ insertNewOptionCombination : 🐞${error}`);
+      throw error;
+    }
+  }
+
   /**
    * 재고를 감소시키는 함수
    * @memberof OptionCombination
@@ -37,7 +63,7 @@ class OptionCombination {
         throw error;
       }
     } catch (error) {
-      console.error(`🚨 error -> decreaseQuantity : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ decreaseQuantity : 🐞${error}`);
       throw error;
     }
   }
@@ -69,28 +95,151 @@ class OptionCombination {
         throw error;
       }
     } catch (error) {
-      console.error(`🚨 error -> decreaseQuantity : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ decreaseQuantity : 🐞${error}`);
       throw error;
     }
   }
 }
 
 class ProductOption {
-  constructor({ id, category, option, additional_amount, isDeleted }) {
-    this.id = id;
+  constructor({ id, category, option, additional_amount, is_deleted }) {
+    this.id = id || null;
     this.category = category;
     this.option = option;
     this.additional_amount = additional_amount;
-    this.isDeleted = isDeleted;
+    this.is_deleted = is_deleted || 0;
+  }
+
+  /**
+   * 해당 옵션이 이미 업로드 되었는지 확인
+   * @returns bool
+   */
+  checkIsUploaded() {
+    try {
+      if (this.id === null) {
+        return false;
+      }
+      if (this.id !== null) {
+        return true;
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ checkIsUploaded : 🐞${error}`);
+      throw error;
+    }
+  }
+}
+class ProductOptions {
+  constructor({ product_id, product_option_list, db }) {
+    this.product_id = product_id;
+    //TODO: formatted_optinos로 수정
+    this.formatted_option = null;
+    this.product_option_list = product_option_list || null;
+    this.db = db;
+  }
+
+  //옵션 객체를 받아서 옵션을 업데이터
+  // 현재 가지고 있는 옵션 객체로 db없데이트
+  // 특정 product_id에 대해 옵션을 가져오기
+  // option_list를 받아서 옵션 형태로 수정
+  // 현재 가지고 있는 옵션 객체로 db추가
+
+  /**
+   * 상품의 모든 옵션을 가져와 list로 반환
+   * @returns
+   */
+  async loadProductOptions() {
+    try {
+      const rows = await this.db.executeQuery(`SELECT * FROM product_option WHERE product_id = ?;`, [this.product_id]);
+      this.product_option_list = rows;
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ loadProductOptions : 🐞${error}`);
+      throw error;
+    }
+  }
+  /**
+   * 이미 서버상에 존재하는 옵션인지 확인
+   * @returns bool
+   */
+  async checkIsUploaded() {
+    try {
+      for (const options of Object.values(this.formatted_option)) {
+        // 배열 내 어떤 객체라도 id가 null이 아니면 false 반환
+        if (options.some((option) => option.checkIsUploaded())) {
+          return true;
+        }
+      }
+      // 모든 객체의 id가 null인 경우
+      return false;
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ checkIsUploaded : 🐞${error}`);
+      throw error;
+    }
+  }
+  /**
+   * productOption을 db상에 업로드
+   * 1. 각 옵션을 업로드
+   * 2. 각 옵션 갯수에 맞는 option combination생성
+   * 3. 각 option combination에 맞는 option combination detail생성
+   */
+  async uploadProductOptions() {
+    try {
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ uploadProductOptions : 🐞${error}`);
+      throw error;
+    }
+  }
+  getFormattedOption() {
+    try {
+      if (this.formatted_option === null) {
+        throw new ExpectedError({
+          status: "500",
+          message: `product.loadProductOptions()를 먼저 실행해야합니다.`,
+          detail_code: "00",
+        });
+      }
+      return this.formatted_option;
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ getFormattedOption : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  formatOptionList() {
+    try {
+      if (this.product_option_list === null) {
+        throw new ExpectedError({
+          status: "500",
+          message: `product_option_list가 먼저 채워져있어야합니다.`,
+          detail_code: "00",
+        });
+      }
+      const option_category_dict = {};
+
+      this.product_option_list.forEach((option) => {
+        // 옵션에서 카테고리 추출
+        const category = option.category;
+        // 해당 카테고리가 사전에 아직 존재하지 않으면 초기화
+        if (!option_category_dict[category]) {
+          option_category_dict[category] = [];
+        }
+
+        // 해당 카테고리 리스트에 옵션 추가
+        option_category_dict[category].push(new ProductOption(option));
+      });
+      this.formatted_option = option_category_dict;
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ formatOptionListOnlyEssential : 🐞${error}`);
+      throw error;
+    }
   }
 }
 
 class Brand {
   constructor({ id, brand_name, is_deleted, db }) {
-    this.id = id;
-    this.brand_name = brand_name;
-    this.is_deleted = is_deleted;
-    this.db = db;
+    this.id = id || null;
+    this.brand_name = brand_name || null;
+    this.is_deleted = is_deleted || null;
+    this.db = db || null;
   }
   toJSON() {
     return {
@@ -129,7 +278,7 @@ class Brand {
 
       return brand_obj_list;
     } catch (error) {
-      console.error(`🚨 error -> checkBrandNameList : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ checkBrandNameList : 🐞${error}`);
       throw error;
     }
   }
@@ -149,7 +298,7 @@ class Product {
     this.wishlist_count = wishlist_count || null;
     this.thumbnail_image = thumbnail_image || null;
     this.images = images || null;
-    this.product_options = [];
+    this.product_options = id === null ? null : new ProductOptions({ product_id: id, db: db });
     this.selected_options = null;
     this.selected_option_combination = null;
     this.db = db;
@@ -158,28 +307,17 @@ class Product {
   /**
    * 상품이 갖고있는 모든 옵션을 로드하고 해당 옵션을 product_options에 저장한다.
    * @memberof Product
-   * @instance
-   * @async
-   * @example
-   * const product = await Product.createById(1);
-   * await product.loadAllProduct_options();
-   * // => product.product_options = {
-   * //  "색상": ["빨강", "파랑", "노랑"],
-   * //  "사이즈": ["S", "M", "L"]
-   * // }
-   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
-   * @returns {Promise<void>} - A promise that resolves with nothing.
    */
-  async loadAllProductOptions() {
+  async loadProductOptions() {
     try {
+      await this.product_options.loadProductOptions();
+      this.product_options.formatOptionList();
+
       const query = `SELECT * FROM product_option WHERE product_id = ?`;
       const product_options = await this.db.executeQuery(query, [this.id]);
-      product_options.forEach(async (productOption) => {
-        const product_option = new ProductOption(productOption);
-        this.addProductOption(product_option);
-      });
+      return;
     } catch (error) {
-      console.error(`🚨 error -> loadAllProductOptions : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ loadProductOptions : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -188,14 +326,26 @@ class Product {
     }
   }
 
+  async uploadProduct() {
+    try {
+      const result = await this.db.executeQuery(
+        `INSERT INTO products (name, price, description, category_id, brand_id, views, is_deleted, thumbnail_image, images) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      );
+      this.id = result.insertId;
+      return;
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ uploadProduct : 🐞${error}`);
+      throw error;
+    }
+  }
   //selected option이 실제 존재하는 option인지 검증하는 함수
   validateProductOption(selectedOption) {
     try {
       for (const [category, option] of Object.entries(selectedOption)) {
         // 선택된 옵션의 카테고리와 일치하는 제품 옵션을 찾는다.
-        const matchingOptions = this.product_options.filter((productOption) => productOption.category === category);
+        const formatted_option = this.product_options.getFormattedOption();
         // 일치하는 카테고리가 없으면, 선택된 옵션은 유효하지 않다.
-        if (matchingOptions.length === 0) {
+        if (category in Object.keys(formatted_option)) {
           throw new ExpectedError({
             status: "400",
             message: `해당 옵션은 존재하지 않습니다.`,
@@ -203,7 +353,7 @@ class Product {
           });
         }
         // 일치하는 카테고리가 있다면, 선택된 옵션이 유효한지 확인한다.
-        if (!matchingOptions.some((productOption) => productOption.option === option)) {
+        if (!formatted_option[category].some((productOption) => productOption.option === option)) {
           throw new ExpectedError({
             status: "400",
             message: `해당 옵션은 존재하지 않습니다.`,
@@ -212,15 +362,8 @@ class Product {
         }
       }
     } catch (error) {
-      console.error(`🚨 error -> validateProductOption : 🐞${error}`);
-      if (error.status) {
-        throw error;
-      }
-      throw new ExpectedError({
-        status: "500",
-        message: `서버에러`,
-        detail_code: "00",
-      });
+      console.error(`🚨 error -> ⚡️ validateProductOption : 🐞${error}`);
+      throw error;
     }
   }
 
@@ -281,7 +424,7 @@ class Product {
       const option_combination = new OptionCombination({ ...result[0], db: this.db });
       this.selected_option_combination = option_combination;
     } catch (error) {
-      console.error(`🚨 error -> loadSelectedProductOptionCombination : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ loadSelectedProductOptionCombination : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -322,7 +465,7 @@ class Product {
         });
       }
     } catch (error) {
-      console.error(`🚨 error -> validateProductPrice : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ validateProductPrice : 🐞${error}`);
       if (error.status) {
         throw error;
       }
@@ -351,23 +494,19 @@ class Product {
     this.selected_options = product_option;
   }
 
-  addProductOption(productOption) {
-    this.product_options.push(productOption);
-  }
-
   //product_option의 addition_amount와 selectedoption을 고려하여 product의 전체 가격을 계산하는 함수
   calculateTotalPrice() {
     try {
       let additionalAmount = 0;
-
-      this.product_options.forEach(({ category, option, additional_amount }) => {
-        if (this.selected_options[category] === option) {
-          additionalAmount += additional_amount;
-        }
-      });
+      const formatted_option = this.product_options.getFormattedOption();
+      for (const category of Object.keys(formatted_option)) {
+        additionalAmount += formatted_option[category].find((option) => {
+          return option.option == this.selected_options[category];
+        }).additional_amount;
+      }
       return this.price + additionalAmount;
     } catch (error) {
-      console.error(`🚨 error -> calculateTotalPrice : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ calculateTotalPrice : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -416,7 +555,7 @@ class Product {
       const rows = await db.executeQuery(query, [id]);
       return new Product({ ...rows[0], db });
     } catch (error) {
-      console.error(`🚨 error -> createById : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ createById : 🐞${error}`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러`,
@@ -429,7 +568,7 @@ class Product {
     try {
       this.selected_option_combination.decreaseQuantity();
     } catch (error) {
-      console.error(`🚨 error -> decreaseProductQuantity : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ decreaseProductQuantity : 🐞${error}`);
       throw error;
     }
   }
@@ -447,11 +586,11 @@ class Product {
         });
       }
     } catch (error) {
-      console.error(`🚨 error -> increaseQuantity : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ increaseQuantity : 🐞${error}`);
       throw error;
     }
   }
-
+  //TODO: 버그 생겼는지 확인
   static async enrollProductList(product_list, db) {
     try {
       for (const product of product_list) {
@@ -471,7 +610,7 @@ class Product {
             result_of_insert_product.insertId,
             "default",
             "default",
-            0,
+            1,
           ]);
 
           const result_of_insert_option_combination_detail = await db.executeQuery(`INSERT INTO option_combination_detail (combination_id, option_id) values (?, ?)`, [
@@ -481,7 +620,7 @@ class Product {
         }
       }
     } catch (error) {
-      console.error(`🚨 error -> enrollProductList : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ enrollProductList : 🐞${error}`);
       throw error;
     }
   }
