@@ -6,7 +6,7 @@ exports.post_product_info = async (req, res) => {
   const returnToken = req.returnToken;
 
   const productId = body.productId;
-  post_product_images;
+
   //-------- check DB --------------------------------------------------------------------------------------//
 
   let sqlResult;
@@ -25,7 +25,7 @@ exports.post_product_info = async (req, res) => {
     sqlResult = rows;
     //console.log("SQL result : ", sqlResult);
   } catch (err) {
-    console.error(`🚨 error -> ⚡️ post_product_info : 🐞${err}`);
+    console.log("post_product_info 에서 에러가 발생했습니다.", err);
     const return_body = {
       success: false,
       detail_code: "00",
@@ -37,7 +37,7 @@ exports.post_product_info = async (req, res) => {
 
   // check data is one
   if (sqlResult.length !== 1) {
-    console.error(`🚨 error -> ⚡️ post_product_info : 🐞쿼리의 결과가 한 개가 아닙니다.`);
+    console.log(" post_product_info 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       detail_code: "00",
