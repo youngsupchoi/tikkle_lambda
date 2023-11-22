@@ -14,7 +14,7 @@ exports.post_product_enrollment = async (req, res) => {
   const db = new DBManager();
   await db.openTransaction();
   try {
-    await Product.enrollProductList(product_list, db);
+    // await Product.enrollProductList(product_list, db);
 
     await db.commitTransaction();
 

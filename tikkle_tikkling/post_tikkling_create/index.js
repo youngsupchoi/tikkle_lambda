@@ -15,7 +15,7 @@ exports.post_tikkling_create = async (req, res) => {
   await db.openTransaction();
   try {
     const product = await Product.createById({ id: product_id, db });
-    await product.loadAllProductOptions();
+    await product.loadProductOptions();
     await product.updateSelectedOption(product_option);
     await product.loadSelectedProductOptionCombination();
 
