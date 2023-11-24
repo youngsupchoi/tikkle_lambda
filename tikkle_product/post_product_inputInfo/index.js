@@ -69,7 +69,7 @@ exports.post_product_inputInfo = async (req, res) => {
 
     const placeholders = Array.from({ length: columns.length }, () => "?").join(", ");
     const query = `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${placeholders})`;
-    return query;
+
     const rows = await queryDatabase(query, values);
     sqlResult = rows;
     //console.log("SQL result : ", sqlResult);
