@@ -382,7 +382,7 @@ class ProductOptions {
     }
   }
 
-  formatOptionList() {
+  async formatOptionList() {
     try {
       if (this.product_option_list == null) {
         throw new ExpectedError({
@@ -525,10 +525,8 @@ class Product {
       const product_option_list = await this.product_options.loadProductOptions();
       this.product_options.updateProductOptionList(product_option_list);
 
-      this.product_options.formatOptionList();
+      await this.product_options.formatOptionList();
 
-      const query = `SELECT * FROM product_option WHERE product_id = ?`;
-      const product_options = await this.db.executeQuery(query, [this.id]);
       return;
     } catch (error) {
       console.error(`🚨 error -> ⚡️ loadProductOptions : 🐞${error}`);
@@ -553,11 +551,12 @@ class Product {
     }
   }
   //selected option이 실제 존재하는 option인지 검증하는 함수
-  validateProductOption(selectedOption) {
+  async validateProductOption(selectedOption) {
     try {
       for (const [category, option] of Object.entries(selectedOption)) {
         // 선택된 옵션의 카테고리와 일치하는 제품 옵션을 찾는다.
-        const formatted_option = this.product_options.getFormattedOption();
+
+        const formatted_option = await this.product_options.getFormattedOption();
         // 일치하는 카테고리가 없으면, 선택된 옵션은 유효하지 않다.
         if (category in Object.keys(formatted_option)) {
           throw new ExpectedError({
