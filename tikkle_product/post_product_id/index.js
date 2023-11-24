@@ -1,9 +1,4 @@
-const { Tikkling } = require("../../features/Tikkling");
-const { Response } = require("../../features/Response");
-const { User } = require("../../features/User");
-const { ExpectedError } = require("../../features/ExpectedError");
-const { DBManager } = require("../../db");
-const { Product, Brand } = require("../../features/Product");
+const { queryDatabase } = require("db.js");
 
 exports.post_product_id = async (req, res) => {
   const id = req.id;
@@ -31,7 +26,7 @@ exports.post_product_id = async (req, res) => {
     const return_body = {
       success: false,
       detail_code: "00",
-      message: "SQL error",
+      message: "SQL error 1 ",
       returnToken: null,
     };
     return res.status(500).send(return_body);
@@ -43,7 +38,7 @@ exports.post_product_id = async (req, res) => {
     const return_body = {
       success: false,
       detail_code: "00",
-      message: "SQL error",
+      message: "SQL error 2 ",
       returnToken: null,
     };
     return res.status(500).send(return_body);

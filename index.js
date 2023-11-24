@@ -22,6 +22,7 @@ const { put_friend_block } = require("./tikkle_friend/put_friend_block/index.js"
 const { get_image_deleteProfile } = require("./tikkle_image/get_image_deleteProfile/index.js");
 const { get_image_profileSaveUrl } = require("./tikkle_image/get_image_profileSaveUrl/index.js");
 const { post_image_profileUrl } = require("./tikkle_image/post_image_profileUrl/index.js");
+const { post_product_id } = require("./tikkle_product/post_product_id/index.js");
 
 //notification
 const { get_notification_list } = require("./tikkle_notification/get_notification_list/index.js");
@@ -136,6 +137,8 @@ api.post("/post_product_images", authtoken, post_product_images);
 api.post("/post_product_info", authtoken, post_product_info);
 
 api.post("/post_product_list", authtoken, post_product_list);
+
+api.post("/post_product_id", authtoken, post_product_id);
 
 api.put("/put_product_viewIncrease", authtoken, put_product_viewIncrease);
 
