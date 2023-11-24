@@ -165,12 +165,11 @@ CREATE TABLE `products` (
 	`thumbnail_image` TEXT NOT NULL,
 	`images` TEXT,
     `sales_volume` INT NOT NULL DEFAULT 0,
+    `noti_id` INT NOT NULL,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`category_id`) REFERENCES `product_category`(`id`),
 	FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`)
 );
-
-
 
 
 -- 상품 고시정보 테이블들
