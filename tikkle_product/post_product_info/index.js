@@ -55,8 +55,8 @@ exports.post_product_info = async (req, res) => {
 
   try {
     // //고시정보 인덱스로 데이터 가져오기
-    // const category = retData.category_id;
-    const category = 25;
+    const category = retData.noti_id;
+    // const category = 25;
     let table = "";
     switch (category) {
       case 3:
