@@ -33,6 +33,7 @@ const { put_notification_delete } = require("./tikkle_notification/put_notificat
 const { post_product_images } = require("./tikkle_product/post_product_images/index.js");
 const { post_product_info } = require("./tikkle_product/post_product_info/index.js");
 const { post_product_list } = require("./tikkle_product/post_product_list/index.js");
+const { post_product_inputInfo } = require("./tikkle_product/post_product_inputInfo/index.js");
 const { put_product_viewIncrease } = require("./tikkle_product/put_product_viewIncrease/index.js");
 
 //tikkling
@@ -135,6 +136,8 @@ api.put("/put_notification_delete", authtoken, put_notification_delete);
 api.post("/post_product_images", authtoken, post_product_images);
 
 api.post("/post_product_info", authtoken, post_product_info);
+
+api.post("/post_product_inputInfo", authtoken, post_product_inputInfo);
 
 api.post("/post_product_list", authtoken, post_product_list);
 
