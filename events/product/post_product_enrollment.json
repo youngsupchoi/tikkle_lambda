@@ -9,7 +9,7 @@
 	"body": {
 		"product_list": [
       {
-          "name": "[구찌 GUCCI] 260987 KY9LN 9903 수프림 GG 반지갑",
+          "name": "test6",
           "price": 350000,
           "category_id": 3,
           "brand_id": 3,
@@ -28,7 +28,9 @@
               "11": "https://www.biztrend.co.kr/company_img_folder/dream1356/GUCCI/dd13b6a253082b61ea7ba6496a7b4241.jpg",
               "12": "https://www.biztrend.co.kr/company_img_folder/dream1356/GUCCI/27854a867f2c670517a56edd78f8b6d8.jpg"
           },
-          "description": ""
+          "description": "",
+          "product_option_list": [{"category":"color", "option": "red", "additional_amount": 0}, {"category":"color", "option": "yellow", "additional_amount": 0}, {"category":"color", "option": "blue", "additional_amount": 0}, {"category":"size", "option": "S", "additional_amount": 5000}, {"category":"size", "option": "L", "additional_amount": 10000}],
+          "option_combination_list": [{"color": {"category":"color", "option": "red", "additional_amount": 0}, "size": {"category":"size", "option": "L", "additional_amount": 5000}, "quantity": 100},{"color": {"category":"color", "option": "yellow", "additional_amount": 0}, "size": {"category":"size", "option": "L", "additional_amount": 5000}}, {"color": {"category":"color", "option": "blue", "additional_amount": 0}, "size": {"category":"size", "option": "L", "additional_amount": 5000}},{"color": {"category":"color", "option": "red", "additional_amount": 0}, "size": {"category":"size", "option": "S", "additional_amount": 5000}, "quantity": 100},{"color": {"category":"color", "option": "yellow", "additional_amount": 0}, "size": {"category":"size", "option": "S", "additional_amount": 5000}}, {"color": {"category":"color", "option": "blue", "additional_amount": 0}, "size": {"category":"size", "option": "S", "additional_amount": 5000}}]
 	}]
 }
 }
