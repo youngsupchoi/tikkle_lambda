@@ -116,7 +116,7 @@ exports.post_product_inputInfo = async (req, res) => {
 
   const return_body = {
     success: true,
-    data: ret,
+    data: ret_2,
     detail_code: "00",
     message: "success get product info",
     returnToken: returnToken,
