@@ -61,30 +61,58 @@ exports.post_product_inputInfo = async (req, res) => {
   //main logic------------------------------------------------------------------------------------------------------------------//
   //-------- check DB --------------------------------------------------------------------------------------//
 
-  let sqlResult;
+  // let sqlResult;
+
+  // try {
+  //   const columns = Object.keys(data);
+  //   const values = Object.values(data);
+
+  //   const placeholders = Array.from({ length: columns.length }, () => "?").join(", ");
+  //   const query = `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${placeholders})`;
+
+  //   const rows = await queryDatabase(query, values);
+  //   sqlResult = rows;
+  //   //console.log("SQL result : ", sqlResult);
+  // } catch (err) {
+  //   console.log("post_product_inputInfo 에서 에러가 발생했습니다.", err);
+  //   const return_body = {
+  //     success: false,
+  //     detail_code: "00",
+  //     message: "SQL error 1 ",
+  //     returnToken: null,
+  //   };
+  //   return res.status(500).send(return_body);
+  // }
+
+  // const ret = sqlResult;
+
+  //-------- check DB --------------------------------------------------------------------------------------//
+
+  let sqlResult_2;
 
   try {
-    const columns = Object.keys(data);
-    const values = Object.values(data);
-
-    const placeholders = Array.from({ length: columns.length }, () => "?").join(", ");
-    const query = `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${placeholders})`;
-
-    const rows = await queryDatabase(query, values);
-    sqlResult = rows;
-    //console.log("SQL result : ", sqlResult);
+    const rows = await queryDatabase(
+      `
+      UPDATE products
+      SET noti_id = ?
+      WHERE id = ?;
+    `,
+      [table_id, data.product_id]
+    );
+    sqlResult_2 = rows;
+    //console.log("SQL result : ", sqlResult_2);
   } catch (err) {
     console.log("post_product_inputInfo 에서 에러가 발생했습니다.", err);
     const return_body = {
       success: false,
       detail_code: "00",
-      message: "SQL error 1 ",
+      message: "SQL error 22 ",
       returnToken: null,
     };
     return res.status(500).send(return_body);
   }
 
-  const ret = sqlResult;
+  const ret_2 = sqlResult_2;
 
   const return_body = {
     success: true,
