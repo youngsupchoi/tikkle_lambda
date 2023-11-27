@@ -40,6 +40,7 @@ exports.post_product_id = async (req, res) => {
       success: false,
       detail_code: "00",
       data: sqlResult,
+      p_name: p_name,
       message: "SQL error 2 ",
       returnToken: null,
     };
