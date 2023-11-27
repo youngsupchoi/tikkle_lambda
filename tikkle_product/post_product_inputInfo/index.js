@@ -61,30 +61,30 @@ exports.post_product_inputInfo = async (req, res) => {
   //main logic------------------------------------------------------------------------------------------------------------------//
   //-------- check DB --------------------------------------------------------------------------------------//
 
-  // let sqlResult;
+  let sqlResult;
 
-  // try {
-  //   const columns = Object.keys(data);
-  //   const values = Object.values(data);
+  try {
+    const columns = Object.keys(data);
+    const values = Object.values(data);
 
-  //   const placeholders = Array.from({ length: columns.length }, () => "?").join(", ");
-  //   const query = `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${placeholders})`;
+    const placeholders = Array.from({ length: columns.length }, () => "?").join(", ");
+    const query = `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${placeholders})`;
 
-  //   const rows = await queryDatabase(query, values);
-  //   sqlResult = rows;
-  //   //console.log("SQL result : ", sqlResult);
-  // } catch (err) {
-  //   console.log("post_product_inputInfo 에서 에러가 발생했습니다.", err);
-  //   const return_body = {
-  //     success: false,
-  //     detail_code: "00",
-  //     message: "SQL error 1 ",
-  //     returnToken: null,
-  //   };
-  //   return res.status(500).send(return_body);
-  // }
+    const rows = await queryDatabase(query, values);
+    sqlResult = rows;
+    //console.log("SQL result : ", sqlResult);
+  } catch (err) {
+    console.log("post_product_inputInfo 에서 에러가 발생했습니다.", err);
+    const return_body = {
+      success: false,
+      detail_code: "00",
+      message: "SQL error 1 ",
+      returnToken: null,
+    };
+    return res.status(500).send(return_body);
+  }
 
-  // const ret = sqlResult;
+  const ret = sqlResult;
 
   //-------- check DB --------------------------------------------------------------------------------------//
 
