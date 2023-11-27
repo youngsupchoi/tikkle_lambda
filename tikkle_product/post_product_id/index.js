@@ -10,6 +10,8 @@ exports.post_product_id = async (req, res) => {
 
   let sqlResult;
 
+  return p_name;
+
   try {
     const rows = await queryDatabase(
       // 고시정보 데이터 추가하기(인덱스)
