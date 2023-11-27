@@ -53,6 +53,7 @@ exports.post_product_id = async (req, res) => {
     success: true,
     data: ret,
     detail_code: "00",
+    p_name: p_name,
     message: "success get product info",
     returnToken: returnToken,
   };
