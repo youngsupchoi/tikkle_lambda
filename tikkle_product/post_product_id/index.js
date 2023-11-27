@@ -39,6 +39,7 @@ exports.post_product_id = async (req, res) => {
     const return_body = {
       success: false,
       detail_code: "00",
+      data: sqlResult,
       message: "SQL error 2 ",
       returnToken: null,
     };
