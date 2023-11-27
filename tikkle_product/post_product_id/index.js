@@ -10,8 +10,6 @@ exports.post_product_id = async (req, res) => {
 
   let sqlResult;
 
-  return p_name;
-
   try {
     const rows = await queryDatabase(
       // 고시정보 데이터 추가하기(인덱스)
@@ -28,6 +26,7 @@ exports.post_product_id = async (req, res) => {
     const return_body = {
       success: false,
       detail_code: "00",
+      data: err,
       message: "SQL error 1 ",
       returnToken: null,
     };
