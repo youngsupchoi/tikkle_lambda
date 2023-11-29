@@ -669,7 +669,7 @@ class Product {
    */
   async validateProductPrice(input_price) {
     try {
-      const totalPrice = this.calculateTotalPrice();
+      const totalPrice = await this.calculateTotalPrice();
       if (totalPrice !== input_price) {
         throw new ExpectedError({
           status: "400",
@@ -708,12 +708,12 @@ class Product {
   }
 
   //product_option의 addition_amount와 selectedoption을 고려하여 product의 전체 가격을 계산하는 함수
-  calculateTotalPrice() {
+  async calculateTotalPrice() {
     try {
       let additionalAmount = 0;
-      const formatted_option = this.product_options.getFormattedOption();
+      const formatted_option = await this.product_options.getFormattedOption();
       for (const category of Object.keys(formatted_option)) {
-        additionalAmount += formatted_option[category].find((option) => {
+        additionalAmount += await formatted_option[category].find((option) => {
           return option.option == this.selected_options[category];
         }).additional_amount;
       }
