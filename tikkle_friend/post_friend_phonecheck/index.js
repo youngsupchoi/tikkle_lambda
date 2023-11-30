@@ -45,11 +45,11 @@ exports.post_friend_phonecheck = async (req, res) => {
     } else if (error.message === "입력 오류: phone_list는 빈 배열이면 안 됩니다.") {
       const return_body = {
         success: false,
-        detail_code: "02",
-        message: "비정상적 요청, phone_list는 빈 배열이면 안 됩니다.",
+        detail_code: "01",
+        message: "전화번호부에 적절한 형식의 전화번호가 없습니다.",
         returnToken,
       };
-      return res.status(400).send(return_body);
+      return res.status(200).send(return_body);
     } else {
       console.error(`🚨 error -> ⚡️ post_friend_phonecheck : 🐞${err}`);
       const return_body = {
