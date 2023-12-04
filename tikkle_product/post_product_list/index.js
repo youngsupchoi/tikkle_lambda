@@ -5,7 +5,7 @@ exports.post_product_list = async (req, res) => {
   const id = req.id;
   const returnToken = req.returnToken;
 
-  const category_id = body.category_id;
+  let category_id = body.category_id;
   let priceMin = body.priceMin;
   let priceMax = body.priceMax;
   const sortAttribute = body.sortAttribute;
@@ -16,7 +16,7 @@ exports.post_product_list = async (req, res) => {
   //-------- check input --------------------------------------------------------------------------------------//
 
   //check category_id
-  if (!category_id || typeof category_id !== "number" || !Number.isInteger(category_id) || category_id > 20) {
+  if (category_id == null || typeof category_id !== "number" || !Number.isInteger(category_id) || category_id > 20) {
     // console.log("post_product_list 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
@@ -26,7 +26,6 @@ exports.post_product_list = async (req, res) => {
     };
     return res.status(400).send(return_body);
   }
-
   //check priceMin, priceMax
   if (!priceMin) {
     priceMin = 0;
@@ -125,36 +124,69 @@ exports.post_product_list = async (req, res) => {
   try {
     let rows;
     if (!search) {
-      rows = await queryDatabase(
-        `	SELECT p.*, b.brand_name, pc.name AS cat_name, uwl.product_id AS wishlisted
-					FROM products p
-					INNER JOIN brands b ON p.brand_id = b.id
-					INNER JOIN product_category pc ON p.category_id = pc.id
-					LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id AND uwl.user_id = ? 
-					WHERE p.category_id = ?
-						AND p.price BETWEEN ? AND ?
-						AND p.is_deleted = 0
-					ORDER BY ${sortAttribute} ${sortWay}
-					LIMIT 20 OFFSET ?;
-				`,
-        [id, category_id, priceMin, priceMax, (getNum - 1) * 20]
-      );
+      if (category_id == 0) {
+        rows = await queryDatabase(
+          `	SELECT p.*, b.brand_name, pc.name AS cat_name, uwl.product_id AS wishlisted
+            FROM products p
+            INNER JOIN brands b ON p.brand_id = b.id
+            INNER JOIN product_category pc ON p.category_id = pc.id
+            LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id AND uwl.user_id = ? 
+            WHERE p.price BETWEEN ? AND ?
+              AND p.is_deleted = 0
+            ORDER BY ${sortAttribute} ${sortWay}
+            LIMIT 20 OFFSET ?;
+          `,
+          [id, priceMin, priceMax, (getNum - 1) * 20]
+        );
+      } else {
+        rows = await queryDatabase(
+          `	SELECT p.*, b.brand_name, pc.name AS cat_name, uwl.product_id AS wishlisted
+            FROM products p
+            INNER JOIN brands b ON p.brand_id = b.id
+            INNER JOIN product_category pc ON p.category_id = pc.id
+            LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id AND uwl.user_id = ? 
+            WHERE p.category_id = ?
+              AND p.price BETWEEN ? AND ?
+              AND p.is_deleted = 0
+            ORDER BY ${sortAttribute} ${sortWay}
+            LIMIT 20 OFFSET ?;
+          `,
+          [id, category_id, priceMin, priceMax, (getNum - 1) * 20]
+        );
+      }
     } else {
-      rows = await queryDatabase(
-        ` SELECT p.*, b.brand_name, pc.name AS cat_name, uwl.product_id AS wishlisted
-					FROM products p
-					INNER JOIN brands b ON p.brand_id = b.id
-					INNER JOIN product_category pc ON p.category_id = pc.id
-					LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id AND uwl.user_id = ? 
-					WHERE p.category_id = ?
-						AND p.price BETWEEN ? AND ?
-						AND p.is_deleted = 0
-						AND (p.name  LIKE '%${search}%' OR description LIKE '%${search}%')
-					ORDER BY ${sortAttribute} ${sortWay}
-					LIMIT 20 OFFSET ?;
-				`,
-        [id, category_id, priceMin, priceMax, (getNum - 1) * 20]
-      );
+      if (category_id == 0) {
+        rows = await queryDatabase(
+          ` SELECT p.*, b.brand_name, pc.name AS cat_name, uwl.product_id AS wishlisted
+          FROM products p
+          INNER JOIN brands b ON p.brand_id = b.id
+          INNER JOIN product_category pc ON p.category_id = pc.id
+          LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id AND uwl.user_id = ? 
+          WHERE p.price BETWEEN ? AND ?
+            AND p.is_deleted = 0
+            AND (p.name  LIKE '%${search}%' OR description LIKE '%${search}%')
+          ORDER BY ${sortAttribute} ${sortWay}
+          LIMIT 20 OFFSET ?;
+        `,
+          [id, priceMin, priceMax, (getNum - 1) * 20]
+        );
+      } else {
+        rows = await queryDatabase(
+          ` SELECT p.*, b.brand_name, pc.name AS cat_name, uwl.product_id AS wishlisted
+          FROM products p
+          INNER JOIN brands b ON p.brand_id = b.id
+          INNER JOIN product_category pc ON p.category_id = pc.id
+          LEFT JOIN user_wish_list uwl ON p.id = uwl.product_id AND uwl.user_id = ? 
+          WHERE p.category_id = ?
+            AND p.price BETWEEN ? AND ?
+            AND p.is_deleted = 0
+            AND (p.name  LIKE '%${search}%' OR description LIKE '%${search}%')
+          ORDER BY ${sortAttribute} ${sortWay}
+          LIMIT 20 OFFSET ?;
+        `,
+          [id, category_id, priceMin, priceMax, (getNum - 1) * 20]
+        );
+      }
     }
 
     sqlResult = rows;
