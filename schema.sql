@@ -75,7 +75,7 @@ CREATE TABLE `users` (
 	`nick` VARCHAR(30) NOT NULL,
 	`phone` VARCHAR(30) NOT NULL,
 	`is_deleted` BOOLEAN NOT NULL DEFAULT false,
-	`gender` ENUM('male', 'female', 'other') NOT NULL,
+	`gender` ENUM('male', 'female', 'others') NOT NULL,
 	`image` TEXT,
 	`zonecode` VARCHAR(255),
 	`address` VARCHAR(255),
