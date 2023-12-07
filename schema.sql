@@ -626,6 +626,18 @@ CREATE TABLE `tikkling` (
     UNIQUE (`id`)
 );
 
+CREATE TABLE share_link_funnle_log (
+    `tikkling_id` INT NOT NULL,
+    `click` INT NOT NULL DEFAULT 0,
+    `app_open` INT NOT NULL DEFAULT 0,
+    `sign_up` INT NOT NULL DEFAULT 0,
+    `send_tikkle` INT NOT NULL DEFAULT 0,
+    PRIMARY KEY (`tikkling_id`),
+    FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`)
+);
+
+
+
 
 DELIMITER //
 -- 티클링이 하나 추가될 때 해당 유저의 is_tikkling을 true로 바꿈
