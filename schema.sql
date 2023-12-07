@@ -617,6 +617,7 @@ CREATE TABLE `tikkling` (
     `type` VARCHAR(255) NOT NULL,
     `resolution_type` ENUM('goods', 'refund', 'cancel') NULL,
     `option_combination_id` INT NULL,
+    `share_link` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`product_id`) REFERENCES `products`(`id`),
