@@ -1,4 +1,6 @@
 const { ExpectedError } = require("./ExpectedError.js");
+const { getSSMParameter } = require("ssm.js");
+const axios = require("axios");
 
 class Tikkling {
   constructor({ id, user_id, funding_limit, created_at = null, tikkle_quantity, product_id, terminated_at, state_id, type, resolution_type, tikkle_count, option_combination_id, db }) {
@@ -261,6 +263,42 @@ class Tikkling {
     }
   }
 
+  async createShareLink(tikkling_id, user_name) {
+    try{
+      const FIREBASE_WEB_API_KEY = await getSSMParameter("FIREBASE_WEB_API_KEY");
+      const uriKey = `https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=${FIREBASE_WEB_API_KEY}`;
+      const result = await axios({
+        method: 'post',
+        url: uriKey,
+        data: {
+          dynamicLinkInfo: {
+            domainUriPrefix: 'https://tikkle.lifoli.co.kr',
+            link: `https://tikkle.lifoli.co.kr/tikkling/${tikkling_id}`,
+            androidInfo: {
+              androidPackageName: 'com.tikkle_revive_ios',
+            },
+            iosInfo: {
+              iosBundleId: 'org.reactjs.native.example.tikkle-revive-ios',
+              iosAppStoreId: '6471217574',
+            },
+            socialMetaTagInfo: {
+              socialTitle: `${user_name}님의 티클링!`,
+              socialDescription: `${user_name}님의 티클링을 확인해보세요!`,
+              socialImageLink:
+                'https://d2da4yi19up8sp.cloudfront.net/share_link_image.jpg',
+            },
+          },
+          suffix: {
+            option: 'SHORT',
+          },
+        },
+      });
+      return result.data.shortLink;
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ createShareLink : 🐞 ${error}`);
+      throw error;
+    }
+  }
   /**
    * 티클링 생성
    * @returns {void}
@@ -274,7 +312,7 @@ class Tikkling {
    * new_tikkling.saveTikkling();
    * // => throw ExpectedError with status 403 if the request is invalid.
    */
-  async saveTikkling() {
+  async saveTikkling(user_name) {
     try {
       const results = await this.db.executeQuery(`INSERT INTO tikkling (user_id, funding_limit, tikkle_quantity, product_id, type, option_combination_id) VALUES (?, ?, ?, ?, ?, ?); `, [
         this.user_id,
@@ -284,6 +322,10 @@ class Tikkling {
         this.type,
         this.option_combination_id,
       ]);
+      //tikkling_id와 user_name을 이용하여 share_link 생성
+      const share_link = await this.createShareLink(results.insertId, user_name);
+      //tikkling에 share_linke 추가
+      await this.db.executeQuery(`UPDATE tikkling SET share_link = ? WHERE id = ?;`, [share_link, results.insertId]);
       if (results.affectedRows == 0) {
         console.error(`🚨 error -> ⚡️ createTikkling : 🐞 티클링 생성 실패`);
         throw error;
