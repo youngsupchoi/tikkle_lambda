@@ -954,3 +954,29 @@ DELIMITER ;
 
 
 
+
+CREATE TABLE funnel_action (
+    id int NOT NULL,
+    description varchar(255) NOT NULL,
+    level int NOT NULL,
+    PRIMARY KEY(`id`)
+);
+INSERT INTO funnel_action (id, description, level) VALUES (1, '회원가입, 로그인', 1);
+INSERT INTO funnel_action (id, description, level) VALUES (2, '홈화면 이동', 1);
+INSERT INTO funnel_action (id, description, level) VALUES (3, '상품탭으로 이동', 2);
+INSERT INTO funnel_action (id, description, level) VALUES (4, '상품 상세 페이지로 이동', 2);
+INSERT INTO funnel_action (id, description, level) VALUES (5, '상품 검색', 2);
+INSERT INTO funnel_action (id, description, level) VALUES (6, '티클링 시작', 3);
+INSERT INTO funnel_action (id, description, level) VALUES (7, '첫 티클 수령 ', 4);
+INSERT INTO funnel_action (id, description, level) VALUES (8, '티클링 구매 및 전송', 4);
+
+CREATE TABLE funnel_log(
+    id int NOT NULL AUTO_INCREMENT,
+    user_id int NOT NULL,
+    funnel_action_id int NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    FOREIGN KEY (`funnel_action_id`) REFERENCES `funnel_action` (`id`)
+);
+
