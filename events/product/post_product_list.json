@@ -7,12 +7,12 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"category_id": 1,
-		"priceMin": 990,
+		"category_id": 0,
+		"priceMin": 0,
 		"priceMax": null,
 		"sortAttribute": "price",
 		"sortWay": "DESC",
-		"search": "아",
+		"search": null,
 		"getNum": 1
 	}
 }

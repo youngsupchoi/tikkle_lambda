@@ -1,13 +1,12 @@
 {
-  "resource": "/put_payment_refund",
-  "path": "/put_payment_refund",
-  "httpMethod": "PUT",
+  "resource": "/post_product_id",
+  "path": "/post_product_id",
+  "httpMethod": "POST",
   "headers": {
     "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjE2OTMzNjI5OTAsImlzcyI6IkxpRm9saSJ9.2q1rnumRYD5G6ZajAdHkU3HibgTRDbzhgGNFoPAw2qY,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjQyODUzNjIwOTAsImlzcyI6IkxpRm9saSJ9.3lO5YCgVXXzrz5LrodPQoccq11ZHvHdwKAflg22RXXc"
   },
   "queryStringParameters": null,
   "body": {
-    "merchant_uid": "0ba6e832a81faedd7dc4573a10585a5b",
-    "reason": "단순 변심"
+    "p_name": "베아트리체 카프리 호주산 양모이불 1종 PBT-1025 슈퍼싱글(SS) + 베개커버 1장 (그레이,블루 색상택일)"
   }
 }

@@ -120,7 +120,6 @@ exports.get_tikkling_info = async (req, res) => {
       return res.status(200).send(return_body);
     }
   } catch (error) {
-    console.log("에러 : ", error);
     if (error.message === "입력 오류: tikkling_id는 숫자여야 합니다.") {
       const return_body = {
         success: false,
@@ -130,7 +129,7 @@ exports.get_tikkling_info = async (req, res) => {
       };
       return res.status(400).send(return_body);
     } else {
-      console.error(`🚨error -> ⚡️post_tikkling_info : 🐞${err}`);
+      console.error(`🚨 error -> ⚡️ post_tikkling_info : 🐞${err}`);
       const return_body = {
         success: false,
         detail_code: "00",

@@ -71,7 +71,7 @@ exports.post_payment_finalize = async (req, res) => {
     //트랜잭션 롤백
     await db.rollbackTransaction();
 
-    console.error(`🚨error -> ⚡️ post_payment_finalize/${tikkleAction} : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_payment_finalize/${tikkleAction} : 🐞${err}`);
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     }
@@ -79,7 +79,7 @@ exports.post_payment_finalize = async (req, res) => {
   }
 
   //-------- send notification --------------------------------------------------------------------------------------//
-  console.log("sned noti ", receive_user_id, tikkling_id, send_user_id);
+  // console.log("sned noti ", receive_user_id, tikkling_id, send_user_id);
   try {
     //보내는 사람 정보
     try {
@@ -99,6 +99,9 @@ exports.post_payment_finalize = async (req, res) => {
 
     //DB에 알림 저장
     message = name + "님이 보낸 티클을 확인해보세요.";
+    if (send_user_id == receive_user_id) {
+      message = "직접 구매한 티클을 확인해보세요.";
+    }
     title = "티클 선물 🎁";
     link = "link_for_5";
     deep_link = "tikkle://tikklingDetail/" + tikkling_id.toString();
@@ -110,7 +113,7 @@ exports.post_payment_finalize = async (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [receive_user_id, message, 0, 0, 5, deep_link, link, null, source_user_id]
     );
-    console.log("notiDB : ", notiDB);
+    // console.log("notiDB : ", notiDB);
 
     ////푸시 알림
     //resiver 1명

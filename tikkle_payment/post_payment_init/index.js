@@ -56,7 +56,7 @@ exports.post_payment_init = async (req, res) => {
     return res.status(200).send(Response.create(true, "00", "결제 데이터 저장 완료", payment_param, returnToken));
   } catch (err) {
     await db.rollbackTransaction();
-    console.error(`🚨error -> ⚡️ post_payment_init/${tikkleAction} : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_payment_init/${tikkleAction} : 🐞${err}`);
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     }

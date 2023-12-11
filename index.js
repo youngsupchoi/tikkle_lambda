@@ -22,6 +22,7 @@ const { put_friend_block } = require("./tikkle_friend/put_friend_block/index.js"
 const { get_image_deleteProfile } = require("./tikkle_image/get_image_deleteProfile/index.js");
 const { get_image_profileSaveUrl } = require("./tikkle_image/get_image_profileSaveUrl/index.js");
 const { post_image_profileUrl } = require("./tikkle_image/post_image_profileUrl/index.js");
+const { post_product_id } = require("./tikkle_product/post_product_id/index.js");
 
 //notification
 const { get_notification_list } = require("./tikkle_notification/get_notification_list/index.js");
@@ -32,6 +33,7 @@ const { put_notification_delete } = require("./tikkle_notification/put_notificat
 const { post_product_images } = require("./tikkle_product/post_product_images/index.js");
 const { post_product_info } = require("./tikkle_product/post_product_info/index.js");
 const { post_product_list } = require("./tikkle_product/post_product_list/index.js");
+const { post_product_inputInfo } = require("./tikkle_product/post_product_inputInfo/index.js");
 const { put_product_viewIncrease } = require("./tikkle_product/put_product_viewIncrease/index.js");
 
 //tikkling
@@ -77,6 +79,7 @@ const { put_payment_refund } = require("./tikkle_payment/put_payment_refund/inde
 const { get_product_options } = require("./tikkle_product/get_product_options/index.js");
 const { post_product_brand } = require("./tikkle_product/post_product_brand/index.js");
 const { post_product_enrollment } = require("./tikkle_product/post_product_enrollment/index.js");
+const { get_tikkling_deliveryinfo } = require("./tikkle_tikkling/get_tikkling_deliveryinfo/index.js");
 
 //
 
@@ -134,7 +137,11 @@ api.post("/post_product_images", authtoken, post_product_images);
 
 api.post("/post_product_info", authtoken, post_product_info);
 
+api.post("/post_product_inputInfo", authtoken, post_product_inputInfo);
+
 api.post("/post_product_list", authtoken, post_product_list);
+
+api.post("/post_product_id", authtoken, post_product_id);
 
 api.put("/put_product_viewIncrease", authtoken, put_product_viewIncrease);
 
@@ -161,6 +168,8 @@ api.put("/put_tikkling_end/:type", authtoken, put_tikkling_end);
 api.put("/put_tikkling_cancel", authtoken, put_tikkling_cancel);
 
 api.put("/put_tikkling_stop", authtoken, put_tikkling_stop);
+
+api.get("/get_tikkling_deliveryinfo/:tikkling_id", authtoken, get_tikkling_deliveryinfo);
 
 //
 

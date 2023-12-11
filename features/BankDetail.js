@@ -23,9 +23,6 @@ class BankDetail {
       const iv = Buffer.from(accountivHex, "hex");
       const cipher = crypto.createCipheriv(algorithm, key, iv);
 
-      // console.log("key : ", key);
-      // console.log("iv : ", iv);
-
       let encryptedAccount = cipher.update(this.account, "utf-8", "hex");
       encryptedAccount += cipher.final("hex");
       this.account = encryptedAccount;

@@ -58,7 +58,7 @@ exports.get_friend_data = async (req, res) => {
     };
     return res.status(200).send(return_body);
   } catch (err) {
-    console.error(`🚨error -> ⚡️post_friend_data : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_friend_data : 🐞${err}`);
     const return_body = {
       success: false,
       detail_code: "00",

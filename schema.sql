@@ -75,7 +75,7 @@ CREATE TABLE `users` (
 	`nick` VARCHAR(30) NOT NULL,
 	`phone` VARCHAR(30) NOT NULL,
 	`is_deleted` BOOLEAN NOT NULL DEFAULT false,
-	`gender` ENUM('male', 'female', 'other') NOT NULL,
+	`gender` ENUM('male', 'female', 'others') NOT NULL,
 	`image` TEXT,
 	`zonecode` VARCHAR(255),
 	`address` VARCHAR(255),
@@ -86,11 +86,39 @@ CREATE TABLE `users` (
 	`tikkling_ticket` INT NOT NULL DEFAULT 0,
     `account` VARCHAR(255) DEFAULT NULL,
     `bank_code` INT,
+    `funnel` ENUM('share_link', 'meta_ad', 'unknown', 'friend') DEFAULT 'meta_ad',
 	PRIMARY KEY (`id`),
     FOREIGN KEY (`bank_code`) REFERENCES `bank`(`bank_code`),
 	UNIQUE (`nick`),
 	UNIQUE (`phone`)
 );
+
+-- CREATE TABLE 'funnel' (
+--     'id' INT NOT NULL AUTO_INCREMENT,
+--     'name' VARCHAR(255) NOT NULL,
+--     'level' INT NOT NULL,
+--     'description' TEXT NOT NULL,
+--     PRIMARY KEY ('id')
+-- );
+
+-- INSERT INTO funnel (id, name, level, description) VALUES
+-- (1, 'signup_and_signin', 1, '회원가입 후 로그인'),
+-- (2, 'open_home_screen', 1, '홈화면 오픈'),
+-- (3, 'open_product_screen', 2, '상품화면 오픈'),
+-- (4, 'open_product_detail_screen', 2, '상품 상세화면 오픈'),
+-- (5, 'search_product', 2, '상품 검색'),
+-- (6, 'tikkling_start', 3, '티클링 시작'),
+-- (7, 'recieve_tikkle', 4, '첫 티클 수령'),
+-- (8, 'buy_tikkle', 4, '티클 구매');
+
+-- CREATE TABLE user_funnel (
+--     user_id INT NOT NULL,
+--     funnel_id INT NOT NULL,
+--     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--     PRIMARY KEY (user_id, funnel_id),
+--     FOREIGN KEY (user_id) REFERENCES users(id),
+--     FOREIGN KEY (funnel_id) REFERENCES funnel(id)
+-- );
 
 
 CREATE TABLE `phones` (
@@ -165,10 +193,328 @@ CREATE TABLE `products` (
 	`thumbnail_image` TEXT NOT NULL,
 	`images` TEXT,
     `sales_volume` INT NOT NULL DEFAULT 0,
+    `noti_id` INT NOT NULL,
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`category_id`) REFERENCES `product_category`(`id`),
 	FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`)
 );
+
+
+-- 상품 고시정보 테이블들
+
+--3
+CREATE TABLE notice_bags (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+type VARCHAR(255) NOT NULL COMMENT '종류',
+material VARCHAR(255) NOT NULL COMMENT '소재',
+color VARCHAR(255) NOT NULL COMMENT '색상',
+size VARCHAR(255) NOT NULL COMMENT '크기',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자/수입자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+precautions TEXT NOT NULL COMMENT '취급시 주의사항',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--4
+CREATE TABLE notice_fashionaccessories (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+type VARCHAR(255) NOT NULL COMMENT '종류',
+material VARCHAR(255) NOT NULL COMMENT '소재',
+dimensions VARCHAR(255) NOT NULL COMMENT '치수',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자/수입자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+precautions TEXT NOT NULL COMMENT '취급시 주의사항',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--5
+CREATE TABLE notice_beddingscurtains (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+material TEXT NOT NULL COMMENT '제품 소재',
+color VARCHAR(255) NOT NULL COMMENT '색상',
+dimensions VARCHAR(255) NOT NULL COMMENT '치수',
+composition TEXT NOT NULL COMMENT '제품구성',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자/수입자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+washing_instructions_precautions TEXT NOT NULL COMMENT '세탁방법 및 취급시 주의사항',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증 기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--6
+CREATE TABLE notice_furniture (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명',
+kc_certification VARCHAR(255) NOT NULL COMMENT 'KC 인증정보',
+color VARCHAR(255) NOT NULL COMMENT '색상',
+composition TEXT NOT NULL COMMENT '구성품',
+main_material TEXT NOT NULL COMMENT '주요 소재',
+manufacturer_importer TEXT NOT NULL COMMENT '제조자/수입자',
+origin_country TEXT NOT NULL COMMENT '제조국',
+size VARCHAR(255) NOT NULL COMMENT '크기',
+refurbish_detail TEXT NOT NULL COMMENT '재공급 가구 정보',
+additional_installation_cost VARCHAR(255) NOT NULL COMMENT '배송/설치비용',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--7
+CREATE TABLE notice_video_appliances (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명 및 모델명',
+kc_certification VARCHAR(255) NOT NULL COMMENT 'KC 인증정보',
+rated_voltage VARCHAR(255) NOT NULL COMMENT '정격전압',
+power_consumption VARCHAR(255) NOT NULL COMMENT '소비전력',
+energy_efficiency_rating VARCHAR(255) NOT NULL COMMENT '에너지소비효율등급',
+release_date VARCHAR(255) NOT NULL COMMENT '동일모델의 출시년월',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자/수입자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+size VARCHAR(255) NOT NULL COMMENT '크기',
+shape TEXT NOT NULL COMMENT '형태',
+screen_specifications TEXT NOT NULL COMMENT '화면사양 (화면크기, 해상도, 화면비율 등)',
+additional_installation_cost VARCHAR(255) NOT NULL COMMENT '추가설치비용',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--8
+CREATE TABLE notice_homeappliances (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명 및 모델명',
+kc_certification VARCHAR(255) NOT NULL COMMENT 'KC 인증정보',
+rated_voltage VARCHAR(255) NOT NULL COMMENT '정격전압',
+power_consumption VARCHAR(255) NOT NULL COMMENT '소비전력',
+energy_efficiency_rating VARCHAR(255) NOT NULL COMMENT '에너지소비효율등급',
+release_date VARCHAR(255) NOT NULL COMMENT '동일모델의 출시년월',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자/수입자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+size VARCHAR(255) NOT NULL COMMENT '크기',
+capacity VARCHAR(255) NOT NULL COMMENT '용량',
+shape TEXT NOT NULL COMMENT '형태',
+additional_installation_cost VARCHAR(255) NOT NULL COMMENT '추가설치비용',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--9
+CREATE TABLE notice_seasonalappliances (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명 및 모델명',
+kc_certification VARCHAR(255) NOT NULL COMMENT 'KC 인증정보',
+rated_voltage VARCHAR(255) NOT NULL COMMENT '정격전압',
+power_consumption VARCHAR(255) NOT NULL COMMENT '소비전력',
+energy_efficiency_rating VARCHAR(255) NOT NULL COMMENT '에너지소비효율등급',
+release_date VARCHAR(255) NOT NULL COMMENT '동일모델의 출시년월',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자/수입자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+size TEXT NOT NULL COMMENT '크기 (실외기 포함)',
+shape TEXT NOT NULL COMMENT '형태 (실외기 포함)',
+heating_cooling_area VARCHAR(255) NOT NULL COMMENT '냉난방면적',
+additional_installation_cost VARCHAR(255) NOT NULL COMMENT '추가설치비용',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--10
+CREATE TABLE notice_officeequipment (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명 및 모델명',
+kc_certification VARCHAR(255) NOT NULL COMMENT 'KC 인증정보',
+rated_voltage VARCHAR(255) NOT NULL COMMENT '정격전압',
+power_consumption VARCHAR(255) NOT NULL COMMENT '소비전력',
+energy_efficiency_rating VARCHAR(255) NOT NULL COMMENT '에너지소비효율등급',
+release_date VARCHAR(255) NOT NULL COMMENT '동일모델의 출시년월',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자/수입자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+size TEXT NOT NULL COMMENT '크기',
+weight VARCHAR(255) NOT NULL COMMENT '무게 (노트북 등 휴대형 기기에 한함)',
+major_specifications TEXT NOT NULL COMMENT '주요 사양',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--11
+CREATE TABLE notice_opticalequipment (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명 및 모델명',
+kc_certification VARCHAR(255) NOT NULL COMMENT 'KC 인증정보',
+release_date VARCHAR(255) NOT NULL COMMENT '동일모델의 출시년월',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자/수입자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+size VARCHAR(255) NOT NULL COMMENT '크기',
+weight VARCHAR(255) NOT NULL COMMENT '무게',
+major_specifications TEXT NOT NULL COMMENT '주요 사양',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--12
+CREATE TABLE notice_smallelectronics (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명 및 모델명',
+kc_certification VARCHAR(255) NOT NULL COMMENT 'KC 인증정보',
+rated_voltage VARCHAR(255) NOT NULL COMMENT '정격전압',
+power_consumption VARCHAR(255) NOT NULL COMMENT '소비전력',
+release_date VARCHAR(255) NOT NULL COMMENT '동일모델의 출시년월',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자, 수입자 정보',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+size VARCHAR(255) NOT NULL COMMENT '크기',
+weight VARCHAR(255) NOT NULL COMMENT '무게',
+major_specifications TEXT NOT NULL COMMENT '주요 사양',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--13
+CREATE TABLE notice_portablecommunicationdevices (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명 및 모델명',
+kc_certification VARCHAR(255) NOT NULL COMMENT 'KC 인증정보',
+release_date VARCHAR(255) NOT NULL COMMENT '동일모델의 출시년월',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자, 수입자 정보',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+size VARCHAR(255) NOT NULL COMMENT '크기',
+weight VARCHAR(255) NOT NULL COMMENT '무게',
+mobile_carrier VARCHAR(255) NOT NULL COMMENT '이동통신사',
+registration_process TEXT NOT NULL COMMENT '가입절차',
+additional_burden TEXT NOT NULL COMMENT '소비자의 추가적인 부담사항',
+major_specifications TEXT NOT NULL COMMENT '주요 사양',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--17
+CREATE TABLE notice_kitchenware (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명 및 모델명',
+material VARCHAR(255) NOT NULL COMMENT '재질',
+composition TEXT NOT NULL COMMENT '구성품',
+size VARCHAR(255) NOT NULL COMMENT '크기',
+release_date VARCHAR(255) NOT NULL COMMENT '동일모델의 출시년월',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자 및 수입자 정보',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+import_food_safety_management_law_statement VARCHAR(255) NOT NULL COMMENT '수입식품안전관리 특별법에 따른 문구',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--18
+CREATE TABLE notice_cosmetics (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+content_weight VARCHAR(255) NOT NULL COMMENT '내용물의 용량 또는 중량',
+major_specifications TEXT NOT NULL COMMENT '제품 주요 사양',
+expiry_date_usage_period TEXT NOT NULL COMMENT '사용기한 또는 개봉 후 사용기간',
+directions_for_use TEXT NOT NULL COMMENT '사용방법',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '화장품제조업자, 화장품책임판매업자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+ingredients TEXT NOT NULL COMMENT '모든 성분',
+functional_cosmetics_statement VARCHAR(255) NOT NULL COMMENT '기능성 화장품에 대한 문구',
+precautions TEXT NOT NULL COMMENT '사용할 때의 주의사항',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_phone VARCHAR(255) NOT NULL COMMENT '소비자 상담 관련 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--19
+CREATE TABLE notice_jewelry_watches (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+material_purity_band_material VARCHAR(255) NOT NULL COMMENT '소재 / 순도 / 밴드재질',
+weight VARCHAR(255) NOT NULL COMMENT '중량',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자 / 수입자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+dimensions VARCHAR(255) NOT NULL COMMENT '치수',
+wearing_cautions TEXT NOT NULL COMMENT '착용시 주의사항',
+major_specifications TEXT NOT NULL COMMENT '주요 사양',
+jewelry_grade VARCHAR(255) NOT NULL COMMENT '귀금속, 보석류 등급',
+watches_features VARCHAR(255) NOT NULL COMMENT '시계 기능, 방수 등',
+warranty_provided VARCHAR(255) NOT NULL COMMENT '보증서 제공 여부',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+
+--24
+CREATE TABLE notice_musical_instruments (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명 및 모델명',
+size VARCHAR(255) NOT NULL COMMENT '크기',
+color VARCHAR(255) NOT NULL COMMENT '색상',
+material VARCHAR(255) NOT NULL COMMENT '재질',
+composition TEXT NOT NULL COMMENT '제품 구성',
+release_date VARCHAR(255) NOT NULL COMMENT '동일모델의 출시년월',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자 / 수입자',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+specific_specifications TEXT NOT NULL COMMENT '상품별 세부 사양',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+--25
+CREATE TABLE notice_sports_equipment (
+product_id INT PRIMARY KEY COMMENT '제품 ID',
+p_name VARCHAR(255) NOT NULL COMMENT '상품명',
+product_model VARCHAR(255) NOT NULL COMMENT '품명 및 모델명',
+kc_certification TEXT NOT NULL COMMENT 'KC 인증정보',
+size VARCHAR(255) NOT NULL COMMENT '크기',
+weight VARCHAR(255) NOT NULL COMMENT '중량',
+color VARCHAR(255) NOT NULL COMMENT '색상',
+material VARCHAR(255) NOT NULL COMMENT '재질',
+composition TEXT NOT NULL COMMENT '제품 구성',
+release_date VARCHAR(255) NOT NULL COMMENT '동일모델의 출시년월',
+manufacturer_importer VARCHAR(255) NOT NULL COMMENT '제조자, 수입자 정보',
+origin_country VARCHAR(255) NOT NULL COMMENT '제조국',
+specific_specifications TEXT NOT NULL COMMENT '상품별 세부 사양',
+quality_assurance_standard VARCHAR(255) NOT NULL COMMENT '품질보증기준',
+as_manager VARCHAR(255) NOT NULL COMMENT 'A/S 책임자',
+as_phone VARCHAR(255) NOT NULL COMMENT 'A/S 전화번호',
+FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
 
 CREATE TABLE `user_wish_list` ( 
 	`user_id` INT NOT NULL,
@@ -226,6 +572,8 @@ CREATE TABLE `product_option` (
 	FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
 );
 
+
+
 CREATE TABLE `option_combination` (
 	`id` INT NOT NULL AUTO_INCREMENT,
     `product_id` INT NOT NULL,
@@ -269,6 +617,7 @@ CREATE TABLE `tikkling` (
     `type` VARCHAR(255) NOT NULL,
     `resolution_type` ENUM('goods', 'refund', 'cancel') NULL,
     `option_combination_id` INT NULL,
+    `share_link` VARCHAR(255),
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`product_id`) REFERENCES `products`(`id`),
@@ -277,6 +626,25 @@ CREATE TABLE `tikkling` (
     UNIQUE (`id`)
 );
 
+CREATE TABLE share_link_funnle_log (
+    `tikkling_id` INT NOT NULL,
+    `click` INT NOT NULL DEFAULT 0,
+    `app_open` INT NOT NULL DEFAULT 0,
+    `sign_up` INT NOT NULL DEFAULT 0,
+    `send_tikkle` INT NOT NULL DEFAULT 0,
+    PRIMARY KEY (`tikkling_id`),
+    FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`)
+);
+
+
+
+CREATE TABLE shared_tikkling_signup_log(
+    `tikkling_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    PRIMARY KEY (`tikkling_id`, `user_id`),
+    FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+);
 
 DELIMITER //
 -- 티클링이 하나 추가될 때 해당 유저의 is_tikkling을 true로 바꿈

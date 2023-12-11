@@ -70,6 +70,9 @@ exports.post_notification_send = async (req, res) => {
     //
   } else if (notification_type_id === 5) {
     message = name + "님이 보낸 티클을 확인해보세요.";
+    if (receive_user_id == id) {
+      message = "직접 구매한 티클을 확인해보세요.";
+    }
     title = "🎁 티클 선물";
     link = "link_for_5";
     deep_link = "tikkle://tikklingDetail/" + tikkling_id.toString();
@@ -109,6 +112,10 @@ exports.post_notification_send = async (req, res) => {
     }
 
     receive_user_id = sqlResult_tikkling[0].user_id;
+
+    if (receive_user_id == id) {
+      message = "직접 구매하신 티클의 환불이 완료되었어요.";
+    }
     //
   } else if (notification_type_id === 9) {
     message = "티클링 환급 신청이 완료되었어요.";

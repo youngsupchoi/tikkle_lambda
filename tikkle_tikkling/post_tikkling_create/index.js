@@ -15,7 +15,7 @@ exports.post_tikkling_create = async (req, res) => {
   await db.openTransaction();
   try {
     const product = await Product.createById({ id: product_id, db });
-    await product.loadAllProductOptions();
+    await product.loadProductOptions();
     await product.updateSelectedOption(product_option);
     await product.loadSelectedProductOptionCombination();
 
@@ -41,7 +41,7 @@ exports.post_tikkling_create = async (req, res) => {
     let tikkling_id = null;
     [tikkling_id] = await Promise.all([
       //티클링 생성
-      new_tikkling.saveTikkling(),
+      new_tikkling.saveTikkling(user.name),
       //상품의 재고를 감소시킴
       product.decreaseProductQuantity(),
       //유저의 티클링 티켓을 감소시킴
@@ -55,7 +55,7 @@ exports.post_tikkling_create = async (req, res) => {
     return res.status(200).send(Response.create(true, "00", "티클링 생성을 성공하였습니다.", { tikkling_id }, returnToken));
   } catch (err) {
     await db.rollbackTransaction();
-    console.error(`🚨error -> ⚡️ post_tikkling_create : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_tikkling_create : 🐞${err}`);
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     }

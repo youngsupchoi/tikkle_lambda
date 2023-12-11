@@ -21,7 +21,7 @@ exports.post_product_brand = async (req, res) => {
     return res.status(200).send(Response.create(true, "00", "브랜드 id를 성공적으로 불러왔습니다", list_of_brand, returnToken));
   } catch (err) {
     await db.rollbackTransaction();
-    console.error(`🚨error -> ⚡️ post_product_brand : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_product_brand : 🐞${err}`);
     if (err.status) {
       return res.status(err.status).send(Response.create(false, err.detail_code, err.message));
     }

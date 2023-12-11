@@ -38,7 +38,7 @@ exports.post_tikkling_receivedTikkle = async (req, res) => {
     };
     return res.status(200).send(return_body);
   } catch (err) {
-    console.error(`🚨error -> ⚡️post_tikkling_receivedTikkle : 🐞${err}`);
+    console.error(`🚨 error -> ⚡️ post_tikkling_receivedTikkle : 🐞${err}`);
     const return_body = {
       success: false,
       detail_code: "00",

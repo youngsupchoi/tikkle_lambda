@@ -24,7 +24,7 @@ exports.get_user_myWishlist = async (req, res) => {
     sqlResult = rows;
     console.log("SQL result : ", sqlResult);
   } catch (err) {
-    console.log(" get_user_myWishlist 에서 에러가 발생했습니다.", err);
+    console.error(`🚨 error -> ⚡️ get_user_myWishlist : 🐞 ${err}`);
     const return_body = {
       success: false,
       detail_code: "00",

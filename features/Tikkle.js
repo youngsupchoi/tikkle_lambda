@@ -94,7 +94,6 @@ class Tikkle {
 	 */
   async updateTikkleToFail() {
     try {
-      console.log("🚀 ~ file: Tikkle.js:100 ~ Tikkle ~ updateTikkleToFail ~ db:", db);
       const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`, [this.merchant_uid]);
       if (result.affectedRows == 0) {
         throw new ExpectedError({
@@ -132,7 +131,6 @@ class Tikkle {
     try {
       const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 3 WHERE merchant_uid = ?`, [this.merchant_uid]);
 
-      // console.log("&&&&&&&&&&&&& : ", result);
       if (result.affectedRows == 0) {
         console.error(`🚨 error -> ⚡️ updateTikkleToRefund : 🐞 ${"데이터가 DB상에 반영되지 않음"}`);
         throw new ExpectedError({
@@ -154,6 +152,48 @@ class Tikkle {
   }
 
   /**
+   *      //state 가 4이고 terminate 가 없으면 state->4
+   * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
+   * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
+   * @memberof Payment
+   * @instance
+   * @async
+   * @example
+   * const payment = new Payment({ user_id: 1, amount: 10000 });
+   * await payment.updateTikkleToRefund();
+   * // => { affectedRows: 1, insertId: 1, warningStatus: 0 }
+   * // => sending_tikkle.state_id = 3
+   */
+  async restart_tikkling() {
+    try {
+      //console.log("this.tikkling_id: ", this.tikkling_id);
+      const result = await this.db.executeQuery(`SELECT * FROM tikkling  WHERE id = ?`, [this.tikkling_id]);
+
+      const res = result[0];
+      // console.log("res: ", res.user_id);
+
+      if (res.state_id == 4 && res.terminated_at == null) {
+        const temp = await this.db.executeQuery(`UPDATE tikkling SET state_id = 1 WHERE id = ?`, [this.tikkling_id]);
+
+        if (temp.affectedRows == 0) {
+          console.error(`🚨 error -> ⚡️ restart_tikkling : 🐞 ${"데이터가 DB상에 반영되지 않음"}`);
+          throw new ExpectedError({
+            status: "500",
+            message: `서버에러 : restart_tikkling 쿼리결과`,
+            detail_code: "00",
+          });
+        }
+        return res.user_id;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.error(`🚨 error -> ⚡️ restart_tikkling : 🐞 ${err}`);
+      throw err;
+    }
+  }
+
+  /**
    * Asynchronously updates the sending_tikkle state_id to 6, "결제 실패" in the database.
    * @returns {Promise<Object>} - A promise that resolves with the results of the query, including affectedRows, insertId, and warningStatus.
    * @throws {ExpectedError} Throws an ExpectedError with status 500 if the database query fails.
@@ -170,7 +210,6 @@ class Tikkle {
     try {
       const result = await this.db.executeQuery(`UPDATE sending_tikkle SET state_id = 6 WHERE merchant_uid = ?`, [this.merchant_uid]);
 
-      // console.log("&&&&&&&&&&&&& : ", result);
       if (result.affectedRows == 0) {
         console.error(`🚨 error -> ⚡️ updateTikkleToFail : 🐞 ${"데이터가 DB상에 반영되지 않음"}`);
         throw new ExpectedError({
@@ -266,7 +305,7 @@ class Tikkle {
 	 */
   compareStoredTikkleData({ user_id }) {
     if (this.user_id !== user_id) {
-      console.error(`🚨error -> ⚡️ compareStoredTikkleData : 🐞사용자가 일치하지 않습니다.`);
+      console.error(`🚨 error -> ⚡️ compareStoredTikkleData : 🐞사용자가 일치하지 않습니다.`);
       throw new ExpectedError({
         status: "401",
         message: `비정상적 접근 : 다른 사용자의 결제 정보`,
@@ -357,7 +396,7 @@ class Tikkle {
 
       return "Bearer " + response.response.access_token;
     } catch (error) {
-      console.error(`🚨error -> ⚡️ getPortOneApiToken : 🐞import token get error`);
+      console.error(`🚨 error -> ⚡️ getPortOneApiToken : 🐞import token get error`);
       throw new ExpectedError({
         status: "500",
         message: `서버에러: 아임포트 토큰 가져오기 실패`,
@@ -384,7 +423,7 @@ class Tikkle {
       });
       //FIXME: 조건 수정 요함
       if (!response.data) {
-        console.error(`🚨error -> ⚡️ callPortOneCancelPaymentAPI : 🐞import token get error`);
+        console.error(`🚨 error -> ⚡️ callPortOneCancelPaymentAPI : 🐞import token get error`);
         throw new ExpectedError({
           status: "500",
           message: `서버에러 : 아임포트 결제 취소 실패`,
@@ -413,7 +452,7 @@ class Tikkle {
   async checkTikkleCanRefund() {
     try {
       if (this.state_id !== 1) {
-        console.error(`🚨error -> ⚡️ checkTikkleCanRefund : 🐞payment state is not 1`);
+        console.error(`🚨 error -> ⚡️ checkTikkleCanRefund : 🐞payment state is not 1`);
         throw new ExpectedError({
           status: "403",
           message: `사용 혹은 결제되지 않은 티클에 대한 환불 신청`,
@@ -441,7 +480,7 @@ class Tikkle {
         });
       }
     } catch (error) {
-      console.error(`🚨error -> ⚡️ assertTikkleIsNotPaid : 🐞${error}`);
+      console.error(`🚨 error -> ⚡️ assertTikkleIsNotPaid : 🐞${error}`);
       throw error;
     }
   }
