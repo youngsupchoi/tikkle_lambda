@@ -8,6 +8,7 @@ exports.post_auth_registerUser = async (req, res) => {
   const nick = body.nick;
   const phone = body.phone;
   const gender = body.gender;
+  const source_tikkling_id = body.source_tikkling_id;
 
   console.log("body : ", body);
 
@@ -97,22 +98,39 @@ exports.post_auth_registerUser = async (req, res) => {
 
   const insertQuery = `
 		INSERT INTO users 
-		(name, birthday, nick, phone, gender, image, address, detail_address, is_tikkling, tikkling_ticket)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		(name, birthday, nick, phone, gender, image, address, detail_address, is_tikkling, tikkling_ticket, funnel)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	  `;
+  let funnel;
+  if (source_tikkling_id) {
+    funnel = 'share_link';
+  } else {
+    funnel = 'meta_ad';
+  }
 
-  const values = [name, birthday, nick, phone, gender, "https://d2da4yi19up8sp.cloudfront.net/profile/profile.png", null, null, false, 2];
+  
+
+  const values = [name, birthday, nick, phone, gender, "https://d2da4yi19up8sp.cloudfront.net/profile/profile.png", null, null, false, 2, funnel];
 
   try {
     const rows = await queryDatabase(insertQuery, values);
     sqlResult = rows;
+    if (source_tikkling_id) {
+      const insertQuery = `
+      INSERT INTO shared_tikkling_signup_log (tikkling_id, user_id)
+      VALUES (?, ?)
+      `;
+      const values = [source_tikkling_id, sqlResult.insertId];
+      await queryDatabase(insertQuery, values);
+    }
+
     //console.log("SQL result : ", sqlResult.insertId);
   } catch (err) {
-    console.log(" post_auth_registerUser 에서 에러가 발생했습니다.");
+    console.log("🚨 post_auth_registerUser 에서 에러가 발생했습니다.");
     const return_body = {
       success: false,
       detail_code: "00",
-      message: "Database post error",
+      message: err,
       returnToken: null,
     };
     return res.status(500).send(return_body);

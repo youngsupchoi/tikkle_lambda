@@ -86,11 +86,39 @@ CREATE TABLE `users` (
 	`tikkling_ticket` INT NOT NULL DEFAULT 0,
     `account` VARCHAR(255) DEFAULT NULL,
     `bank_code` INT,
+    `funnel` ENUM('share_link', 'meta_ad', 'unknown', 'friend') DEFAULT 'meta_ad',
 	PRIMARY KEY (`id`),
     FOREIGN KEY (`bank_code`) REFERENCES `bank`(`bank_code`),
 	UNIQUE (`nick`),
 	UNIQUE (`phone`)
 );
+
+-- CREATE TABLE 'funnel' (
+--     'id' INT NOT NULL AUTO_INCREMENT,
+--     'name' VARCHAR(255) NOT NULL,
+--     'level' INT NOT NULL,
+--     'description' TEXT NOT NULL,
+--     PRIMARY KEY ('id')
+-- );
+
+-- INSERT INTO funnel (id, name, level, description) VALUES
+-- (1, 'signup_and_signin', 1, '회원가입 후 로그인'),
+-- (2, 'open_home_screen', 1, '홈화면 오픈'),
+-- (3, 'open_product_screen', 2, '상품화면 오픈'),
+-- (4, 'open_product_detail_screen', 2, '상품 상세화면 오픈'),
+-- (5, 'search_product', 2, '상품 검색'),
+-- (6, 'tikkling_start', 3, '티클링 시작'),
+-- (7, 'recieve_tikkle', 4, '첫 티클 수령'),
+-- (8, 'buy_tikkle', 4, '티클 구매');
+
+-- CREATE TABLE user_funnel (
+--     user_id INT NOT NULL,
+--     funnel_id INT NOT NULL,
+--     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--     PRIMARY KEY (user_id, funnel_id),
+--     FOREIGN KEY (user_id) REFERENCES users(id),
+--     FOREIGN KEY (funnel_id) REFERENCES funnel(id)
+-- );
 
 
 CREATE TABLE `phones` (
@@ -589,6 +617,7 @@ CREATE TABLE `tikkling` (
     `type` VARCHAR(255) NOT NULL,
     `resolution_type` ENUM('goods', 'refund', 'cancel') NULL,
     `option_combination_id` INT NULL,
+    `share_link` VARCHAR(255),
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY (`product_id`) REFERENCES `products`(`id`),
@@ -597,6 +626,25 @@ CREATE TABLE `tikkling` (
     UNIQUE (`id`)
 );
 
+CREATE TABLE share_link_funnle_log (
+    `tikkling_id` INT NOT NULL,
+    `click` INT NOT NULL DEFAULT 0,
+    `app_open` INT NOT NULL DEFAULT 0,
+    `sign_up` INT NOT NULL DEFAULT 0,
+    `send_tikkle` INT NOT NULL DEFAULT 0,
+    PRIMARY KEY (`tikkling_id`),
+    FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`)
+);
+
+
+
+CREATE TABLE shared_tikkling_signup_log(
+    `tikkling_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    PRIMARY KEY (`tikkling_id`, `user_id`),
+    FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+);
 
 DELIMITER //
 -- 티클링이 하나 추가될 때 해당 유저의 is_tikkling을 true로 바꿈

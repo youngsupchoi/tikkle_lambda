@@ -7,10 +7,13 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"funding_limit": "2023-11-30",
+		"funding_limit": "2023-12-10",
 		"tikkle_quantity": 3,
 		"product_id": 4,
 		"type": "기타",
-		"product_option": {"color": "yellow", "size": "L"}
+		"product_option": {
+			"color": "yellow",
+			"size": "L"
+		}
 	}
 }
