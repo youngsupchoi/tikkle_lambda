@@ -10,7 +10,7 @@ exports.get_auth_version = async (req, res) => {
   if (os === "android") {
     get = "tikkle_version_android";
   }
-  const version = await getSSMParameter("tikkle_version");
+  const version = await getSSMParameter(get);
 
   //---- return result ----//
 
