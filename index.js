@@ -97,7 +97,7 @@ api.post("/post_auth_registerUser", post_auth_registerUser);
 
 api.post("/post_auth_tokenGenerate", post_auth_tokenGenerate);
 
-api.get("/get_auth_version", get_auth_version);
+api.get("/get_auth_version/:os", get_auth_version);
 
 //
 
