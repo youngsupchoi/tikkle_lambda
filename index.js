@@ -81,6 +81,7 @@ const { get_product_options } = require("./tikkle_product/get_product_options/in
 const { post_product_brand } = require("./tikkle_product/post_product_brand/index.js");
 const { post_product_enrollment } = require("./tikkle_product/post_product_enrollment/index.js");
 const { get_tikkling_deliveryinfo } = require("./tikkle_tikkling/get_tikkling_deliveryinfo/index.js");
+const { actionFunnelLogger } = require("./actinoFunnelLogger.js");
 
 //
 
@@ -92,7 +93,7 @@ api.get("/get_auth_checkToken", get_auth_checkToken);
 api.post("/post_auth_IdDuplicationCheck", post_auth_IdDuplicationCheck);
 
 api.post("/post_auth_phoneCheck", post_auth_phoneCheck);
-
+// 유저 funnel logging
 api.post("/post_auth_registerUser", post_auth_registerUser);
 
 api.post("/post_auth_tokenGenerate", post_auth_tokenGenerate);
@@ -137,12 +138,12 @@ api.put("/put_notification_delete", authtoken, put_notification_delete);
 
 //------- product
 api.post("/post_product_images", authtoken, post_product_images);
-
-api.post("/post_product_info", authtoken, post_product_info);
+// 유저 funnel logging
+api.post("/post_product_info", authtoken, actionFunnelLogger, post_product_info);
 
 api.post("/post_product_inputInfo", authtoken, post_product_inputInfo);
-
-api.post("/post_product_list", authtoken, post_product_list);
+// 유저 funnel logging
+api.post("/post_product_list", authtoken, actionFunnelLogger, post_product_list);
 
 api.post("/post_product_id", authtoken, post_product_id);
 
@@ -157,12 +158,12 @@ api.post("/post_product_enrollment", authtoken, post_product_enrollment);
 
 //------- tikkling
 api.get("/get_tikkling_friendinfo", authtoken, get_tikkling_friendinfo);
-
-api.get("/get_tikkling_info/:tikkling_id", authtoken, get_tikkling_info);
+// 유저 funnel logging
+api.get("/get_tikkling_info/:tikkling_id", authtoken, actionFunnelLogger, get_tikkling_info);
 
 api.post("/post_tikkling_receivedTikkle", authtoken, post_tikkling_receivedTikkle);
-
-api.post("/post_tikkling_create", authtoken, post_tikkling_create);
+// 유저 funnel logging
+api.post("/post_tikkling_create", authtoken, actionFunnelLogger, post_tikkling_create);
 
 api.post("/post_user_getTikklingDetail", authtoken, post_user_getTikklingDetail);
 
