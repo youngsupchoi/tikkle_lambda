@@ -3,9 +3,13 @@ const { getSSMParameter } = require("ssm.js");
 
 exports.get_auth_version = async (req, res) => {
   const body = req.body;
+  const { os } = req.params;
 
   //---- check ssm there is number or not ----//
-
+  let get = "tikkle_version";
+  if (os === "android") {
+    get = "tikkle_version_android";
+  }
   const version = await getSSMParameter("tikkle_version");
 
   //---- return result ----//
