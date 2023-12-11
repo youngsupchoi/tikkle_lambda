@@ -967,7 +967,9 @@ INSERT INTO funnel_action (id, description, level) VALUES (3, '상품탭으로 �
 INSERT INTO funnel_action (id, description, level) VALUES (4, '상품 상세 페이지로 이동', 2);
 INSERT INTO funnel_action (id, description, level) VALUES (5, '상품 검색', 2);
 INSERT INTO funnel_action (id, description, level) VALUES (6, '티클링 시작', 3);
+-- 직접 업데이트
 INSERT INTO funnel_action (id, description, level) VALUES (7, '첫 티클 수령 ', 4);
+-- 직접 업데이트
 INSERT INTO funnel_action (id, description, level) VALUES (8, '티클링 구매 및 전송', 4);
 
 CREATE TABLE funnel_log(
