@@ -231,6 +231,11 @@ api.put("/put_payment_refund", authtoken, put_payment_refund);
 
 //
 
+api.post("/apple_login_test", (req, res) => {
+  console.log(req.body);
+  res.status(200).json({ message: "success" });
+});
+
 //-------- handler ------------------------------------------------//
 
 exports.handler = async (req, context) => {
