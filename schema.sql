@@ -982,3 +982,16 @@ CREATE TABLE funnel_log(
     FOREIGN KEY (`funnel_action_id`) REFERENCES `funnel_action` (`id`)
 );
 
+CREATE TABLE user_invite_event_attandance (
+    id int NOT NULL AUTO_INCREMENT,
+    invited_user_id int NOT NULL,
+    sending_tikkle_id int NOT NULL,
+    bonus_tikkle_id int NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY (`invited_user_id`) REFERENCES `users` (`id`),
+    FOREIGN KEY (`sending_tikkle_id`) REFERENCES `sending_tikkle` (`id`),
+    FOREIGN KEY (`bonus_tikkle_id`) REFERENCES `sending_tikkle` (`id`)
+);
+
+
