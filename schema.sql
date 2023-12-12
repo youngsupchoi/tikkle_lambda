@@ -994,4 +994,4 @@ CREATE TABLE user_invite_event_attandance (
     FOREIGN KEY (`bonus_tikkle_id`) REFERENCES `sending_tikkle` (`id`)
 );
 
-
+INSERT INTO users (id, name, birthday, nick, phone, gender,image) values (0, 'TIKKLE', '2023-12-01', 'TIKKLE', '01000000000', 'male', 'https://d2da4yi19up8sp.cloudfront.net/profile/profile.png');
