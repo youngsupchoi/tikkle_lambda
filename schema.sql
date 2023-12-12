@@ -4,6 +4,13 @@ CREATE DATABASE tikkle_db
 
 use tikkle_db;
 
+CREATE TABLE invalid_version (
+    os ENUM('android', 'ios') NOT NULL,
+    version VARCHAR(255) NOT NULL,
+    PRIMARY KEY (os, version)
+);
+
+
 CREATE TABLE bank (
     bank_code INT PRIMARY KEY,
     bank_name VARCHAR(255),

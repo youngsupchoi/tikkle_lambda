@@ -11,7 +11,7 @@ const { post_auth_IdDuplicationCheck } = require("./tikkle_auth/post_auth_IdDupl
 const { post_auth_phoneCheck } = require("./tikkle_auth/post_auth_phoneCheck/index.js");
 const { post_auth_registerUser } = require("./tikkle_auth/post_auth_registerUser/index.js");
 const { post_auth_tokenGenerate } = require("./tikkle_auth/post_auth_tokenGenerate/index.js");
-const { get_auth_version } = require("./tikkle_auth/get_auth_version/index.js");
+const { post_auth_version } = require("./tikkle_auth/post_auth_version/index.js");
 
 //friend
 const { get_friend_data } = require("./tikkle_friend/get_friend_data/index.js");
@@ -101,7 +101,7 @@ api.post("/post_auth_registerUser", post_auth_registerUser);
 
 api.post("/post_auth_tokenGenerate", post_auth_tokenGenerate);
 
-api.get("/get_auth_version/:os", get_auth_version);
+api.post("/post_auth_version", post_auth_version);
 
 //
 
