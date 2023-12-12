@@ -1,8 +1,11 @@
 {
-  "resource": "/get_auth_version",
-  "path": "/get_auth_version",
-  "httpMethod": "GET",
+  "resource": "/post_auth_version",
+  "path": "/post_auth_version",
+  "httpMethod": "POST",
   "headers": {},
   "queryStringParameters": null,
-  "body": {}
+  "body": {
+    "os": "ios",
+    "version": "1.0.12"
+  }
 }
