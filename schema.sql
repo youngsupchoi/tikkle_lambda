@@ -79,7 +79,7 @@ CREATE TABLE `users` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(30) NOT NULL,
 	`birthday` DATE NOT NULL,
-	`nick` VARCHAR(30) NOT NULL,
+	`nick` VARCHAR(30),
 	`phone` VARCHAR(30) NOT NULL,
 	`is_deleted` BOOLEAN NOT NULL DEFAULT false,
 	`gender` ENUM('male', 'female', 'others') NOT NULL,
