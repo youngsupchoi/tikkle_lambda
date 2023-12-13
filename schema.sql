@@ -96,7 +96,6 @@ CREATE TABLE `users` (
     `funnel` ENUM('share_link', 'meta_ad', 'unknown', 'friend') DEFAULT 'meta_ad',
 	PRIMARY KEY (`id`),
     FOREIGN KEY (`bank_code`) REFERENCES `bank`(`bank_code`),
-	UNIQUE (`nick`),
 	UNIQUE (`phone`)
 );
 
