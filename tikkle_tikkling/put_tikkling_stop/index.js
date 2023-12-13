@@ -7,12 +7,7 @@ exports.put_tikkling_stop = async (req, res) => {
   //main logic------------------------------------------------------------------------------------------------------------------//
   try {
     //티클링이 상태가 이미 변화했는지 확인
-    const check_tikkling = await queryDatabase(
-      `select tikkling.*, count(sending_tikkle.id) as sending_tikkle_count 
-      from tikkling left join sending_tikkle on tikkling.id = sending_tikkle.tikkling_id 
-      where tikkling.id = ? group by tikkling.id;`,
-      [req.body.tikkling_id]
-    );
+    const check_tikkling = await queryDatabase(`select * from active_tikkling_view where tikkling_id = ?`, [req.body.tikkling_id]);
     //티클링이 없는 경우
     if (check_tikkling.length == 0) {
       console.log("비정상적 요청-put_tikkling_end: 티클링을 찾을 수 없습니다.");
@@ -34,6 +29,15 @@ exports.put_tikkling_stop = async (req, res) => {
         returnToken,
       };
       return res.status(400).send(return_body);
+    } else if (check_tikkling[0].tikkle_count == 0) {
+      console.log("bad_request-put_tikkling_stop: 티클링 조각이 없는 티클링에 대해서 중단을 요청");
+      const return_body = {
+        success: false,
+        detail_code: "00",
+        message: "티클링 조각이 없는 티클링입니다.",
+        returnToken,
+      };
+      return res.status(401).send(return_body);
     }
 
     const rows = await queryDatabase("UPDATE tikkling SET state_id = 3 WHERE id = ?;", [req.body.tikkling_id]);
