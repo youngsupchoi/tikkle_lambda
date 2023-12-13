@@ -94,9 +94,13 @@ CREATE TABLE `users` (
     `account` VARCHAR(255) DEFAULT NULL,
     `bank_code` INT,
     `funnel` ENUM('share_link', 'meta_ad', 'unknown', 'friend') DEFAULT 'meta_ad',
+	`kakao_email` VARCHAR(255),
+	`apple_id` VARCHAR(255),
 	PRIMARY KEY (`id`),
     FOREIGN KEY (`bank_code`) REFERENCES `bank`(`bank_code`),
 	UNIQUE (`phone`)
+	UNIQUE (`kakao_email`)
+	UNIQUE (`apple_id`)
 );
 
 -- CREATE TABLE 'funnel' (
