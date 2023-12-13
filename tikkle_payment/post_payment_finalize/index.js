@@ -5,6 +5,7 @@ const { ExpectedError } = require("../../features/ExpectedError");
 const { DBManager } = require("../../db");
 const { queryDatabase } = require("db.js");
 const { fcm_send, fcm_send_many } = require("fcm.js");
+const { InviteEventManager } = require("../../features/InviteEventManager");
 
 exports.post_payment_finalize = async (req, res) => {
   const { body, id, returnToken, params } = req;
@@ -48,7 +49,19 @@ exports.post_payment_finalize = async (req, res) => {
     send_user_id = tikkle.user_id;
 
     //DB상 결제 완료 처리
+    // 보너스티클이 전체 티클 개수를 초과하면 미지급
+    // 보너스 티클이 만약 마지막 조각이라면 티클링 (완료)중단처리
+    // 나의 티클 결제일경우 미지급
     await tikkle.completeTikklePayment();
+    if (tikkleAction == "sendtikkle") {
+      if (parseInt(tikkle.quantity) + parseInt(tikkling.tikkle_count) < parseInt(tikkling.tikkle_quantity)) {
+        // TODO: event가 끝난 뒤 제거
+        const invite_event_manager = new InviteEventManager({ db });
+        await invite_event_manager.eventProcessAfterTikkleSent(merchant_uid);
+        await tikkling.checkAndUpdateTikklingStateToEnd({ tikkle_quantity: tikkle.quantity + 1 });
+      }
+    }
+    //줄 수 있을 때만 제공
 
     //트랜잭션 종료
     await db.commitTransaction();

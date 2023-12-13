@@ -4,6 +4,7 @@ const { Response } = require("../../features/Response");
 const { Notice } = require("../../features/Notice");
 const { DBManager } = require("../../db");
 const { queryDatabase } = require("db.js");
+const { InviteEventManager } = require("../../features/InviteEventManager");
 
 exports.put_payment_refund = async (req, res) => {
   const { body, id, returnToken } = req;
@@ -18,6 +19,7 @@ exports.put_payment_refund = async (req, res) => {
   //main logic------------------------------------------------------------------------------------------------------------------//
   try {
     //Tikkle 생성
+
     const tikkle_info = await Tikkle.getTikkleByMerchantUid({
       merchant_uid,
       db,
@@ -38,7 +40,9 @@ exports.put_payment_refund = async (req, res) => {
 
     // //결제 환불 처리 in Tikkle DB (sendingTikkle state = 3, payment state = PAYMENT_CANCELLED)
     await tikkle.updateTikkleToRefund();
-
+    // TODO: event끝난뒤 제거
+    const user_invite_event_manager = new InviteEventManager({ db });
+    await user_invite_event_manager.eventProcessAfterTikkleRefunded(tikkle.id);
     //만약 종료된 상태였다면 티클링 재개
     receive_user_id = await tikkle.restart_tikkling();
 

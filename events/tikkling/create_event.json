@@ -7,7 +7,7 @@
 	},
 	"queryStringParameters": null,
 	"body": {
-		"funding_limit": "2023-12-10",
+		"funding_limit": "2023-12-18",
 		"tikkle_quantity": 3,
 		"product_id": 4,
 		"type": "기타",
