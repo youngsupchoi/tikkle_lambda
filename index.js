@@ -12,6 +12,7 @@ const { post_auth_phoneCheck } = require("./tikkle_auth/post_auth_phoneCheck/ind
 const { post_auth_registerUser } = require("./tikkle_auth/post_auth_registerUser/index.js");
 const { post_auth_tokenGenerate } = require("./tikkle_auth/post_auth_tokenGenerate/index.js");
 const { post_auth_version } = require("./tikkle_auth/post_auth_version/index.js");
+const { post_auth_loginKakao } = require("./tikkle_auth/post_auth_loginKakao/index.js");
 
 //friend
 const { get_friend_data } = require("./tikkle_friend/get_friend_data/index.js");
@@ -103,6 +104,8 @@ api.post("/post_auth_registerUser", post_auth_registerUser);
 api.post("/post_auth_tokenGenerate", post_auth_tokenGenerate);
 
 api.post("/post_auth_version", post_auth_version);
+
+api.post("/post_auth_loginKakao", post_auth_loginKakao);
 
 //
 
