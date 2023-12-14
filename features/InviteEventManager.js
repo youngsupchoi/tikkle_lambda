@@ -2,34 +2,38 @@ const { ExpectedError } = require("./ExpectedError.js");
 const crypto = require("crypto");
 class InviteEventManager {
   constructor({ db }) {
-    this.is_event = false;
+    this.is_event = true;
     this.invited_user_id = null;
     this.sent_tikkle_id = null;
     this.bonus_tikkle_id = null;
     this.tikkling_id = null;
+    this.inviter_user_id = null;
     this.db = db;
   }
 
-  async eventProcessAfterTikkleSent(merchant_uid) {
+  async eventProcessAfterTikkleSent(merchant_uid, tikkling_obj, tikkle) {
     try {
       // 이벤트가 진행중인지 확인
       if (this.is_event === false) return;
       // 해당 티클의 정보를 가져옴
       await this._getSentTikkleInfoByMerchantUid(merchant_uid);
+      // 자기 자신에게 보낸 티클이라면 보너스 티클을 전송하지 않음
+      if (this.invited_user_id === this.inviter_user_id) return;
       // 해당 유저가 이벤트에 참여한 이력이 있는지 확인
       const userAttendedEvent = await this._checkUserAttendanceForEvent(this.invited_user_id);
       // 만약에 없다면 보너스 티클을 전송
       if (userAttendedEvent === false) {
-        // 전체 보너스 티클이 500만원 이상이라면 보너스 티클을 전송하지 않음
+        // 전체 보너스 티클이 200만원 이상이라면 보너스 티클을 전송하지 않음
         const bonus_tikkle_amount = await this._carculateBonusTikkleAmount();
-        if (bonus_tikkle_amount >= 3000000) {
+        if (bonus_tikkle_amount >= 2000000) {
           return;
         }
-        if (bonus_tikkle_amount < 3000000) {
+        if (bonus_tikkle_amount < 2000000) {
           // 보너스 티클을 전송
           await this._sendBonusTikkle();
           // 전송한 보너스 티클을 event table에 기록
           await this._markBonusTikkle();
+          await tikkling_obj.checkAndUpdateTikklingStateToEnd({ tikkle_quantity: tikkle.quantity + 1 });
         }
       }
       return;
@@ -63,10 +67,11 @@ class InviteEventManager {
 
   async _getSentTikkleInfoByMerchantUid(merchant_uid) {
     try {
-      const rows = await this.db.executeQuery("SELECT * FROM sending_tikkle WHERE merchant_uid = ?", [merchant_uid]);
-      this.sent_tikkle_id = rows[0].id;
+      const rows = await this.db.executeQuery("SELECT sending_tikkle.id as sent_tikkle_id, sending_tikkle.tikkling_id as tikkling_id, sending_tikkle.user_id as invited_user_id, tikkling.user_id as inviter_user_id FROM sending_tikkle inner join tikkling on sending_tikkle.tikkling_id = tikkling.id WHERE merchant_uid = ?", [merchant_uid]);
+      this.sent_tikkle_id = rows[0].sent_tikkle_id;
       this.tikkling_id = rows[0].tikkling_id;
-      this.invited_user_id = rows[0].user_id;
+      this.invited_user_id = rows[0].invited_user_id;
+      this.inviter_user_id = rows[0].inviter_user_id;
     } catch (error) {
       console.error(`🚨 error -> ⚡️ _getSentTikkleInfoByMerchantUid : 🐞 ${error}`);
       throw new ExpectedError(error);
