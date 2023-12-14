@@ -57,8 +57,8 @@ exports.post_payment_finalize = async (req, res) => {
       if (parseInt(tikkle.quantity) + parseInt(tikkling.tikkle_count) < parseInt(tikkling.tikkle_quantity)) {
         // TODO: event가 끝난 뒤 제거
         const invite_event_manager = new InviteEventManager({ db });
-        await invite_event_manager.eventProcessAfterTikkleSent(merchant_uid);
-        await tikkling.checkAndUpdateTikklingStateToEnd({ tikkle_quantity: tikkle.quantity + 1 });
+        await invite_event_manager.eventProcessAfterTikkleSent(merchant_uid, tikkling, tikkle);
+        // await tikkling.checkAndUpdateTikklingStateToEnd({ tikkle_quantity: tikkle.quantity + 1 });
       }
     }
     //줄 수 있을 때만 제공
