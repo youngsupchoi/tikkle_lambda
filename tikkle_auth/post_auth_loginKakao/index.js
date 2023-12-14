@@ -29,7 +29,7 @@ exports.post_auth_loginKakao = async (req, res) => {
   let sqlResult_kakao;
 
   try {
-    const rows = await queryDatabase("select id from users where kakao_email = ?", [kakao_email]);
+    const rows = await queryDatabase("select * from users where kakao_email = ?", [kakao_email]);
     sqlResult_kakao = rows;
   } catch (err) {
     console.log(" post_auth_loginKakao 에서 에러가 발생했습니다.");
@@ -40,6 +40,17 @@ exports.post_auth_loginKakao = async (req, res) => {
       returnToken: null,
     };
     return res.status(500).send(return_body);
+  }
+
+  if (sqlResult_kakao.length >= 1 && sqlResult_kakao[0].is_deleted === 1) {
+    console.log("post_auth_appleLogin 에서 에러가 발생했습니다.");
+    const return_body = {
+      success: false,
+      detail_code: "04",
+      message: "Deleted user",
+      returnToken: null,
+    };
+    return res.status(404).send(return_body);
   }
 
   //카카오 회원인 경우
@@ -106,7 +117,7 @@ exports.post_auth_loginKakao = async (req, res) => {
   let sqlResult_phone;
 
   try {
-    const rows = await queryDatabase("select id from users where phone = ?", [phone]);
+    const rows = await queryDatabase("select * from users where phone = ?", [phone]);
     sqlResult_phone = rows;
     //console.log("SQL result : ", sqlResult_phone);
   } catch (err) {
@@ -256,6 +267,17 @@ exports.post_auth_loginKakao = async (req, res) => {
     //
     //회원가입이 다른 걸로 되어있는 경우
   } else if (sqlResult_phone.length === 1) {
+    if (sqlResult_phone.length >= 1 && sqlResult_phone[0].is_deleted === 1) {
+      console.log("post_auth_appleLogin 에서 에러가 발생했습니다.");
+      const return_body = {
+        success: false,
+        detail_code: "04",
+        message: "Deleted user",
+        returnToken: null,
+      };
+      return res.status(404).send(return_body);
+    }
+
     const phone_userID = sqlResult_phone[0].id;
 
     let sqlResult_update;
