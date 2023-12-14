@@ -2,7 +2,7 @@ const { ExpectedError } = require("./ExpectedError.js");
 const crypto = require("crypto");
 class InviteEventManager {
   constructor({ db }) {
-    this.is_event = true;
+    this.is_event = false;
     this.invited_user_id = null;
     this.sent_tikkle_id = null;
     this.bonus_tikkle_id = null;
