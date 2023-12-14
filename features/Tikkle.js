@@ -171,8 +171,8 @@ class Tikkle {
 
       const res = result[0];
       // console.log("res: ", res.user_id);
-
-      if (res.state_id == 4 && res.terminated_at == null) {
+      // funding_limit의 날짜가 오늘보다 이후일때만 재개
+      if (res.state_id == 4 && res.terminated_at == null && res.funding_limit > new Date().getTime()) {
         const temp = await this.db.executeQuery(`UPDATE tikkling SET state_id = 1 WHERE id = ?`, [this.tikkling_id]);
 
         if (temp.affectedRows == 0) {
