@@ -2,7 +2,7 @@ const { ExpectedError } = require("./ExpectedError.js");
 const crypto = require("crypto");
 class InviteEventManager {
   constructor({ db }) {
-    this.is_event = true;
+    this.is_event = false;
     this.invited_user_id = null;
     this.sent_tikkle_id = null;
     this.bonus_tikkle_id = null;
@@ -22,10 +22,10 @@ class InviteEventManager {
       if (userAttendedEvent === false) {
         // 전체 보너스 티클이 500만원 이상이라면 보너스 티클을 전송하지 않음
         const bonus_tikkle_amount = await this._carculateBonusTikkleAmount();
-        if (bonus_tikkle_amount >= 5000000) {
+        if (bonus_tikkle_amount >= 3000000) {
           return;
         }
-        if (bonus_tikkle_amount < 5000000) {
+        if (bonus_tikkle_amount < 3000000) {
           // 보너스 티클을 전송
           await this._sendBonusTikkle();
           // 전송한 보너스 티클을 event table에 기록
