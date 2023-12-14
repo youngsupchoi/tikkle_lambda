@@ -8,6 +8,7 @@ const { OptionCombination, Product } = require("../../features/Product");
 const { BankDetail } = require("../../features/BankDetail");
 const { Refund } = require("../../features/Refund");
 const { Delivery } = require("../../features/Delivery");
+const { InviteEventManager } = require("../../features/InviteEventManager");
 exports.put_tikkling_end = async (req, res) => {
   const id = req.id;
   const returnToken = req.returnToken;
@@ -35,6 +36,11 @@ exports.put_tikkling_end = async (req, res) => {
       tikkling.assertTikkleCountIsNotZero(),
     ]);
     if (type == "refund") {
+      //TODO: event끝난뒤 제거
+      const invite_event_manager = new InviteEventManager({ db });
+      await invite_event_manager.eventProcessBeforeTikklingRefund(tikkling_id);
+
+      await tikkling.loadActiveTikklingViewByTikklingId();
       const bank_detail = new BankDetail({ bank_code, account, db });
       //input은행 데이터 검증
       await bank_detail.validateBankData();
@@ -59,7 +65,7 @@ exports.put_tikkling_end = async (req, res) => {
         tikkling_id: tikkling.id,
         bank_code: bank_detail.bank_code,
         account: bank_detail.account,
-        expected_refund_amount: tikkling.tikkle_quantity * 5000 * 0.9,
+        expected_refund_amount: tikkling.tikkle_count * 5000 * 0.9,
         db,
       });
 

@@ -6,15 +6,20 @@ const { authtoken } = require("authtoken.js");
 //
 //auth
 const { get_auth_checkToken } = require("./tikkle_auth/get_auth_checkToken/index.js");
+const { get_auth_event } = require("./tikkle_auth/get_auth_event/index.js");
 const { post_auth_IdDuplicationCheck } = require("./tikkle_auth/post_auth_IdDuplicationCheck/index.js");
 const { post_auth_phoneCheck } = require("./tikkle_auth/post_auth_phoneCheck/index.js");
 const { post_auth_registerUser } = require("./tikkle_auth/post_auth_registerUser/index.js");
 const { post_auth_tokenGenerate } = require("./tikkle_auth/post_auth_tokenGenerate/index.js");
+const { post_auth_version } = require("./tikkle_auth/post_auth_version/index.js");
+const { post_auth_loginKakao } = require("./tikkle_auth/post_auth_loginKakao/index.js");
+const { post_auth_appleLogin } = require("./tikkle_auth/post_auth_appleLogin/index.js");
 
 //friend
 const { get_friend_data } = require("./tikkle_friend/get_friend_data/index.js");
 const { get_friend_event } = require("./tikkle_friend/get_friend_event/index.js");
 const { get_friend_search } = require("./tikkle_friend/get_friend_search/index.js");
+const { get_friend_searchPhone } = require("./tikkle_friend/get_friend_searchPhone/index.js");
 const { post_friend_phonecheck } = require("./tikkle_friend/post_friend_phonecheck/index.js");
 const { put_friend_block } = require("./tikkle_friend/put_friend_block/index.js");
 
@@ -80,6 +85,7 @@ const { get_product_options } = require("./tikkle_product/get_product_options/in
 const { post_product_brand } = require("./tikkle_product/post_product_brand/index.js");
 const { post_product_enrollment } = require("./tikkle_product/post_product_enrollment/index.js");
 const { get_tikkling_deliveryinfo } = require("./tikkle_tikkling/get_tikkling_deliveryinfo/index.js");
+const { actionFunnelLogger } = require("./actinoFunnelLogger.js");
 
 //
 
@@ -88,13 +94,21 @@ const { get_tikkling_deliveryinfo } = require("./tikkle_tikkling/get_tikkling_de
 //------- auth
 api.get("/get_auth_checkToken", get_auth_checkToken);
 
+api.get("/get_auth_event", get_auth_event);
+
 api.post("/post_auth_IdDuplicationCheck", post_auth_IdDuplicationCheck);
 
 api.post("/post_auth_phoneCheck", post_auth_phoneCheck);
-
+// 유저 funnel logging
 api.post("/post_auth_registerUser", post_auth_registerUser);
 
 api.post("/post_auth_tokenGenerate", post_auth_tokenGenerate);
+
+api.post("/post_auth_version", post_auth_version);
+
+api.post("/post_auth_loginKakao", post_auth_loginKakao);
+
+api.post("/post_auth_appleLogin", post_auth_appleLogin);
 
 //
 
@@ -107,6 +121,8 @@ api.get("/get_friend_event", authtoken, get_friend_event);
 api.get("/get_friend_search/:nick", authtoken, get_friend_search);
 
 api.post("/post_friend_phonecheck", authtoken, post_friend_phonecheck);
+
+api.get("/get_friend_searchPhone/:phone", authtoken, get_friend_searchPhone);
 
 api.put("/put_friend_block", authtoken, put_friend_block);
 
@@ -134,12 +150,12 @@ api.put("/put_notification_delete", authtoken, put_notification_delete);
 
 //------- product
 api.post("/post_product_images", authtoken, post_product_images);
-
-api.post("/post_product_info", authtoken, post_product_info);
+// 유저 funnel logging
+api.post("/post_product_info", authtoken, actionFunnelLogger, post_product_info);
 
 api.post("/post_product_inputInfo", authtoken, post_product_inputInfo);
-
-api.post("/post_product_list", authtoken, post_product_list);
+// 유저 funnel logging
+api.post("/post_product_list", authtoken, actionFunnelLogger, post_product_list);
 
 api.post("/post_product_id", authtoken, post_product_id);
 
@@ -154,12 +170,12 @@ api.post("/post_product_enrollment", authtoken, post_product_enrollment);
 
 //------- tikkling
 api.get("/get_tikkling_friendinfo", authtoken, get_tikkling_friendinfo);
-
-api.get("/get_tikkling_info/:tikkling_id", authtoken, get_tikkling_info);
+// 유저 funnel logging
+api.get("/get_tikkling_info/:tikkling_id", authtoken, actionFunnelLogger, get_tikkling_info);
 
 api.post("/post_tikkling_receivedTikkle", authtoken, post_tikkling_receivedTikkle);
-
-api.post("/post_tikkling_create", authtoken, post_tikkling_create);
+// 유저 funnel logging
+api.post("/post_tikkling_create", authtoken, actionFunnelLogger, post_tikkling_create);
 
 api.post("/post_user_getTikklingDetail", authtoken, post_user_getTikklingDetail);
 
@@ -220,6 +236,11 @@ api.post("/post_payment_finalize/:tikkleAction", post_payment_finalize);
 api.put("/put_payment_refund", authtoken, put_payment_refund);
 
 //
+
+api.post("/apple_login_test", (req, res) => {
+  console.log(req.body);
+  res.status(200).json({ message: "success" });
+});
 
 //-------- handler ------------------------------------------------//
 

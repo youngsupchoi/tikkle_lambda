@@ -4,6 +4,13 @@ CREATE DATABASE tikkle_db
 
 use tikkle_db;
 
+CREATE TABLE invalid_version (
+    os ENUM('android', 'ios') NOT NULL,
+    version VARCHAR(255) NOT NULL,
+    PRIMARY KEY (os, version)
+);
+
+
 CREATE TABLE bank (
     bank_code INT PRIMARY KEY,
     bank_name VARCHAR(255),
@@ -72,7 +79,7 @@ CREATE TABLE `users` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(30) NOT NULL,
 	`birthday` DATE NOT NULL,
-	`nick` VARCHAR(30) NOT NULL,
+	`nick` VARCHAR(30),
 	`phone` VARCHAR(30) NOT NULL,
 	`is_deleted` BOOLEAN NOT NULL DEFAULT false,
 	`gender` ENUM('male', 'female', 'others') NOT NULL,
@@ -87,10 +94,13 @@ CREATE TABLE `users` (
     `account` VARCHAR(255) DEFAULT NULL,
     `bank_code` INT,
     `funnel` ENUM('share_link', 'meta_ad', 'unknown', 'friend') DEFAULT 'meta_ad',
+	`kakao_email` VARCHAR(255),
+	`apple_id` VARCHAR(255),
 	PRIMARY KEY (`id`),
     FOREIGN KEY (`bank_code`) REFERENCES `bank`(`bank_code`),
-	UNIQUE (`nick`),
 	UNIQUE (`phone`)
+	UNIQUE (`kakao_email`)
+	UNIQUE (`apple_id`)
 );
 
 -- CREATE TABLE 'funnel' (
@@ -954,3 +964,44 @@ DELIMITER ;
 
 
 
+
+CREATE TABLE funnel_action (
+    id int NOT NULL,
+    description varchar(255) NOT NULL,
+    level int NOT NULL,
+    PRIMARY KEY(`id`)
+);
+INSERT INTO funnel_action (id, description, level) VALUES (1, '회원가입, 로그인', 1);
+INSERT INTO funnel_action (id, description, level) VALUES (2, '홈화면 이동', 1);
+INSERT INTO funnel_action (id, description, level) VALUES (3, '상품탭으로 이동', 2);
+INSERT INTO funnel_action (id, description, level) VALUES (4, '상품 상세 페이지로 이동', 2);
+INSERT INTO funnel_action (id, description, level) VALUES (5, '상품 검색', 2);
+INSERT INTO funnel_action (id, description, level) VALUES (6, '티클링 시작', 3);
+-- 직접 업데이트
+INSERT INTO funnel_action (id, description, level) VALUES (7, '첫 티클 수령 ', 4);
+-- 직접 업데이트
+INSERT INTO funnel_action (id, description, level) VALUES (8, '티클링 구매 및 전송', 4);
+
+CREATE TABLE funnel_log(
+    id int NOT NULL AUTO_INCREMENT,
+    user_id int NOT NULL,
+    funnel_action_id int NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    FOREIGN KEY (`funnel_action_id`) REFERENCES `funnel_action` (`id`)
+);
+
+CREATE TABLE user_invite_event_attandance (
+    id int NOT NULL AUTO_INCREMENT,
+    invited_user_id int NOT NULL,
+    sending_tikkle_id int NOT NULL,
+    bonus_tikkle_id int NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(`id`),
+    FOREIGN KEY (`invited_user_id`) REFERENCES `users` (`id`),
+    FOREIGN KEY (`sending_tikkle_id`) REFERENCES `sending_tikkle` (`id`),
+    FOREIGN KEY (`bonus_tikkle_id`) REFERENCES `sending_tikkle` (`id`)
+);
+
+INSERT INTO users (id, name, birthday, nick, phone, gender,image) values (0, 'TIKKLE', '2023-12-01', 'TIKKLE', '01000000000', 'male', 'https://d2da4yi19up8sp.cloudfront.net/profile/profile.png');

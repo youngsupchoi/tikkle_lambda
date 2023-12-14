@@ -7,8 +7,8 @@
   },
   "queryStringParameters": null,
   "body": {
-    "tikkling_id": 27,
-    "tikkle_quantity": 3,
+    "tikkling_id": 39,
+    "tikkle_quantity": 1,
     "message": "test"
   }
 }
