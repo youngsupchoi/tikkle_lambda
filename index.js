@@ -14,6 +14,7 @@ const { post_auth_tokenGenerate } = require("./tikkle_auth/post_auth_tokenGenera
 const { post_auth_version } = require("./tikkle_auth/post_auth_version/index.js");
 const { post_auth_loginKakao } = require("./tikkle_auth/post_auth_loginKakao/index.js");
 const { post_auth_appleLogin } = require("./tikkle_auth/post_auth_appleLogin/index.js");
+const { post_auth_appleRegister } = require("./tikkle_auth/post_auth_appleRegister/index.js");
 
 //friend
 const { get_friend_data } = require("./tikkle_friend/get_friend_data/index.js");
@@ -109,6 +110,8 @@ api.post("/post_auth_version", post_auth_version);
 api.post("/post_auth_loginKakao", post_auth_loginKakao);
 
 api.post("/post_auth_appleLogin", post_auth_appleLogin);
+
+api.post("/post_auth_appleRegister", post_auth_appleRegister);
 
 //
 
