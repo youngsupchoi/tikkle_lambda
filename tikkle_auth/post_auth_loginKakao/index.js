@@ -11,6 +11,8 @@ exports.post_auth_loginKakao = async (req, res) => {
   const body = req.body;
 
   const name = body.name;
+
+  //TODO : 카카오 회원가입시 생일이 없는 경우
   let birthday = body.birthday;
   if (birthday == "0000-00-00") {
     birthday = "2023-12-13";
