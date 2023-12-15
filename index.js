@@ -23,6 +23,7 @@ const { get_friend_search } = require("./tikkle_friend/get_friend_search/index.j
 const { get_friend_searchPhone } = require("./tikkle_friend/get_friend_searchPhone/index.js");
 const { post_friend_phonecheck } = require("./tikkle_friend/post_friend_phonecheck/index.js");
 const { put_friend_block } = require("./tikkle_friend/put_friend_block/index.js");
+const { post_user_friendDeep } = require("./tikkle_friend/post_user_friendDeep/index.js");
 
 //image
 const { get_image_deleteProfile } = require("./tikkle_image/get_image_deleteProfile/index.js");
@@ -124,6 +125,8 @@ api.get("/get_friend_event", authtoken, get_friend_event);
 api.get("/get_friend_search/:nick", authtoken, get_friend_search);
 
 api.post("/post_friend_phonecheck", authtoken, post_friend_phonecheck);
+
+api.post("/post_user_friendDeep", authtoken, post_user_friendDeep);
 
 api.get("/get_friend_searchPhone/:phone", authtoken, get_friend_searchPhone);
 
