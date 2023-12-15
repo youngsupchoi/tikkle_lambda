@@ -11,7 +11,11 @@ exports.post_auth_loginKakao = async (req, res) => {
   const body = req.body;
 
   const name = body.name;
-  const birthday = body.birthday;
+  let birthday = body.birthday;
+  if (birthday == "0000-00-00") {
+    birthday = "2023-12-13";
+  }
+
   const phone = body.phone;
   const gender = body.gender;
   const source_tikkling_id = body.source_tikkling_id;
