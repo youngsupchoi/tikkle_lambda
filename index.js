@@ -70,6 +70,7 @@ const { put_user_nick } = require("./tikkle_user/put_user_nick/index.js");
 const { put_user_account } = require("./tikkle_user/put_user_account/index.js");
 const { put_user_token } = require("./tikkle_user/put_user_token/index.js");
 const { put_tikkling_stop } = require("./tikkle_tikkling/put_tikkling_stop/index.js");
+const { put_user_birthday } = require("./tikkle_user/put_user_birthday/index.js");
 
 //payment
 const { get_payment_apiToken } = require("./tikkle_payment/get_payment_apiToken/index.js");
@@ -225,6 +226,8 @@ api.put("/put_user_nick", authtoken, put_user_nick);
 api.put("/put_user_account", authtoken, put_user_account);
 
 api.put("/put_user_token", authtoken, put_user_token);
+
+api.put("/put_user_birthday", authtoken, put_user_birthday);
 
 //
 
