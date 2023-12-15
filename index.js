@@ -174,7 +174,7 @@ api.post("/post_product_enrollment", authtoken, post_product_enrollment);
 //------- tikkling
 api.get("/get_tikkling_friendinfo", authtoken, get_tikkling_friendinfo);
 // 유저 funnel logging
-api.get("/get_tikkling_info/:tikkling_id", authtoken, actionFunnelLogger, get_tikkling_info);
+api.get("/get_tikkling_info/:tikkling_id", authtoken, get_tikkling_info);
 
 api.post("/post_tikkling_receivedTikkle", authtoken, post_tikkling_receivedTikkle);
 // 유저 funnel logging
@@ -201,7 +201,7 @@ api.get("/get_user_endTikklings", authtoken, get_user_endTikklings);
 
 api.get("/get_user_info", authtoken, get_user_info);
 
-api.get("/get_user_myWishlist", authtoken, get_user_myWishlist);
+api.get("/get_user_myWishlist", authtoken, actionFunnelLogger, get_user_myWishlist);
 
 api.get("/get_user_paymentHistory", authtoken, get_user_paymentHistory);
 

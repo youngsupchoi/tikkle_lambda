@@ -92,7 +92,7 @@ class ActionFunnelLogManager {
           }
           break;
 
-        case "/get_tikkling_info/:tikkling_id":
+        case "/get_user_myWishlist":
           if (this.move_to_home == false) {
             this.move_to_tikkling = true;
             await this.db.executeQuery(`INSERT INTO funnel_log (user_id, funnel_action_id) VALUES (?, ?)`, [this.user_id, 2]);
