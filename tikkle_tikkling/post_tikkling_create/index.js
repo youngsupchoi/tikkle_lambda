@@ -33,8 +33,8 @@ exports.post_tikkling_create = async (req, res) => {
       product.validateProductOptionCombination(),
       //상품 가격에 대한 유효성 검사
       product.validateProductPrice(tikkle_quantity * 5000),
-      //티클링 요청에 대한 유효성 검사
-      new_tikkling.validateCreaetTikklingRequest(),
+      //티클링 요청에 대한 유효성 검사 -> 취소
+      // new_tikkling.validateCreaetTikklingRequest(),
       //유저에 대한 유효성 검사
       user.validatteUserForStartTikkling(),
     ]);

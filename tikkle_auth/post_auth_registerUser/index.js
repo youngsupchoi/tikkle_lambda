@@ -52,18 +52,18 @@ exports.post_auth_registerUser = async (req, res) => {
     return res.status(400).send(return_body);
   }
 
-  //check nick
-  if (!nick || typeof nick !== "string" || nick.length > 30) {
-    //return invalid
-    console.log("post_auth_registerUser 에서 에러가 발생했습니다.");
-    const return_body = {
-      success: false,
-      detail_code: "04",
-      message: "nick value is null or invalid : input nick again",
-      returnToken: null,
-    };
-    return res.status(400).send(return_body);
-  }
+  // //check nick
+  // if (!nick || typeof nick !== "string" || nick.length > 30) {
+  //   //return invalid
+  //   console.log("post_auth_registerUser 에서 에러가 발생했습니다.");
+  //   const return_body = {
+  //     success: false,
+  //     detail_code: "04",
+  //     message: "nick value is null or invalid : input nick again",
+  //     returnToken: null,
+  //   };
+  //   return res.status(400).send(return_body);
+  // }
 
   // Check if the string matches the numeric pattern and its length is between 9 and 12
   const numericPattern = /^\d+$/;
@@ -103,14 +103,12 @@ exports.post_auth_registerUser = async (req, res) => {
 	  `;
   let funnel;
   if (source_tikkling_id) {
-    funnel = 'share_link';
+    funnel = "share_link";
   } else {
-    funnel = 'meta_ad';
+    funnel = "meta_ad";
   }
 
-  
-
-  const values = [name, birthday, nick, phone, gender, "https://d2da4yi19up8sp.cloudfront.net/profile/profile.png", null, null, false, 2, funnel];
+  const values = [name, birthday, " ", phone, gender, "https://d2da4yi19up8sp.cloudfront.net/profile/profile.png", null, null, false, 2, funnel];
 
   try {
     const rows = await queryDatabase(insertQuery, values);

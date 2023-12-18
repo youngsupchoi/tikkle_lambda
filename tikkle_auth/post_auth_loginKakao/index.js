@@ -11,7 +11,13 @@ exports.post_auth_loginKakao = async (req, res) => {
   const body = req.body;
 
   const name = body.name;
-  const birthday = body.birthday;
+
+  //TODO : 카카오 회원가입시 생일이 없는 경우
+  let birthday = body.birthday;
+  if (birthday == "0000-00-00") {
+    birthday = "2023-12-13";
+  }
+
   const phone = body.phone;
   const gender = body.gender;
   const source_tikkling_id = body.source_tikkling_id;
@@ -267,7 +273,7 @@ exports.post_auth_loginKakao = async (req, res) => {
     //
     //회원가입이 다른 걸로 되어있는 경우
   } else if (sqlResult_phone.length === 1) {
-    if (sqlResult_phone.length >= 1 && sqlResult_phone[0].is_deleted === 1) {
+    if (sqlResult_phone[0].is_deleted === 1) {
       console.log("post_auth_appleLogin 에서 에러가 발생했습니다.");
       const return_body = {
         success: false,
@@ -276,6 +282,17 @@ exports.post_auth_loginKakao = async (req, res) => {
         returnToken: null,
       };
       return res.status(404).send(return_body);
+    }
+
+    if (sqlResult_phone[0].kakao_email != null) {
+      console.log("post_auth_appleLogin 에서 에러가 발생했습니다.");
+      const return_body = {
+        success: false,
+        detail_code: "22",
+        message: "Already kakao user",
+        returnToken: null,
+      };
+      return res.status(400).send(return_body);
     }
 
     const phone_userID = sqlResult_phone[0].id;

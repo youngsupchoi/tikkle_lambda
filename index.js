@@ -14,6 +14,7 @@ const { post_auth_tokenGenerate } = require("./tikkle_auth/post_auth_tokenGenera
 const { post_auth_version } = require("./tikkle_auth/post_auth_version/index.js");
 const { post_auth_loginKakao } = require("./tikkle_auth/post_auth_loginKakao/index.js");
 const { post_auth_appleLogin } = require("./tikkle_auth/post_auth_appleLogin/index.js");
+const { post_auth_appleRegister } = require("./tikkle_auth/post_auth_appleRegister/index.js");
 
 //friend
 const { get_friend_data } = require("./tikkle_friend/get_friend_data/index.js");
@@ -22,6 +23,7 @@ const { get_friend_search } = require("./tikkle_friend/get_friend_search/index.j
 const { get_friend_searchPhone } = require("./tikkle_friend/get_friend_searchPhone/index.js");
 const { post_friend_phonecheck } = require("./tikkle_friend/post_friend_phonecheck/index.js");
 const { put_friend_block } = require("./tikkle_friend/put_friend_block/index.js");
+const { post_user_friendDeep } = require("./tikkle_friend/post_user_friendDeep/index.js");
 
 //image
 const { get_image_deleteProfile } = require("./tikkle_image/get_image_deleteProfile/index.js");
@@ -68,6 +70,7 @@ const { put_user_nick } = require("./tikkle_user/put_user_nick/index.js");
 const { put_user_account } = require("./tikkle_user/put_user_account/index.js");
 const { put_user_token } = require("./tikkle_user/put_user_token/index.js");
 const { put_tikkling_stop } = require("./tikkle_tikkling/put_tikkling_stop/index.js");
+const { put_user_birthday } = require("./tikkle_user/put_user_birthday/index.js");
 
 //payment
 const { get_payment_apiToken } = require("./tikkle_payment/get_payment_apiToken/index.js");
@@ -110,6 +113,8 @@ api.post("/post_auth_loginKakao", post_auth_loginKakao);
 
 api.post("/post_auth_appleLogin", post_auth_appleLogin);
 
+api.post("/post_auth_appleRegister", post_auth_appleRegister);
+
 //
 
 //------- friend
@@ -121,6 +126,8 @@ api.get("/get_friend_event", authtoken, get_friend_event);
 api.get("/get_friend_search/:nick", authtoken, get_friend_search);
 
 api.post("/post_friend_phonecheck", authtoken, post_friend_phonecheck);
+
+api.post("/post_user_friendDeep", authtoken, post_user_friendDeep);
 
 api.get("/get_friend_searchPhone/:phone", authtoken, get_friend_searchPhone);
 
@@ -171,7 +178,7 @@ api.post("/post_product_enrollment", authtoken, post_product_enrollment);
 //------- tikkling
 api.get("/get_tikkling_friendinfo", authtoken, get_tikkling_friendinfo);
 // 유저 funnel logging
-api.get("/get_tikkling_info/:tikkling_id", authtoken, actionFunnelLogger, get_tikkling_info);
+api.get("/get_tikkling_info/:tikkling_id", authtoken, get_tikkling_info);
 
 api.post("/post_tikkling_receivedTikkle", authtoken, post_tikkling_receivedTikkle);
 // 유저 funnel logging
@@ -198,7 +205,7 @@ api.get("/get_user_endTikklings", authtoken, get_user_endTikklings);
 
 api.get("/get_user_info", authtoken, get_user_info);
 
-api.get("/get_user_myWishlist", authtoken, get_user_myWishlist);
+api.get("/get_user_myWishlist", authtoken, actionFunnelLogger, get_user_myWishlist);
 
 api.get("/get_user_paymentHistory", authtoken, get_user_paymentHistory);
 
@@ -219,6 +226,8 @@ api.put("/put_user_nick", authtoken, put_user_nick);
 api.put("/put_user_account", authtoken, put_user_account);
 
 api.put("/put_user_token", authtoken, put_user_token);
+
+api.put("/put_user_birthday", authtoken, put_user_birthday);
 
 //
 

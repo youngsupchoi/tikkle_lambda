@@ -636,7 +636,7 @@ CREATE TABLE `tikkling` (
     UNIQUE (`id`)
 );
 
-CREATE TABLE share_link_funnle_log (
+CREATE TABLE share_link_funnel_log (
     `tikkling_id` INT NOT NULL,
     `click` INT NOT NULL DEFAULT 0,
     `app_open` INT NOT NULL DEFAULT 0,
@@ -645,7 +645,6 @@ CREATE TABLE share_link_funnle_log (
     PRIMARY KEY (`tikkling_id`),
     FOREIGN KEY (`tikkling_id`) REFERENCES `tikkling`(`id`)
 );
-
 
 
 CREATE TABLE shared_tikkling_signup_log(
