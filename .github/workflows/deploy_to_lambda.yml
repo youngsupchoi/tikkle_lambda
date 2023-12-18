@@ -29,6 +29,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Deploy to Lambda
+      - name: Deploy to Lambda tikkle_dev
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          aws lambda update-function-code --function-name tikkle_dev --zip-file fileb://lambda.zip
+
+      - name: Deploy to Lambda tikkle
+        if: github.ref == 'refs/heads/main'
         run: |
           aws lambda update-function-code --function-name tikkle --zip-file fileb://lambda.zip
