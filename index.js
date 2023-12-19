@@ -91,6 +91,7 @@ const { get_tikkling_deliveryinfo } = require("./tikkle_tikkling/get_tikkling_de
 const { actionFunnelLogger } = require("./actinoFunnelLogger.js");
 const { get_tikkling_refundinfo } = require("./tikkle_tikkling/get_tikkling_refundinfo/index.js");
 const { put_user_lastpresentamount } = require("./tikkle_user/put_user_lastpresentamount/index.js");
+const { put_tikkling_deliveryconfirm } = require("./tikkle_tikkling/put_tikkling_deliveryconfirm/index.js");
 
 //
 
@@ -198,6 +199,7 @@ api.get("/get_tikkling_deliveryinfo/:tikkling_id", authtoken, get_tikkling_deliv
 
 api.get("/get_tikkling_refundinfo/:tikkling_id", authtoken, get_tikkling_refundinfo);
 
+api.put("/put_tikkling_deliveryconfirm", authtoken, put_tikkling_deliveryconfirm);
 //
 
 //------- user
