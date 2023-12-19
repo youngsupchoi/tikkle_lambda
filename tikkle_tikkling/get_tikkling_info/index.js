@@ -34,7 +34,7 @@ exports.get_tikkling_info = async (req, res) => {
       JOIN product_category pc ON a.category_id = pc.id 
       WHERE u.id = ?;`;
       let rows = await queryDatabase(query, [id]);
-      if(rows[0].length == 0){
+      if(rows.length == 0){
         return res.status(404).send({
           success: false,
           detail_code: "00",
@@ -101,7 +101,7 @@ exports.get_tikkling_info = async (req, res) => {
       `;
       
       let rows = await queryDatabase(query, [parsedId]);
-      if(rows[0].length == 0){
+      if(rows.length == 0){
         return res.status(404).send({
           success: false,
           detail_code: "00",
