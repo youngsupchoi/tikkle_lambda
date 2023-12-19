@@ -90,6 +90,38 @@ class Delivery {
     }
   }
 
+  async loadDeliveryInfoByTikklingId() {
+    try {
+      if (this.tikkling_id == null) {
+        throw new ExpectedError({
+          status: 500,
+          detail_code: "00",
+          message: "tikkling_id가 없습니다.",
+        });
+      }
+      const rows = await this.db.executeQuery(
+        `
+      SELECT delivery_info.*, courier_company.name as courier_company_name
+      FROM delivery_info as delivery_info
+      INNER JOIN courier_company AS courier_company ON delivery_info.courier_company_code = courier_company.code
+      WHERE tikkling_id = ?`,
+        [this.tikkling_id]
+      );
+
+      if (rows.length === 0) {
+        throw new ExpectedError({
+          status: 404,
+          detail_code: "01",
+          message: "해당 티클링의 시작된 배송 기록이 없습니다.",
+        });
+      }
+      this.updateDelivery(rows[0]);
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ loadDeliveryInfoByTikklingId : 🐞${error}`);
+      throw error;
+    }
+  }
+
   /**
    * 유저아이디를 받고 해당 유저의 가장 최근 티클링에 대한 배송정보를 가져옴
    * @param {number} user_id
@@ -119,6 +151,39 @@ class Delivery {
       return;
     } catch (error) {
       console.error(`🚨 error -> ⚡️ getRecentDeliveryInfoOfUser : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  async updateDeliveryToConfirmed() {
+    try {
+      if(this.tikkling_id == null){
+        throw new ExpectedError({
+          status: 500,
+          detail_code: "00",
+          message: "tikkling_id가 없습니다.",
+        });
+      }
+      if (this.state_id == 4) {
+        throw new ExpectedError({
+          status: 400,
+          detail_code: "00",
+          message: "이미 수령처리된 배송정보입니다.",
+        }); 
+      }
+      const result = await this.db.executeQuery(`UPDATE delivery_info SET state_id = 4, actual_delivery_date = NOW() WHERE tikkling_id = ?`, [this.tikkling_id]);
+      
+      if (result.affectedRows === 0) {
+        throw new ExpectedError({
+          status: 500,
+          detail_code: "00",
+          message: "배송 정보 저장 실패",
+        });
+      }
+      this.state_id = 4;
+      return;
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ updateDeliveryToConrimed : 🐞${error}`);
       throw error;
     }
   }
