@@ -873,32 +873,7 @@ ALTER TABLE `friends_relation` ADD INDEX `idx_central_user_id` (`central_user_id
 -- tikkling에 index 추가
 ALTER TABLE tikkling ADD INDEX idx_user_id (user_id);
 
--- 진행중인 티클에 상품이름, 브랜드, 티클 개수를 함께 볼 수 있음
-DROP VIEW IF EXISTS active_tikkling_view;
-CREATE VIEW active_tikkling_view AS 
-SELECT 
-    tikkling.id as tikkling_id, 
-    tikkling.user_id,
-    tikkling.funding_limit,
-    tikkling.created_at,
-    tikkling.tikkle_quantity,
-    tikkling.product_id,
-    tikkling.terminated_at,
-    tikkling.state_id,
-    tikkling.type,
-    tikkling.option_combination_id,
-    COALESCE(SUM(sending_tikkle.quantity), 0) as tikkle_count, 
-    products.name as product_name, 
-    products.thumbnail_image, 
-    brands.brand_name,
-    products.category_id
-FROM tikkling
-LEFT JOIN sending_tikkle ON tikkling.id = sending_tikkle.tikkling_id and sending_tikkle.state_id = 1
-INNER JOIN products ON tikkling.product_id = products.id
-INNER JOIN brands ON products.brand_id = brands.id
-WHERE tikkling.terminated_at IS NULL
-GROUP BY tikkling.id;
-
+-- 티클링의 상품이름, 브랜드, 티클 개수를 함께 볼 수 있음
 DROP VIEW IF EXISTS tikkling_detail_view;
 CREATE VIEW tikkling_detail_view AS 
 SELECT 
