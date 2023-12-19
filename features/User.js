@@ -20,6 +20,7 @@ class User {
     tikkling_ticket = 2,
     account = null,
     bank_code = null,
+    last_present_amount = null,
     db,
   }) {
     this.id = id;
@@ -40,6 +41,7 @@ class User {
     this.account = account;
     this.bank_code = bank_code;
     this.db = db;
+    this.last_present_amount = last_present_amount;
   }
 
   /**
@@ -64,6 +66,26 @@ class User {
       throw error;
     }
   };
+
+  async updateLastPresentAmount(last_present_amount) {
+    try {
+      const result = await this.db.executeQuery(`UPDATE users SET last_present_amount = ? WHERE id = ?`, [last_present_amount, this.id]);
+      if (result.affectedRows !== 1) {
+        throw new ExpectedError({
+          status: 500,
+          detail_code: "00",
+          message: "last_present_amount 수정 실패",
+        });
+      }
+      this.last_present_amount = last_present_amount;
+      return;
+      
+    }
+    catch (error) {
+      console.error(`🚨 error -> updateLastPresentAmount : 🐞${error}`);
+      throw error;
+    }
+  }
 
   async validatteUserForStartTikkling() {
     try {
