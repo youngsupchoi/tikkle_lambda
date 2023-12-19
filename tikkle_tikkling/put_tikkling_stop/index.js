@@ -7,7 +7,7 @@ exports.put_tikkling_stop = async (req, res) => {
   //main logic------------------------------------------------------------------------------------------------------------------//
   try {
     //티클링이 상태가 이미 변화했는지 확인
-    const check_tikkling = await queryDatabase(`select * from active_tikkling_view where tikkling_id = ?`, [req.body.tikkling_id]);
+    const check_tikkling = await queryDatabase(`select * from tikkling_detail_view where tikkling_id = ?`, [req.body.tikkling_id]);
     //티클링이 없는 경우
     if (check_tikkling.length == 0) {
       console.log("비정상적 요청-put_tikkling_end: 티클링을 찾을 수 없습니다.");

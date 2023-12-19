@@ -39,7 +39,7 @@ class Tikkling {
    */
   async loadActiveTikklingViewByUserId() {
     try {
-      const rows = await this.db.executeQuery(`SELECT * FROM active_tikkling_view WHERE user_id = ?`, [this.user_id]);
+      const rows = await this.db.executeQuery(`SELECT * FROM tikkling_detail_view WHERE user_id = ? AND terminated_at IS NULL`, [this.user_id]);
       if (!Tikkling.checkRowExists(rows)) {
         throw new ExpectedError({
           status: "404",
