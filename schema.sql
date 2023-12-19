@@ -96,12 +96,14 @@ CREATE TABLE `users` (
     `funnel` ENUM('share_link', 'meta_ad', 'unknown', 'friend') DEFAULT 'meta_ad',
 	`kakao_email` VARCHAR(255),
 	`apple_id` VARCHAR(255),
+    `last_present_amount` INT NOT NULL DEFAULT 0,
 	PRIMARY KEY (`id`),
     FOREIGN KEY (`bank_code`) REFERENCES `bank`(`bank_code`),
 	UNIQUE (`phone`)
 	UNIQUE (`kakao_email`)
 	UNIQUE (`apple_id`)
 );
+
 
 -- CREATE TABLE 'funnel' (
 --     'id' INT NOT NULL AUTO_INCREMENT,
@@ -897,6 +899,29 @@ INNER JOIN brands ON products.brand_id = brands.id
 WHERE tikkling.terminated_at IS NULL
 GROUP BY tikkling.id;
 
+DROP VIEW IF EXISTS tikkling_detail_view;
+CREATE VIEW tikkling_detail_view AS 
+SELECT 
+    tikkling.id as tikkling_id, 
+    tikkling.user_id,
+    tikkling.funding_limit,
+    tikkling.created_at,
+    tikkling.tikkle_quantity,
+    tikkling.product_id,
+    tikkling.terminated_at,
+    tikkling.state_id,
+    tikkling.type,
+    tikkling.option_combination_id,
+    COALESCE(SUM(sending_tikkle.quantity), 0) as tikkle_count, 
+    products.name as product_name, 
+    products.thumbnail_image, 
+    brands.brand_name,
+    products.category_id
+FROM tikkling
+LEFT JOIN sending_tikkle ON tikkling.id = sending_tikkle.tikkling_id and sending_tikkle.state_id = 1
+INNER JOIN products ON tikkling.product_id = products.id
+INNER JOIN brands ON products.brand_id = brands.id
+GROUP BY tikkling.id;
 
 
 --tikkling의 terminated_at이 변경시 이를 user의 is_tikkling을 0으로 변경

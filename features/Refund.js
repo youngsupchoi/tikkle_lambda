@@ -29,6 +29,34 @@ class Refund {
       throw error;
     }
   }
+
+  async loadDataByTikklingId() {
+    try {
+      const rows = await this.db.executeQuery(`SELECT * FROM refund WHERE tikkling_id = ?`, [this.tikkling_id]);
+      if (rows.length === 0) {
+        throw new ExpectedError({
+          status: 404,
+          detail_code: "01",
+          message: "해당 티클링에 대한 환불 정보를 찾을 수 없습니다.",
+        });
+      }
+      const refund = rows[0];
+      this.id = refund.id;
+      this.tikkling_id = refund.tikkling_id;
+      this.bank_code = refund.bank_code;
+      this.account = refund.account;
+      this.created_at = refund.created_at;
+      this.state_id = refund.state_id;
+      this.expected_refund_amount = refund.expected_refund_amount;
+      this.actual_refund_amount = refund.actual_refund_amount;
+      this.refund_date = refund.refund_date;
+
+      return;
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ loadDataByTikklingId : 🐞${error}`);
+      throw error;
+    }
+  }
 }
 
 module.exports = { Refund };
