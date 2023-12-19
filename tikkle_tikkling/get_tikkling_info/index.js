@@ -32,7 +32,7 @@ exports.get_tikkling_info = async (req, res) => {
       FROM tikkling_detail_view a 
       JOIN users u ON a.user_id = u.id 
       JOIN product_category pc ON a.category_id = pc.id 
-      WHERE u.id = ?;`;
+      WHERE u.id = ? AND terminated_at IS NULL;`;
       let rows = await queryDatabase(query, [id]);
       if(rows.length == 0){
         return res.status(404).send({
