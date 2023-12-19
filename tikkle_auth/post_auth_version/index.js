@@ -7,28 +7,6 @@ exports.post_auth_version = async (req, res) => {
   const version = body.version;
 
   //---- check inspection_time ----//
-  try {
-    const inspection = await getSSMParameter("inspection_time");
-
-    if (inspection != "false") {
-      const return_body = {
-        success: true,
-        detail_code: "22",
-        message: inspection,
-        returnToken: null,
-      };
-      return res.status(200).send(return_body);
-    }
-  } catch (err) {
-    console.log("get_notification_list 에서 에러가 발생했습니다.", err);
-    const return_body = {
-      success: false,
-      detail_code: "01",
-      message: "SSM error : check parameter error",
-      returnToken: null,
-    };
-    return res.status(500).send(return_body);
-  }
 
   //---- check DB  ----//
   let sqlResult;
