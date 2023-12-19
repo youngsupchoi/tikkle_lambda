@@ -90,6 +90,7 @@ const { post_product_enrollment } = require("./tikkle_product/post_product_enrol
 const { get_tikkling_deliveryinfo } = require("./tikkle_tikkling/get_tikkling_deliveryinfo/index.js");
 const { actionFunnelLogger } = require("./actinoFunnelLogger.js");
 const { get_tikkling_refundinfo } = require("./tikkle_tikkling/get_tikkling_refundinfo/index.js");
+const { put_user_lastpresentamount } = require("./tikkle_user/put_user_lastpresentamount/index.js");
 
 //
 
@@ -231,6 +232,8 @@ api.put("/put_user_account", authtoken, put_user_account);
 api.put("/put_user_token", authtoken, put_user_token);
 
 api.put("/put_user_birthday", authtoken, put_user_birthday);
+
+api.put("put_user_lastpresentamount", authtoken, put_user_lastpresentamount);
 
 //
 
