@@ -29,7 +29,7 @@ exports.get_tikkling_info = async (req, res) => {
 			a.option_combination_id,
       pc.name AS category_name, 
       a.product_id AS product_id
-      FROM active_tikkling_view a 
+      FROM tikkling_detail_view a 
       JOIN users u ON a.user_id = u.id 
       JOIN product_category pc ON a.category_id = pc.id 
       WHERE u.id = ?;`;
@@ -86,7 +86,7 @@ exports.get_tikkling_info = async (req, res) => {
 			a.option_combination_id,
       pc.name AS category_name,
       a.product_id AS product_id
-      FROM active_tikkling_view a 
+      FROM tikkling_detail_view a 
       JOIN users u ON a.user_id = u.id 
       JOIN product_category pc ON a.category_id = pc.id 
       WHERE a.tikkling_id = ? AND a.state_id = 1;
