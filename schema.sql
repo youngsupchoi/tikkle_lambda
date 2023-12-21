@@ -99,39 +99,10 @@ CREATE TABLE `users` (
     `last_present_amount` INT NOT NULL DEFAULT 0,
 	PRIMARY KEY (`id`),
     FOREIGN KEY (`bank_code`) REFERENCES `bank`(`bank_code`),
-	UNIQUE (`phone`)
-	UNIQUE (`kakao_email`)
+	UNIQUE (`phone`),
+	UNIQUE (`kakao_email`),
 	UNIQUE (`apple_id`)
 );
-
-
--- CREATE TABLE 'funnel' (
---     'id' INT NOT NULL AUTO_INCREMENT,
---     'name' VARCHAR(255) NOT NULL,
---     'level' INT NOT NULL,
---     'description' TEXT NOT NULL,
---     PRIMARY KEY ('id')
--- );
-
--- INSERT INTO funnel (id, name, level, description) VALUES
--- (1, 'signup_and_signin', 1, '회원가입 후 로그인'),
--- (2, 'open_home_screen', 1, '홈화면 오픈'),
--- (3, 'open_product_screen', 2, '상품화면 오픈'),
--- (4, 'open_product_detail_screen', 2, '상품 상세화면 오픈'),
--- (5, 'search_product', 2, '상품 검색'),
--- (6, 'tikkling_start', 3, '티클링 시작'),
--- (7, 'recieve_tikkle', 4, '첫 티클 수령'),
--- (8, 'buy_tikkle', 4, '티클 구매');
-
--- CREATE TABLE user_funnel (
---     user_id INT NOT NULL,
---     funnel_id INT NOT NULL,
---     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---     PRIMARY KEY (user_id, funnel_id),
---     FOREIGN KEY (user_id) REFERENCES users(id),
---     FOREIGN KEY (funnel_id) REFERENCES funnel(id)
--- );
-
 
 CREATE TABLE `phones` (
     `phone` VARCHAR(11) NOT NULL,
@@ -668,6 +639,7 @@ BEGIN
     WHERE `id` = NEW.`user_id`;
 END;
 //
+DELIMITER ;
 
 CREATE TABLE `courier_company` (
     `name` VARCHAR(255) NOT NULL,
