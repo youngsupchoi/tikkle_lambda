@@ -7,6 +7,7 @@ const { authtoken } = require("authtoken.js");
 //auth
 const { get_auth_checkToken } = require("./tikkle_auth/get_auth_checkToken/index.js");
 const { get_auth_event } = require("./tikkle_auth/get_auth_event/index.js");
+const { get_auth_kToken } = require("./tikkle_auth/get_auth_kToken/index.js");
 const { post_auth_IdDuplicationCheck } = require("./tikkle_auth/post_auth_IdDuplicationCheck/index.js");
 const { post_auth_phoneCheck } = require("./tikkle_auth/post_auth_phoneCheck/index.js");
 const { post_auth_registerUser } = require("./tikkle_auth/post_auth_registerUser/index.js");
@@ -102,6 +103,7 @@ const { put_tikkling_deliveryconfirm } = require("./tikkle_tikkling/put_tikkling
 api.get("/get_auth_checkToken", get_auth_checkToken);
 
 api.get("/get_auth_event", get_auth_event);
+api.get("/get_auth_kToken", get_auth_kToken);
 
 api.post("/post_auth_IdDuplicationCheck", post_auth_IdDuplicationCheck);
 
