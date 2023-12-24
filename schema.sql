@@ -3,6 +3,12 @@ CREATE DATABASE tikkle_db
     COLLATE utf8mb4_general_ci;
 
 use tikkle_db;
+-- CREATE USER 'HeungkyuLee'@'%' IDENTIFIED BY 'password';
+-- GRANT ALL PRIVILEGES ON tikkle_db.* TO 'HeungkyuLee'@'%' WITH GRANT OPTION;
+-- FLUSH PRIVILEGES;
+
+
+-- SET GLOBAL time_zone = 'Asia/Seoul';
 
 CREATE TABLE invalid_version (
     os ENUM('android', 'ios') NOT NULL,
