@@ -22,12 +22,12 @@ class PaymentParam {
 }
 
 class Tikkle {
-  constructor({ id, tikkling_id, user_id, message, quantity, state_id, merchant_uid, created_at = null, db }) {
+  constructor({ id, tikkling_id, user_id, message, quantity = null, state_id, merchant_uid, created_at = null, db }) {
     this.id = id || null;
     this.tikkling_id = tikkling_id || null;
     this.user_id = user_id || null;
     this.message = message || null;
-    this.quantity = quantity || null;
+    this.quantity = quantity;
     this.state_id = state_id || null;
     this.merchant_uid = merchant_uid || this.generateMerchantUid();
     this.amount = quantity * 5000;
@@ -41,6 +41,28 @@ class Tikkle {
         this[key] = dbResult[key];
       }
     });
+  }
+
+  validateSendMessageRequest() {
+    try {
+      if (this.state_id !== 7) {
+        throw new ExpectedError({
+          status: "403",
+          message: `메세지 전송용 티클은 state_id가 7이어야 합니다.`,
+          detail_code: "00",
+        });
+      }
+      if (this.message == null) {
+        throw new ExpectedError({
+          status: "403",
+          message: `메세지 전송용 티클은 메세지가 필요합니다.`,
+          detail_code: "00",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ validateSendMessageRequest : 🐞${error}`);
+      throw error;
+    }
   }
 
   /**
@@ -75,6 +97,45 @@ class Tikkle {
         message: `서버에러 :getUserById`,
         detail_code: "00",
       });
+    }
+  }
+
+  async increaseTikklingTicket() {
+    try {
+      const result = await this.db.executeQuery(`UPDATE users SET tikkling_ticket = tikkling_ticket + 1 WHERE id = ?`, [this.user_id]);
+      if (result.affectedRows == 0) {
+        throw new ExpectedError({
+          status: "500",
+          message: `서버에러`,
+          detail_code: "00",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ increaseTikklingTicket : 🐞${error}`);
+      throw error;
+    }
+  }
+  
+  async sendMessage() {
+    try {
+      const result = await this.db.executeQuery(`INSERT INTO sending_tikkle (tikkling_id, user_id, message, quantity, state_id,  merchant_uid) VALUES (?, ?, ?, ?, ?, ?)`, [
+        this.tikkling_id,
+        this.user_id,
+        this.message,
+        this.quantity,
+        this.state_id,
+        this.merchant_uid,
+      ]);
+      if (result.affectedRows == 0) {
+        throw new ExpectedError({
+          status: "500",
+          message: `서버에러`,
+          detail_code: "00",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ sendMessage : 🐞${error}`);
+      throw error;
     }
   }
 
