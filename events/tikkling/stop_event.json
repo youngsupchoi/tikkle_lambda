@@ -3,7 +3,7 @@
 	"path": "/put_tikkling_stop",
 	"httpMethod": "PUT",
 	"headers": {
-		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjE2OTMzNjI5OTAsImlzcyI6IkxpRm9saSJ9.2q1rnumRYD5G6ZajAdHkU3HibgTRDbzhgGNFoPAw2qY,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkzMzYyMDkwLCJleHAiOjQyODUzNjIwOTAsImlzcyI6IkxpRm9saSJ9.3lO5YCgVXXzrz5LrodPQoccq11ZHvHdwKAflg22RXXc"
+		"authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjcsImlhdCI6MTcwMzczMjc5MywiZXhwIjo5MDAwMDAwMDAxNzAzNzMzMDAwLCJpc3MiOiJMaUZvbGkifQ.XKvRcbkWP9a4J-lfDvcZ6O01patJzvuS1n11d4VPtBQ,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjcsImlhdCI6MTcwMzczMjc5MywiZXhwIjoxNzA2MzI0NzkzLCJpc3MiOiJMaUZvbGkifQ.6Pox2D4qm0ABi_w2AjY8hbkbIDODR8arDi7p9pNs12g"
 	},
 	"queryStringParameters": null,
 	"body": {

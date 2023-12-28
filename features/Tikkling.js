@@ -160,6 +160,31 @@ class Tikkling {
     }
   }
 
+  validateSendMessageRequest({ sent_user_id }) {
+    try{
+      if (this.user_id == sent_user_id) {
+        throw new ExpectedError({
+          status: "403",
+          message: `비정상적 요청, 자신에게 티클을 보낼 수 없습니다.`,
+          detail_code: "00",
+        });
+      }
+      if (this.terminated_at != null) {
+        throw new ExpectedError({
+          status: "403",
+          message: `비정상적 요청, 티클링이 진행중이 아닙니다.`,
+          detail_code: "01",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> ⚡️ validateSendMessageRequest : 🐞 ${error}`);
+      throw error;
+
+    }
+      
+
+  }
+
   async validateSendTikkleRequest({ tikkle_quantity }) {
     try {
       //티클링이 현재 진행중인지 확인
@@ -378,18 +403,18 @@ class Tikkling {
     }
   }
 
-  increaseTikklingTicket() {
+  async increaseTikklingTicket() {
     try {
-      this.db.executeQuery(`UPDATE users SET tikkling_ticket = tikkling_ticket + 1 WHERE id = ?`, [this.user_id]);
+      await this.db.executeQuery(`UPDATE users SET tikkling_ticket = tikkling_ticket + 1 WHERE id = ?`, [this.user_id]);
     } catch (error) {
       console.error(`🚨 error -> ⚡️ increaseTikklingTicket : 🐞 ${error}`);
       throw error;
     }
   }
 
-  decreaseOptionCombinationQuantity() {
+  async decreaseOptionCombinationQuantity() {
     try {
-      this.db.executeQuery(`UPDATE option_combination SET quantity = quantity + 1 WHERE id = ?`, [this.option_combination_id]);
+      await this.db.executeQuery(`UPDATE option_combination SET quantity = quantity + 1 WHERE id = ?`, [this.option_combination_id]);
     } catch (error) {
       console.error(`🚨 error -> ⚡️ increaseOptionCombinationQuantity : 🐞 ${error}`);
       throw error;
