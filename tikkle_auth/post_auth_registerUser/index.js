@@ -28,7 +28,7 @@ exports.post_auth_registerUser = async (req, res) => {
 
     await db.commitTransaction();
 
-    return res.status(200).send(Response.create(true, "00", "sign up success!", null, null));
+    return res.status(200).send(Response.create(true, "00", "sign up success!", user.id, null));
   } catch (err) {
     await db.rollbackTransaction();
     console.error(`🚨 error -> ⚡️ post_auth_registerUser : 🐞${err}`);
