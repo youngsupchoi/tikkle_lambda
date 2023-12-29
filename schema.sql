@@ -865,6 +865,7 @@ SELECT
     tikkling.state_id,
     tikkling.type,
     tikkling.option_combination_id,
+    tikkling.share_link,
     COALESCE(SUM(sending_tikkle.quantity), 0) as tikkle_count, 
     products.name as product_name, 
     products.thumbnail_image, 
