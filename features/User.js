@@ -3,14 +3,14 @@ const { ExpectedError } = require("./ExpectedError.js");
 
 class User {
   constructor({
-    id,
+    id = null,
     name,
     birthday,
-    nick,
+    nick = " ",
     phone,
     is_deleted = false,
     gender,
-    image = null,
+    image = "https://d2da4yi19up8sp.cloudfront.net/profile/profile.png",
     zonecode = null,
     address = null,
     detail_address = null,
@@ -21,6 +21,8 @@ class User {
     account = null,
     bank_code = null,
     last_present_amount = null,
+    funnel = "meta_ad",
+    source_tikkling_id = null,
     db,
   }) {
     this.id = id;
@@ -40,6 +42,8 @@ class User {
     this.tikkling_ticket = tikkling_ticket;
     this.account = account;
     this.bank_code = bank_code;
+    this.funnel = source_tikkling_id ? "share_link" : funnel;
+    this.source_tikkling_id = source_tikkling_id;
     this.db = db;
     this.last_present_amount = last_present_amount;
   }
@@ -86,6 +90,137 @@ class User {
       throw error;
     }
   }
+
+
+  async registerUser() {
+    try {
+      const result = await this.db.executeQuery(`INSERT INTO users 
+      (name, birthday, nick, phone, gender, image, address, detail_address, is_tikkling, tikkling_ticket, funnel)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
+        this.name,
+        this.birthday,
+        this.nick,
+        this.phone,
+        this.gender,
+        this.image,
+        this.address,
+        this.detail_address,
+        this.is_tikkling,
+        this.tikkling_ticket,
+        this.funnel,
+      ])
+      if (result.affectedRows !== 1) {
+        throw new ExpectedError({
+          status: 500,
+          detail_code: "00",
+          message: "유저 등록 실패",
+        });
+      }
+      this.id = result.insertId;
+    }
+    catch (error) {
+      console.error(`🚨 error -> ⚡️ registerUser : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  async logIfUserFromTikkling() {
+    try {
+      if (this.source_tikkling_id) {
+        const result = await this.db.executeQuery(`INSERT INTO shared_tikkling_signup_log (tikkling_id, user_id) VALUES (?, ?)`, [this.source_tikkling_id, this.id]);
+        if (result.affectedRows !== 1) {
+          throw new ExpectedError({
+            status: 500,
+            detail_code: "00",
+            message: "유저 등록 실패",
+          });
+        }
+      }
+    }
+    catch (error) {
+      console.error(`🚨 error -> logIfUserFromTikkling : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  async validateUserForRegister() {
+    try {
+      //유저 이름 유효성 검증
+      if (!this.name || typeof this.name !== "string" || this.name.length > 30) {
+        //return invalid
+        throw new ExpectedError({
+          status: "400",
+          message: `비정상적 요청, 이름 데이터가 올바르지 않습니다.`,
+          detail_code: "01",
+        });
+      }
+
+      //유저 생일 유효성 검증
+      const parsedDate = new Date(this.birthday);
+      if (isNaN(parsedDate) || Object.prototype.toString.call(parsedDate) !== "[object Date]") {
+        throw new ExpectedError({
+          status: "400",
+          message: `비정상적 요청, 생일 데이터가 올바르지 않습니다.`,
+          detail_code: "02",
+        });
+      }
+
+      // Check if the string matches the numeric pattern and its length is between 9 and 12
+      const numericPattern = /^\d+$/;
+      if (!this.phone || typeof this.phone !== "string" || this.phone.length < 9 || this.phone.length > 11 || !numericPattern.test(this.phone)) {
+        throw new ExpectedError({
+          status: "400",
+          message: `비정상적 요청, 전화번호 데이터가 올바르지 않습니다.`,
+          detail_code: "05",
+        });
+      }
+      // 성별 데이터 체크
+      if (!this.gender || typeof this.gender !== "string" || !(this.gender === "male" || this.gender === "female" || this.gender === "others")) {
+        throw new ExpectedError({
+          status: "400",
+          message: `비정상적 요청, 성별 데이터가 올바르지 않습니다.`,
+          detail_code: "06",
+        });
+      }
+
+      //닉네임 유효성 검증
+      // if (!this.nick || typeof this.nick !== "string" || this.nick.length > 30) {
+      //   throw new ExpectedError({
+      //     status: "400",
+      //     message: `비정상적 요청, 닉네임 데이터가 올바르지 않습니다.`,
+      //     detail_code: "04",
+      //   });
+      // }
+    }
+    catch (error) {
+      console.error(`🚨 error -> validateUserForRegister : 🐞${error}`);
+      throw error;
+    }
+  }
+
+  async restrictUserUnder14() {
+    try {
+      const dob = new Date(this.birthday);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+
+      // Check if birthday hasn't occurred yet this year
+      if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      if (age < 14) {
+        throw new ExpectedError({
+          status: "400",
+          message: `회원가입 실패, 만 14세 미만은 가입할 수 없습니다.`,
+          detail_code: "03",
+        });
+      }
+    } catch (error) {
+      console.error(`🚨 error -> restrictUserForRegister : 🐞${error}`);
+      throw error;
+    }
+  }
+  
 
   async validatteUserForStartTikkling() {
     try {
